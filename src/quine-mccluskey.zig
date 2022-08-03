@@ -386,7 +386,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
         }
 
-        pub fn simplify(allocator: Allocator, ones: []const T, dontcares: []const T, variables: []const []const u8) !Self {
+        pub fn reduce(allocator: Allocator, ones: []const T, dontcares: []const T, variables: []const []const u8) !Self {
             var qm = Self.init(allocator, variables);
             try qm.createTable(ones, dontcares);
             try qm.createPGroup();
@@ -395,15 +395,20 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             return qm;
         }
 
-        // fn bitReverse(num: T, len: TLen) T {
-        //     var reverse_num: T = 0;
-        //     var i: TLen = 0;
-        //     while (i < len) : (i += 1) {
-        //         if ((num & (@as(T, 1) << @intCast(TLog2, i))) != 0)
-        //             reverse_num |= @as(T, 1) << @intCast(TLog2, ((len - 1) - i));
-        //     }
-        //     return reverse_num;
-        // }
+        // don't build lookup table for large int sizes as bitReverseLookup
+        // ends up being very slow for TBitSize >= 2048
+        const bitReverse = if (TBitSize >= 256) bitReverseLoop else bitReverseLookup;
+
+        /// reverse only lower `len` bits
+        fn bitReverseLoop(num: T, len: TLen) T {
+            var reverse_num: T = 0;
+            var i: TLen = 0;
+            while (i < len) : (i += 1) {
+                if ((num & (@as(T, 1) << @intCast(TLog2, i))) != 0)
+                    reverse_num |= @as(T, 1) << @intCast(TLog2, ((len - 1) - i));
+            }
+            return reverse_num;
+        }
 
         const FnTT = if (@import("builtin").zig_backend == .stage2_llvm)
             *const fn (T) T
@@ -430,7 +435,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         };
 
         /// reverse only lower `len` bits
-        fn bitReverse(t: T, len: TLen) T {
+        fn bitReverseLookup(t: T, len: TLen) T {
             return bit_rev_fns[len](t);
         }
 
@@ -450,12 +455,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                             if (std.mem.eql(u8, v, term[i..][0..v.len]))
                                 break @intCast(TLog2, j);
                         } else null orelse unreachable;
-                        if (TBitSize <= 128) {
-                            termi |= @as(T, 1) << idx;
-                        } else {
-                            // Managed std.math.big.int.Managed
-                            todo("BigT");
-                        }
+                        termi |= @as(T, 1) << idx;
                     }
                     i += len;
                 }

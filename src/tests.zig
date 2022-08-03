@@ -7,7 +7,7 @@ const QuineMcCluskey = qmc.QuineMcCluskey;
 const allr = std.testing.allocator;
 const ABCD: []const []const u8 = &.{ "A", "B", "C", "D" };
 
-fn testReductions(comptime QM: type) !void {
+fn testReduce(comptime QM: type) !void {
     // i've been using this online reduction tool to find expected reductions:
     //   https://www.emathhelp.net/calculators/discrete-mathematics/boolean-algebra-calculator/
     // note: default is different syntax for NOT operator: A' -> ~A
@@ -44,8 +44,12 @@ fn testReductions(comptime QM: type) !void {
         const terms = try QM.parseTerms(allr, tst.input, delimiter, ABCD);
         defer allr.free(terms);
 
-        try std.testing.expectEqualSlices(QM.T, tst.ones, terms);
-        var qm = try QM.simplify(allr, terms, &.{}, ABCD);
+        // workaround: can't use std.testing.expextEqualSlices or std.testing.expextEqual
+        // with T > u128 due to LLVM ERROR.  i guess the error happens when trying to print.
+        for (tst.ones) |x, i|
+            try std.testing.expect(x == terms[i]);
+
+        var qm = try QM.reduce(allr, terms, &.{}, ABCD);
         defer qm.deinit();
         var output = std.ArrayList(u8).init(allr);
         defer output.deinit();
@@ -82,9 +86,11 @@ fn parseIntoSet(comptime QM: type, allocator: Allocator, input: []const u8, deli
     return result;
 }
 
-// const QMu2048 = QuineMcCluskey(u2048);
-// const QMu1024 = QuineMcCluskey(u1024);
-// const QMu512 = QuineMcCluskey(u512);
+const QMu8192 = QuineMcCluskey(u8192);
+const QMu4096 = QuineMcCluskey(u4096);
+const QMu2048 = QuineMcCluskey(u2048);
+const QMu1024 = QuineMcCluskey(u1024);
+const QMu512 = QuineMcCluskey(u512);
 const QMu256 = QuineMcCluskey(u256);
 const QMu128 = QuineMcCluskey(u128);
 const QMu64 = QuineMcCluskey(u64);
@@ -94,13 +100,18 @@ const QMu8 = QuineMcCluskey(u8);
 const QMu4 = QuineMcCluskey(u4);
 
 test "basic2" {
-    // try testReductions(QMu256); // <- LLVM ERROR: Unsupported library call operation!
-    try testReductions(QMu128);
-    try testReductions(QMu64);
-    try testReductions(QMu32);
-    try testReductions(QMu16);
-    try testReductions(QMu8);
-    try testReductions(QMu4);
+    try testReduce(QMu8192);
+    try testReduce(QMu4096);
+    try testReduce(QMu2048);
+    try testReduce(QMu1024);
+    try testReduce(QMu512);
+    try testReduce(QMu256);
+    try testReduce(QMu128);
+    try testReduce(QMu64);
+    try testReduce(QMu32);
+    try testReduce(QMu16);
+    try testReduce(QMu8);
+    try testReduce(QMu4);
 }
 
 test {
@@ -121,7 +132,7 @@ test {
     };
 
     inline for (common_tests ++ noxor_tests) |t| {
-        var qm = try QMu32.simplify(allr, t.ons, t.dnc, ABCD);
+        var qm = try QMu32.reduce(allr, t.ons, t.dnc, ABCD);
         defer qm.deinit();
         var list = std.ArrayList(u8).init(allr);
         defer list.deinit();
@@ -150,11 +161,3 @@ test {
     //     .{ .res = &.{"---00000^^^^^^^"} },
     // };
 }
-
-// test "xxx" {
-//     var x: u256 = 0b110101;
-//     var y: u256 = 0b010111;
-//     var result = x << 20;
-//     _ = y;
-//     std.debug.print("{}\n", .{result});
-// }
