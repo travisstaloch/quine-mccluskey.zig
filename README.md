@@ -10,4 +10,5 @@ zig build test
 see [src/tests.zig](src/tests.zig)
 
 # about
-adapted from https://github.com/vj-ug/Quine-McCluskey-algorithm/blob/master/quinecplusplus.cpp
+- [Wikipedia article](https://en.wikipedia.org/wiki/Quine%E2%80%93McCluskey_algorithm)
+- adapted from https://github.com/vj-ug/Quine-McCluskey-algorithm/blob/master/quinecplusplus.cpp
