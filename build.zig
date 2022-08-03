@@ -5,7 +5,7 @@ pub fn build(b: *std.build.Builder) void {
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
     const mode = b.standardReleaseOptions();
 
-    const lib = b.addStaticLibrary("quine-mcckluskey", "src/quine-mccluskey.zig");
+    const lib = b.addStaticLibrary("quine-mccluskey", "src/quine-mccluskey.zig");
     lib.setBuildMode(mode);
     lib.install();
 

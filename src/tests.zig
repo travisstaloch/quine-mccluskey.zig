@@ -38,6 +38,12 @@ fn testReduce(comptime QM: type) !void {
             .ones = &.{ 4, 8, 9, 10, 11, 12, 14, 15 },
             .result = "AB' + BC'D' + AC",
         },
+        .{
+            // ~A~BC~D + ~ABC~D + A~B~C~D + A~B~CD + A~BC~D + A~BCD + ABC~D + ABCD
+            .input = "A'B'CD' + A'BCD' + AB'C'D' + AB'C'D + AB'CD' + AB'CD + ABCD' + ABCD",
+            .ones = &.{ 2, 6, 8, 9, 10, 11, 14, 15 },
+            .result = "CD' + AB' + AC",
+        },
     };
     const delimiter = " + ";
     for (tests) |tst| {
@@ -46,8 +52,12 @@ fn testReduce(comptime QM: type) !void {
 
         // workaround: can't use std.testing.expextEqualSlices or std.testing.expextEqual
         // with T > u128 due to LLVM ERROR.  i guess the error happens when trying to print.
-        for (tst.ones) |x, i|
+        for (tst.ones) |x, i| {
+            if (x != terms[i])
+                if (!test_large) // don't try to print large integers
+                    std.debug.print("index {} expected {} != {} actual\n", .{ i, x, terms[i] });
             try std.testing.expect(x == terms[i]);
+        }
 
         var qm = try QM.reduce(allr, terms, &.{}, ABCD);
         defer qm.deinit();
@@ -64,7 +74,10 @@ fn testReduce(comptime QM: type) !void {
         defer expecteds.deinit();
         var actuals = try parseIntoSet(QM, allr, output.items, delimiter, ABCD);
         defer actuals.deinit();
-        try std.testing.expect(setsEqual(@TypeOf(expecteds), expecteds, actuals));
+        const equal = setsEqual(@TypeOf(expecteds), expecteds, actuals);
+        if (!equal)
+            std.debug.print("expected {s}\nactual  {s}\n", .{ tst.result, output.items });
+        try std.testing.expect(equal);
     }
 }
 
@@ -72,13 +85,18 @@ fn setsEqual(comptime Set: type, a: Set, b: Set) bool {
     if (a.count() != b.count()) return false;
     var iter = a.iterator();
     while (iter.next()) |it| {
-        const k = it.key_ptr.*;
-        if (!b.contains(k)) return false;
+        if (!b.contains(it.key_ptr.*)) return false;
     }
     return true;
 }
 
-fn parseIntoSet(comptime QM: type, allocator: Allocator, input: []const u8, delimiter: []const u8, variables: []const []const u8) !std.AutoHashMap(QM.T, void) {
+fn parseIntoSet(
+    comptime QM: type,
+    allocator: Allocator,
+    input: []const u8,
+    delimiter: []const u8,
+    variables: []const []const u8,
+) !std.AutoHashMap(QM.T, void) {
     var result = std.AutoHashMap(QM.T, void).init(allocator);
     const terms = try QM.parseTerms(allocator, input, delimiter, variables);
     defer allocator.free(terms);
@@ -99,13 +117,17 @@ const QMu16 = QuineMcCluskey(u16);
 const QMu8 = QuineMcCluskey(u8);
 const QMu4 = QuineMcCluskey(u4);
 
+const test_large_integers = true;
+const test_large = @hasDecl(@This(), "test_large_integers");
 test "basic2" {
-    try testReduce(QMu8192);
-    try testReduce(QMu4096);
-    try testReduce(QMu2048);
-    try testReduce(QMu1024);
-    try testReduce(QMu512);
-    try testReduce(QMu256);
+    if (test_large) {
+        try testReduce(QMu8192);
+        try testReduce(QMu4096);
+        try testReduce(QMu2048);
+        try testReduce(QMu1024);
+        try testReduce(QMu512);
+        try testReduce(QMu256);
+    }
     try testReduce(QMu128);
     try testReduce(QMu64);
     try testReduce(QMu32);

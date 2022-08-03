@@ -1,4 +1,4 @@
-# quine-mcckluskey.zig
+# quine-mccluskey.zig
 Quine–McCluskey algorithm in zig: useful for minimizing boolean functions
 
 # usage
