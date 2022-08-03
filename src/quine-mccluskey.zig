@@ -115,13 +115,12 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         }
 
         pub fn printPGroup(self: *Self, writer: anytype) !void {
-            // const bfmt = comptime std.fmt.comptimePrint("{{b:0>{}}}", .{nbits});
             _ = try writer.write("\np_group\n");
             for (self.p_group.items) |list, i| {
                 try writer.print("{}", .{i});
                 for (list.items) |it| {
                     _ = try writer.write("\t\t");
-                    try printTermBin(it.number, it.dashes, writer, self.variables.len);
+                    try self.printTermBin(it, writer);
                     // try writer.print("\t\t" ++ bfmt ++ "{}\n", .{ it.number, it.dashes });
                     _ = try writer.write("\n");
                 }
@@ -182,7 +181,6 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         // print all the values from the final table, except for duplicates.
         // print all the unused numbers from original table and mid process table
         pub fn printFinalGroup(self: *Self, writer: anytype) !void {
-            // const bfmt = comptime std.fmt.comptimePrint("{{b:0>{}}}", .{nbits});
             var seen: BNumList = .{};
             defer seen.deinit(self.allocator);
             _ = try writer.write("\nfinal_group\n");
@@ -190,7 +188,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             for (self.final_group.items) |list| {
                 for (list.items) |it| {
                     if (!contains(seen, it)) {
-                        try printTermBin(it.number, it.dashes, writer, self.variables.len);
+                        try self.printTermBin(it, writer);
                         _ = try writer.write("\n");
                         try seen.append(self.allocator, it);
                     }
@@ -200,7 +198,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             for (self.p_group.items) |list| {
                 for (list.items) |it| {
                     if (!it.used) {
-                        try printTermBin(it.number, it.dashes, writer, self.variables.len);
+                        try self.printTermBin(it, writer);
                         _ = try writer.write("\n");
                     }
                 }
@@ -209,7 +207,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             for (self.table.items) |list| {
                 for (list.items) |it| {
                     if (!it.used) {
-                        try printTermBin(it.number, it.dashes, writer, self.variables.len);
+                        try self.printTermBin(it, writer);
                         _ = try writer.write("\n");
                     }
                 }
@@ -439,25 +437,29 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             return bit_rev_fns[len](t);
         }
 
-        /// expected syntax: AB' means (A and !B)
+        /// 1. given `variables`={"A", "B"} and `delimiter`=" + "
+        ///   - AB'         => (A and !B)
+        ///   - AB' + C'D   => (A and !B) or (!C and D)
+        /// 2. given `variables`={"AB", "A", "B"} and `delimiter`=" + "
+        ///   - AB'         => (!AB)
+        ///     - if "A" were before "AB" in `variables` then the result would be the same as 1.
         pub fn parseTerms(allocator: Allocator, input: []const u8, delimiter: []const u8, variables: []const []const u8) ![]T {
             var iter = std.mem.split(u8, input, delimiter);
             var terms: std.ArrayListUnmanaged(T) = .{};
             defer terms.deinit(allocator);
-            while (iter.next()) |term| {
+            while (iter.next()) |_term| {
+                const term = std.mem.trim(u8, _term, &std.ascii.spaces);
                 var termi: T = 0;
                 var i: usize = 0;
                 while (i < term.len) {
-                    var len: TLen = 1;
-                    len += @boolToInt(i + 1 < term.len and term[i + 1] == '\'');
-                    if (len == 1) {
-                        const idx = for (variables) |v, j| {
-                            if (std.mem.eql(u8, v, term[i..][0..v.len]))
-                                break @intCast(TLog2, j);
-                        } else null orelse unreachable;
-                        termi |= @as(T, 1) << idx;
-                    }
-                    i += len;
+                    const idx = for (variables) |v, j| {
+                        if (std.mem.startsWith(u8, term[i..], v))
+                            break @intCast(TLog2, j);
+                    } else return error.ParseError;
+                    i += variables[idx].len;
+                    const not = @boolToInt(i < term.len and term[i] == '\'');
+                    termi |= @as(T, not +% 1) << idx;
+                    i += not;
                 }
                 try terms.append(allocator, bitReverse(termi, @intCast(TLen, variables.len)));
             }

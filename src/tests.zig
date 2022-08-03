@@ -6,6 +6,8 @@ const QuineMcCluskey = qmc.QuineMcCluskey;
 
 const allr = std.testing.allocator;
 const ABCD: []const []const u8 = &.{ "A", "B", "C", "D" };
+const AB_CD: []const []const u8 = &.{ "AB", "CD" };
+const ABCDEFGH: []const []const u8 = &.{ "A", "B", "C", "D", "E", "F", "G", "H" };
 
 fn testReduce(comptime QM: type) !void {
     // i've been using this online reduction tool to find expected reductions:
@@ -17,6 +19,7 @@ fn testReduce(comptime QM: type) !void {
         ones: []const QM.T = &.{},
         dontcares: []const QM.T = &.{},
         result: []const u8,
+        variables: []const []const u8,
     };
 
     const tests = [_]Test{
@@ -25,33 +28,59 @@ fn testReduce(comptime QM: type) !void {
             .input = "A'B'C'D' + AB'C'D' + ABC'D' + ABCD' + A'B'C'D + AB'C'D + ABC'D + ABCD",
             .ones = &.{ 0, 1, 8, 9, 12, 13, 14, 15 },
             .result = "B'C' + AB",
+            .variables = ABCD,
         },
         .{
             // ~A~B~C~D + ~A~B~CD + ~A~BCD + ~ABCD + A~B~C~D + A~B~CD + A~BCD + ABCD
             .input = "A'B'C'D' + A'B'C'D + A'B'CD + A'BCD + AB'C'D' + AB'C'D + AB'CD + ABCD",
             .ones = &.{ 0, 1, 3, 7, 8, 9, 11, 15 },
             .result = "B'C' + CD",
+            .variables = ABCD,
         },
         .{
             // ~AB~C~D + A~B~C~D + A~B~CD + A~BC~D + A~BCD + AB~C~D + ABC~D + ABCD
             .input = "A'BC'D' + AB'C'D' + AB'C'D + AB'CD' + AB'CD + ABC'D' + ABCD' + ABCD",
             .ones = &.{ 4, 8, 9, 10, 11, 12, 14, 15 },
             .result = "AB' + BC'D' + AC",
+            .variables = ABCD,
         },
         .{
             // ~A~BC~D + ~ABC~D + A~B~C~D + A~B~CD + A~BC~D + A~BCD + ABC~D + ABCD
             .input = "A'B'CD' + A'BCD' + AB'C'D' + AB'C'D + AB'CD' + AB'CD + ABCD' + ABCD",
             .ones = &.{ 2, 6, 8, 9, 10, 11, 14, 15 },
             .result = "CD' + AB' + AC",
+            .variables = ABCD,
+        },
+        .{
+            // ~AB~C~D + ~AB~CD + ~ABC~D + ~ABCD + A~B~C~D
+            .input = "A'BC'D' + A'BC'D + A'BCD' + A'BCD + AB'C'D'",
+            .ones = &.{ 4, 5, 6, 7, 8 },
+            .result = "A'B + AB'C'D'",
+            .variables = ABCD,
+        },
+        .{
+            // ~F~GH + ~FG~H + ~FGH + F~G~H + F~GH + FG~H + FGH
+            .input = "F'G'H + F'GH' + F'GH + FG'H' + FG'H + FGH' + FGH",
+            .ones = &.{ 1, 2, 3, 4, 5, 6, 7 },
+            .result = "F + G + H",
+            .variables = ABCDEFGH,
+        },
+        .{
+            // variable names longer than 1
+            .input = "ABCD' + ABCD",
+            .ones = &.{ 2, 3 },
+            .result = "AB",
+            .variables = AB_CD,
         },
     };
     const delimiter = " + ";
     for (tests) |tst| {
-        const terms = try QM.parseTerms(allr, tst.input, delimiter, ABCD);
+        if (@bitSizeOf(QM.TLog2) < tst.variables.len) continue;
+        const terms = try QM.parseTerms(allr, tst.input, delimiter, tst.variables);
         defer allr.free(terms);
 
         // workaround: can't use std.testing.expextEqualSlices or std.testing.expextEqual
-        // with T > u128 due to LLVM ERROR.  i guess the error happens when trying to print.
+        // with T > u128 due to LLVM ERROR.  the error happens when trying to print.
         for (tst.ones) |x, i| {
             if (x != terms[i])
                 if (!test_large) // don't try to print large integers
@@ -59,7 +88,7 @@ fn testReduce(comptime QM: type) !void {
             try std.testing.expect(x == terms[i]);
         }
 
-        var qm = try QM.reduce(allr, terms, &.{}, ABCD);
+        var qm = try QM.reduce(allr, terms, &.{}, tst.variables);
         defer qm.deinit();
         var output = std.ArrayList(u8).init(allr);
         defer output.deinit();
@@ -70,9 +99,9 @@ fn testReduce(comptime QM: type) !void {
         // try std.testing.expectEqualStrings(tst.result, output.items);
 
         // workaround for FIXME: parse terms into sets and compare
-        var expecteds = try parseIntoSet(QM, allr, tst.result, delimiter, ABCD);
+        var expecteds = try parseIntoSet(QM, allr, tst.result, delimiter, tst.variables);
         defer expecteds.deinit();
-        var actuals = try parseIntoSet(QM, allr, output.items, delimiter, ABCD);
+        var actuals = try parseIntoSet(QM, allr, output.items, delimiter, tst.variables);
         defer actuals.deinit();
         const equal = setsEqual(@TypeOf(expecteds), expecteds, actuals);
         if (!equal)
@@ -119,7 +148,8 @@ const QMu4 = QuineMcCluskey(u4);
 
 const test_large_integers = true;
 const test_large = @hasDecl(@This(), "test_large_integers");
-test "basic2" {
+
+test "reduce" {
     if (test_large) {
         try testReduce(QMu8192);
         try testReduce(QMu4096);
@@ -128,6 +158,7 @@ test "basic2" {
         try testReduce(QMu512);
         try testReduce(QMu256);
     }
+
     try testReduce(QMu128);
     try testReduce(QMu64);
     try testReduce(QMu32);
@@ -136,7 +167,7 @@ test "basic2" {
     try testReduce(QMu4);
 }
 
-test {
+test "reduce binary" {
     const Test = struct {
         res: []const u8,
         ons: []const QMu32.T = &.{},
