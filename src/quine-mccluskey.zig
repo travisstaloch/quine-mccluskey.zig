@@ -90,9 +90,11 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         /// dashes are represented by a 1. for example original A=0011 B=1011, new number
         /// is -011 which is represented as C.number=A&B=0011,C.dashes=A^B=1000
         pub fn createPGroup(self: *Self) !void {
-            for (self.table.items) |_, i| {
+            if (self.table.items.len == 0) return error.EmptyTable;
+            for (self.table.items[0 .. self.table.items.len - 1]) |_, i| {
                 for (self.table.items[i].items) |*itptr| {
                     const it = itptr.*;
+                    // std.debug.print("i {}/{}\n", .{ i, self.table.items.len });
                     for (self.table.items[i + 1].items) |*it2ptr| {
                         const it2 = it2ptr.*;
                         const number = it.number & it2.number;
@@ -133,7 +135,8 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         /// C.number=A&B=0001&0011=0001, and C.dashes=A^B^A.dashes=0001^0011^1000=1010.
         /// Computation is done only when A.dashes = b.dashes
         pub fn createFinalGroup(self: *Self) !void {
-            for (self.p_group.items) |_, i| {
+            if (self.p_group.items.len == 0) return;
+            for (self.p_group.items[0 .. self.p_group.items.len - 1]) |_, i| {
                 for (self.p_group.items[i].items) |*itptr| {
                     const it = itptr.*;
                     for (self.p_group.items[i + 1].items) |*it2ptr| {
@@ -349,7 +352,9 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             var bitset = if (TBitSize <= 64)
                 std.StaticBitSet(TBitSize){ .mask = bnum.dashes }
             else
-                std.StaticBitSet(TBitSize){ .masks = @bitCast([TBitSize / @bitSizeOf(usize)]usize, bnum.dashes) };
+                std.StaticBitSet(TBitSize){
+                    .masks = @bitCast([TBitSize / @bitSizeOf(usize)]usize, bnum.dashes),
+                };
             var biter = bitset.iterator(.{});
             while (biter.next()) |bitidx| {
                 const mask = @as(T, 1) << @intCast(TLog2, bitidx);

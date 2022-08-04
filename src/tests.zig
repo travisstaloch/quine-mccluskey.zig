@@ -79,7 +79,7 @@ fn testReduce(comptime QM: type) !void {
         const terms = try QM.parseTerms(allr, tst.input, delimiter, tst.variables);
         defer allr.free(terms);
 
-        // workaround: can't use std.testing.expextEqualSlices or std.testing.expextEqual
+        // workaround: can't use std.testing{expextEqualSlices, expectEqual}
         // with T > u128 due to LLVM ERROR.  the error happens when trying to print.
         for (tst.ones) |x, i| {
             if (x != terms[i])
