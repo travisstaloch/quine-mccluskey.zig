@@ -5,13 +5,13 @@ const Allocator = std.mem.Allocator;
 
 pub fn QuineMcCluskey(comptime _T: type) type {
     return struct {
-        table: BNumListList = .{},
-        p_group: BNumListList = .{},
-        final_group: BNumListList = .{},
+        table: ImplListList = .{},
+        p_group: ImplListList = .{},
+        final_group: ImplListList = .{},
         allocator: Allocator,
         dontcares: []const T = undefined,
         variables: []const []const u8,
-        essentials: BNumSet = .{},
+        essentials: ImplSet = .{},
 
         const Self = @This();
         pub const T = _T;
@@ -19,14 +19,31 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         pub const TBitSize = @bitSizeOf(T);
         pub const TLen = std.meta.Int(.unsigned, std.math.log2(TBitSize) + 1);
 
-        pub const BNum = struct {
+        pub const ImplTs = struct {
             number: T,
             dashes: T,
+        };
+
+        pub const Implicant = struct {
+            imp: ImplTs,
             used: bool,
         };
 
-        pub const BNumList = std.ArrayListUnmanaged(BNum);
-        pub const BNumListList = std.ArrayListUnmanaged(BNumList);
+        comptime {
+            // storing Implicant in a MultiArrayList makes for better cache locality.
+            // if the `used` field were stored in ImplTs, the size of that struct
+            // (for u32) would be 12 bytes as shown below
+            std.debug.assert(@sizeOf(ImplTs) == @sizeOf(T) * 2);
+            if (@bitSizeOf(T) <= 128)
+                std.debug.assert(@sizeOf(Implicant) == @sizeOf(T) * 3);
+            // @compileLog(@sizeOf(Implicant), @sizeOf(T) * 3, T);
+            // assuming T = u32
+            // ArrayList(S)              :   4*3 = 12 bytes per implicant
+            // MultiArrayList(Implicant) : 4*2+1 = 9 bytes per implicant
+        }
+
+        pub const ImplList = std.MultiArrayList(Implicant);
+        pub const ImplListList = std.ArrayListUnmanaged(ImplList);
         pub fn init(allocator: Allocator, variables: []const []const u8) Self {
             return .{
                 .allocator = allocator,
@@ -44,12 +61,11 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             self.essentials.deinit(self.allocator);
         }
 
-        fn resize(self: Self, l: *BNumListList, len: usize) !void {
+        fn resize(self: Self, l: *ImplListList, len: usize) !void {
             var i = l.items.len;
             try l.ensureTotalCapacity(self.allocator, len);
             l.expandToCapacity();
             while (i < l.items.len) : (i += 1) {
-                // std.debug.print("i/count {}/{}\n", .{ i, count });
                 l.items[i] = .{};
             }
         }
@@ -67,10 +83,10 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     try self.resize(&self.table, count + 1);
                 }
                 // std.debug.print("count/len {}/{}\n", .{ count, self.table.items.len });
-                try self.table.items[count].append(
-                    self.allocator,
-                    .{ .number = x, .dashes = 0, .used = false },
-                );
+                try self.table.items[count].append(self.allocator, .{
+                    .imp = .{ .number = x, .dashes = 0 },
+                    .used = false,
+                });
             }
         }
 
@@ -91,25 +107,25 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         /// is -011 which is represented as C.number=A&B=0011,C.dashes=A^B=1000
         pub fn createPGroup(self: *Self) !void {
             if (self.table.items.len == 0) return error.EmptyTable;
-            for (self.table.items[0 .. self.table.items.len - 1]) |_, i| {
-                for (self.table.items[i].items) |*itptr| {
+            for (self.table.items[0 .. self.table.items.len - 1]) |*tableitptr, i| {
+                for (tableitptr.items(.imp)) |*itptr, j| {
                     const it = itptr.*;
-                    // std.debug.print("i {}/{}\n", .{ i, self.table.items.len });
-                    for (self.table.items[i + 1].items) |*it2ptr| {
+                    for (self.table.items[i + 1].items(.imp)) |*it2ptr, k| {
                         const it2 = it2ptr.*;
                         const number = it.number & it2.number;
                         const dashes = it.number ^ it2.number;
 
                         if (@popCount(T, dashes) != 1) continue;
-                        itptr.used = true;
-                        it2ptr.used = true;
+
+                        tableitptr.items(.used)[j] = true;
+                        self.table.items[i + 1].items(.used)[k] = true;
 
                         const count = @popCount(T, number);
                         if (count >= self.p_group.items.len)
                             try self.resize(&self.p_group, count + 1);
                         try self.p_group.items[count].append(
                             self.allocator,
-                            .{ .number = number, .dashes = dashes, .used = false },
+                            .{ .imp = .{ .number = number, .dashes = dashes }, .used = false },
                         );
                     }
                 }
@@ -136,10 +152,10 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         /// Computation is done only when A.dashes = b.dashes
         pub fn createFinalGroup(self: *Self) !void {
             if (self.p_group.items.len == 0) return;
-            for (self.p_group.items[0 .. self.p_group.items.len - 1]) |_, i| {
-                for (self.p_group.items[i].items) |*itptr| {
+            for (self.p_group.items[0 .. self.p_group.items.len - 1]) |*pgitptr, i| {
+                for (pgitptr.items(.imp)) |*itptr, j| {
                     const it = itptr.*;
-                    for (self.p_group.items[i + 1].items) |*it2ptr| {
+                    for (self.p_group.items[i + 1].items(.imp)) |*it2ptr, k| {
                         const it2 = it2ptr.*;
                         if (it.dashes != it2.dashes) continue;
 
@@ -148,15 +164,15 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                         if (@popCount(T, dashes) != 1) continue;
 
                         dashes ^= it.dashes;
-                        itptr.used = true;
-                        it2ptr.used = true;
+                        pgitptr.items(.used)[j] = true;
+                        self.p_group.items[i + 1].items(.used)[k] = true;
 
                         const count = @popCount(T, number);
                         if (count >= self.final_group.items.len)
                             try self.resize(&self.final_group, count + 1);
                         try self.final_group.items[count].append(
                             self.allocator,
-                            .{ .number = number, .dashes = dashes, .used = true },
+                            .{ .imp = .{ .number = number, .dashes = dashes }, .used = true },
                         );
                     }
                 }
@@ -164,18 +180,18 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         }
 
         pub fn printEssentialTerms(self: *Self, writer: anytype, delimiter: []const u8) !void {
-            for (self.essentials.keys()) |bnum, i| {
+            for (self.essentials.keys()) |imp, i| {
                 if (i != 0) _ = try writer.write(delimiter);
-                try self.printTerm(bnum, writer);
+                try self.printTerm(imp, writer);
             }
             if (self.essentials.keys().len == 0)
                 try writer.writeByteNTimes('-', self.variables.len);
         }
 
         pub fn printEssentialTermsBin(self: *Self, writer: anytype, delimiter: []const u8) !void {
-            for (self.essentials.keys()) |bnum, i| {
+            for (self.essentials.keys()) |imp, i| {
                 if (i != 0) _ = try writer.write(delimiter);
-                try self.printTermBin(bnum, writer);
+                try self.printTermBin(imp, writer);
             }
             if (self.essentials.keys().len == 0)
                 try writer.writeByteNTimes('-', self.variables.len);
@@ -184,7 +200,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         // print all the values from the final table, except for duplicates.
         // print all the unused numbers from original table and mid process table
         pub fn printFinalGroup(self: *Self, writer: anytype) !void {
-            var seen: BNumList = .{};
+            var seen: ImplList = .{};
             defer seen.deinit(self.allocator);
             _ = try writer.write("\nfinal_group\n");
 
@@ -217,8 +233,8 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
         }
 
-        // pub fn primeGroupIterAsync(self: *Self, out: *?BNum) !void {
-        //     var seen: BNumList = .{};
+        // pub fn primeGroupIterAsync(self: *Self, out: *?Impl) !void {
+        //     var seen: ImplList = .{};
         //     defer seen.deinit(self.allocator);
 
         //     for (self.final_group.items) |list| {
@@ -256,29 +272,32 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 pub const Error = @typeInfo(@typeInfo(Cb).Fn.return_type.?).ErrorUnion.error_set;
 
                 pub fn primeGroupIterCb(self: *Self, comptime cb: Cb, user_ctx: UserCtx) Error!void {
-                    var seen: BNumList = .{};
+                    var seen: ImplList = .{};
                     defer seen.deinit(self.allocator);
 
                     for (self.final_group.items) |list| {
-                        for (list.items) |it| {
+                        for (list.items(.imp)) |it, i| {
                             if (!contains(seen, it)) {
                                 try cb(it, self, user_ctx);
-                                try seen.append(self.allocator, it);
+                                const used = list.items(.used)[i];
+                                try seen.append(self.allocator, .{ .imp = it, .used = used });
                             }
                         }
                     }
 
                     for (self.p_group.items) |list| {
-                        for (list.items) |it| {
-                            if (!it.used) {
+                        for (list.items(.imp)) |it, i| {
+                            const used = list.items(.used)[i];
+                            if (!used) {
                                 try cb(it, self, user_ctx);
                             }
                         }
                     }
 
                     for (self.table.items) |list| {
-                        for (list.items) |it| {
-                            if (!it.used) {
+                        for (list.items(.imp)) |it, i| {
+                            const used = list.items(.used)[i];
+                            if (!used) {
                                 try cb(it, self, user_ctx);
                             }
                         }
@@ -287,10 +306,10 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             };
         }
 
-        pub fn printTermBin(self: Self, bnum: BNum, writer: anytype) !void {
+        pub fn printTermBin(self: Self, imp: ImplTs, writer: anytype) !void {
             const varslen = @intCast(TLen, self.variables.len);
-            var n = bitReverse(bnum.number, varslen);
-            var d = bitReverse(bnum.dashes, varslen);
+            var n = bitReverse(imp.number, varslen);
+            var d = bitReverse(imp.dashes, varslen);
             var count: T = 0;
             while (count < varslen) : (count += 1) {
                 if (@truncate(u1, d) == 1) {
@@ -304,10 +323,10 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
         }
 
-        pub fn printTerm(self: Self, bnum: BNum, writer: anytype) !void {
+        pub fn printTerm(self: Self, imp: ImplTs, writer: anytype) !void {
             const varslen = @intCast(TLen, self.variables.len);
-            var n = bitReverse(bnum.number, varslen);
-            var d = bitReverse(bnum.dashes, varslen);
+            var n = bitReverse(imp.number, varslen);
+            var d = bitReverse(imp.dashes, varslen);
             var count: TLen = 0;
             while (count < varslen) : (count += 1) {
                 if (@truncate(u1, d) == 0) {
@@ -320,8 +339,8 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
         }
 
-        fn contains(seen: BNumList, n: BNum) bool {
-            for (seen.items) |it| {
+        fn contains(seen: ImplList, n: ImplTs) bool {
+            for (seen.items(.imp)) |it| {
                 if (n.number == it.number and n.dashes == it.dashes)
                     return true;
             }
@@ -329,9 +348,9 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             return false;
         }
 
-        pub const BNumSet = std.AutoArrayHashMapUnmanaged(BNum, void);
+        pub const ImplSet = std.AutoArrayHashMapUnmanaged(ImplTs, void);
         pub const PrimeInfo = struct {
-            map: std.AutoHashMapUnmanaged(T, BNumSet) = .{},
+            map: std.AutoHashMapUnmanaged(T, ImplSet) = .{},
 
             fn deinit(self: *PrimeInfo, allocator: Allocator) void {
                 var iter = self.map.iterator();
@@ -342,19 +361,17 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
         };
 
-        /// for a given `bnum`, reconstruct its input terms
-        /// given a bnum={0100, 1000}, adds 4 and 12 to `prime_info.map`
+        /// for a given `imp`, reconstruct its input terms
+        /// given a imp={0100, 1000}, adds 4 and 12 to `prime_info.map`
         /// in binary {0100, (0100 | 1000)}
-        fn primeGroupCb(bnum: BNum, qm: *Self, prime_info: *PrimeInfo) !void {
+        fn primeGroupCb(imp: ImplTs, qm: *Self, prime_info: *PrimeInfo) !void {
             var terms = std.AutoHashMap(T, void).init(qm.allocator);
             defer terms.deinit();
-            try terms.put(bnum.number, {});
+            try terms.put(imp.number, {});
             var bitset = if (TBitSize <= 64)
-                std.StaticBitSet(TBitSize){ .mask = bnum.dashes }
+                std.StaticBitSet(TBitSize){ .mask = imp.dashes }
             else
-                std.StaticBitSet(TBitSize){
-                    .masks = @bitCast([TBitSize / @bitSizeOf(usize)]usize, bnum.dashes),
-                };
+                std.StaticBitSet(TBitSize){ .masks = @bitCast([TBitSize / @bitSizeOf(usize)]usize, imp.dashes) };
             var biter = bitset.iterator(.{});
             while (biter.next()) |bitidx| {
                 const mask = @as(T, 1) << @intCast(TLog2, bitidx);
@@ -369,7 +386,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 if (std.mem.indexOfScalar(T, qm.dontcares, k) != null) continue;
                 const gop = try prime_info.map.getOrPut(qm.allocator, k);
                 if (!gop.found_existing) gop.value_ptr.* = .{};
-                try gop.value_ptr.put(qm.allocator, bnum, {});
+                try gop.value_ptr.put(qm.allocator, imp, {});
             }
         }
 
@@ -381,10 +398,10 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             try IterCb.primeGroupIterCb(self, primeGroupCb, &prime_info);
             var iter = prime_info.map.iterator();
             while (iter.next()) |it| {
-                const bnumset = it.value_ptr.*;
-                if (bnumset.count() == 1) {
-                    const bnum = bnumset.keys()[0];
-                    try self.essentials.put(self.allocator, bnum, {});
+                const impset = it.value_ptr.*;
+                if (impset.count() == 1) {
+                    const imp = impset.keys()[0];
+                    try self.essentials.put(self.allocator, imp, {});
                 }
             }
         }
@@ -454,7 +471,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             defer terms.deinit(allocator);
             while (iter.next()) |_term| {
                 const term = std.mem.trim(u8, _term, &std.ascii.spaces);
-                var termi: T = 0;
+                var termval: T = 0;
                 var i: usize = 0;
                 while (i < term.len) {
                     const idx = for (variables) |v, j| {
@@ -463,10 +480,12 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     } else return error.ParseError;
                     i += variables[idx].len;
                     const not = @boolToInt(i < term.len and term[i] == '\'');
-                    termi |= @as(T, not +% 1) << idx;
+                    // this is just a branchless equivalent of:
+                    //   if(!not) termval |= (1 << idx) else i += 1;
+                    termval |= @as(T, not +% 1) << idx;
                     i += not;
                 }
-                try terms.append(allocator, bitReverse(termi, @intCast(TLen, variables.len)));
+                try terms.append(allocator, bitReverse(termval, @intCast(TLen, variables.len)));
             }
 
             var result = terms.toOwnedSlice(allocator);
