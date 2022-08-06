@@ -1,3 +1,5 @@
+:warning: **Work in progress.  Expect bugs and/or missing features** :warning:
+
 # quine-mccluskey.zig
 Quine–McCluskey algorithm in zig: useful for minimizing boolean functions
 
