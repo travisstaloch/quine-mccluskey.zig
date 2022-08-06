@@ -12,6 +12,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         dontcares: []const T = undefined,
         variables: []const []const u8,
         essentials: ImplSet = .{},
+        ts: TList, // temporarary store to reduce allocations
 
         const Self = @This();
         pub const T = _T;
@@ -29,6 +30,10 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             used: bool,
         };
 
+        pub const TList = std.ArrayListUnmanaged(T);
+        pub const ImplList = std.MultiArrayList(Implicant);
+        pub const ImplListList = std.ArrayListUnmanaged(ImplList);
+
         comptime {
             // storing Implicant in a MultiArrayList makes for better cache locality.
             // if the `used` field were stored in ImplTs, the size of that struct
@@ -42,12 +47,11 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             // MultiArrayList(Implicant) : 4*2+1 = 9 bytes per implicant
         }
 
-        pub const ImplList = std.MultiArrayList(Implicant);
-        pub const ImplListList = std.ArrayListUnmanaged(ImplList);
         pub fn init(allocator: Allocator, variables: []const []const u8) Self {
             return .{
                 .allocator = allocator,
                 .variables = variables,
+                .ts = .{},
             };
         }
 
@@ -59,6 +63,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             for (self.final_group.items) |*l| l.deinit(self.allocator);
             self.final_group.deinit(self.allocator);
             self.essentials.deinit(self.allocator);
+            self.ts.deinit(self.allocator);
         }
 
         fn resize(self: Self, l: *ImplListList, len: usize) !void {
@@ -361,28 +366,36 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
         };
 
-        /// for a given `imp`, reconstruct its input terms
-        /// given a imp={0100, 1000}, adds 4 and 12 to `prime_info.map`
-        /// in binary {0100, (0100 | 1000)}
-        fn primeGroupCb(imp: ImplTs, qm: *Self, prime_info: *PrimeInfo) !void {
-            var terms = std.AutoHashMap(T, void).init(qm.allocator);
-            defer terms.deinit();
+        pub const TSet = std.AutoArrayHashMap(T, void);
+        pub fn permutations(self: *Self, imp: ImplTs) !TSet {
+            var terms = TSet.init(self.allocator);
+
             try terms.put(imp.number, {});
             var bitset = if (TBitSize <= 64)
                 std.StaticBitSet(TBitSize){ .mask = imp.dashes }
             else
                 std.StaticBitSet(TBitSize){ .masks = @bitCast([TBitSize / @bitSizeOf(usize)]usize, imp.dashes) };
+
             var biter = bitset.iterator(.{});
             while (biter.next()) |bitidx| {
                 const mask = @as(T, 1) << @intCast(TLog2, bitidx);
-                var setiter = terms.keyIterator();
-                while (setiter.next()) |k|
-                    try terms.put(k.* | mask, {});
+                self.ts.items.len = 0;
+                // temporararily store keys so its safe to put while iterating over them at the same time
+                try self.ts.appendSlice(self.allocator, terms.keys());
+                for (self.ts.items) |k|
+                    try terms.put(k | mask, {});
             }
+            return terms;
+        }
 
-            var setiter = terms.keyIterator();
-            while (setiter.next()) |kptr| {
-                const k = kptr.*;
+        /// for a given `imp`, reconstruct its input terms
+        /// given a imp={0100, 1000}, adds 4 and 12 to `prime_info.map`
+        /// in binary {0100, (0100 | 1000)}
+        fn primeGroupCb(imp: ImplTs, qm: *Self, prime_info: *PrimeInfo) !void {
+            var terms = try qm.permutations(imp);
+            defer terms.deinit();
+
+            for (terms.keys()) |k| {
                 if (std.mem.indexOfScalar(T, qm.dontcares, k) != null) continue;
                 const gop = try prime_info.map.getOrPut(qm.allocator, k);
                 if (!gop.found_existing) gop.value_ptr.* = .{};
@@ -417,7 +430,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
         // don't build lookup table for large int sizes as bitReverseLookup
         // ends up being very slow for TBitSize >= 2048
-        const bitReverse = if (TBitSize >= 256) bitReverseLoop else bitReverseLookup;
+        pub const bitReverse = if (TBitSize >= 256) bitReverseLoop else bitReverseLookup;
 
         /// reverse only lower `len` bits
         fn bitReverseLoop(num: T, len: TLen) T {

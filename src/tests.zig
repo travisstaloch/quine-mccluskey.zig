@@ -80,7 +80,8 @@ fn testReduce(comptime QM: type) !void {
         defer allr.free(terms);
 
         // workaround: can't use std.testing{expextEqualSlices, expectEqual}
-        // with T > u128 due to LLVM ERROR.  the error happens when trying to print.
+        // with T > u128 due to LLVM ERROR.  the error only happens when trying
+        // to print T > u128
         for (tst.ones) |x, i| {
             if (x != terms[i])
                 if (!test_large) // don't try to print large integers
@@ -115,6 +116,22 @@ fn setsEqual(comptime Set: type, a: Set, b: Set) bool {
     var iter = a.iterator();
     while (iter.next()) |it| {
         if (!b.contains(it.key_ptr.*)) return false;
+    }
+    return true;
+}
+
+fn isSubSet(comptime Set: type, set: Set, subset: []const @TypeOf(@as(Set.KV, undefined).key)) bool {
+    if (subset.len > set.count()) return false;
+    for (subset) |key| {
+        if (!set.contains(key)) return false;
+    }
+    return true;
+}
+
+fn setsEqual2(comptime Set: type, a: Set, keys: []const @TypeOf(@as(Set.KV, undefined).key)) bool {
+    if (keys.len != a.count()) return false;
+    for (keys) |key| {
+        if (!a.contains(key)) return false;
     }
     return true;
 }
@@ -213,4 +230,58 @@ test "reduce binary" {
     //     .{ .res = &.{ "^^^00", "111^^" } },
     //     .{ .res = &.{"---00000^^^^^^^"} },
     // };
+}
+
+fn testPerms(imp: QMu32.ImplTs, expecteds: []const @TypeOf(@as(QMu32.TSet.KV, undefined).key), comptime fmt: []const u8) !void {
+    var q = QMu32.init(allr, &.{});
+    defer q.deinit();
+    var perms = try q.permutations(imp);
+    defer perms.deinit();
+    // const K = []const @TypeOf(@as(Set.KV, undefined).key));
+    const eq = setsEqual2(QMu32.TSet, perms, expecteds);
+    if (!eq)
+        std.debug.print("expected " ++ fmt ++ " actual " ++ fmt ++ "\n", .{ expecteds, perms.keys() });
+    try std.testing.expect(eq);
+}
+
+test "permutations" {
+    const fmt = "{b:0>4}";
+    try testPerms(
+        .{ .number = 0b0011, .dashes = 0b1100 },
+        &.{ 0b0011, 0b0111, 0b1011, 0b1111 },
+        fmt,
+    );
+    try testPerms(
+        .{ .number = 0b0000, .dashes = 0b1100 },
+        &.{ 0b0000, 0b0100, 0b1000, 0b1100 },
+        fmt,
+    );
+    try testPerms(
+        .{ .number = 0b0000, .dashes = 0b1000 },
+        &.{ 0b0000, 0b1000 },
+        fmt,
+    );
+    try testPerms(
+        .{ .number = 0b0000, .dashes = 0b1110 },
+        &.{ 0b0000, 0b0010, 0b0100, 0b0110, 0b1000, 0b1010, 0b1100, 0b1110 },
+        fmt,
+    );
+
+    {
+        // this test exercises a bug which happens when iterating over set keys while adding to the set.
+        // the bug only manifests when set.keys() grows big enough that a reallocation happens.
+        // this is the old buggy code:
+        //   for (set.keys()) |k|
+        //     try set.put(k | mask, {});
+        var q = QMu32.init(allr, &.{});
+        defer q.deinit();
+        // -00--------
+        var perms = try q.permutations(.{ .number = 0, .dashes = 0b10011111111 });
+        defer perms.deinit();
+        // -11--------
+        var perms2 = try q.permutations(.{ .number = 0b01100000000, .dashes = 0b10011111111 });
+        for (perms2.keys()) |k| try perms.put(k, {});
+        defer perms2.deinit();
+        try std.testing.expectEqual(@as(usize, 1024), perms.count());
+    }
 }
