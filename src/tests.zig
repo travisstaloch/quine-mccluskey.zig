@@ -10,7 +10,7 @@ const AB_CD: []const []const u8 = &.{ "AB", "CD" };
 const ABCDEFGH: []const []const u8 = &.{ "A", "B", "C", "D", "E", "F", "G", "H" };
 
 fn testReduce(comptime QM: type) !void {
-    // i've been using this online reduction tool to find expected reductions:
+    // i've been using this online tool to find expected reductions:
     //   https://www.emathhelp.net/calculators/discrete-mathematics/boolean-algebra-calculator/
     // note: default is different syntax for NOT operator: A' -> ~A
     //   so have to replace trailing apostrophes with leading tildes as shown in comments below
@@ -89,7 +89,7 @@ fn testReduce(comptime QM: type) !void {
             try std.testing.expect(x == terms[i]);
         }
 
-        var qm = try QM.reduce(allr, terms, &.{}, tst.variables);
+        var qm = try QM.initAndReduce(allr, terms, &.{}, tst.variables);
         defer qm.deinit();
         var output = std.ArrayList(u8).init(allr);
         defer output.deinit();
@@ -202,7 +202,7 @@ test "reduce binary" {
     };
 
     inline for (common_tests ++ noxor_tests) |t| {
-        var qm = try QMu32.reduce(allr, t.ons, t.dnc, ABCD);
+        var qm = try QMu32.initAndReduce(allr, t.ons, t.dnc, ABCD);
         defer qm.deinit();
         var list = std.ArrayList(u8).init(allr);
         defer list.deinit();
@@ -237,7 +237,6 @@ fn testPerms(imp: QMu32.ImplTs, expecteds: []const @TypeOf(@as(QMu32.TSet.KV, un
     defer q.deinit();
     var perms = try q.permutations(imp);
     defer perms.deinit();
-    // const K = []const @TypeOf(@as(Set.KV, undefined).key));
     const eq = setsEqual2(QMu32.TSet, perms, expecteds);
     if (!eq)
         std.debug.print("expected " ++ fmt ++ " actual " ++ fmt ++ "\n", .{ expecteds, perms.keys() });
@@ -268,9 +267,9 @@ test "permutations" {
     );
 
     {
-        // this test exercises a bug which happens when iterating over set keys while adding to the set.
+        // this block exercises a bug which happens when iterating over set keys while adding to the set.
         // the bug only manifests when set.keys() grows big enough that a reallocation happens.
-        // this is the old buggy code:
+        // this is the old buggy code from premutations:
         //   for (set.keys()) |k|
         //     try set.put(k | mask, {});
         var q = QMu32.init(allr, &.{});
@@ -284,4 +283,32 @@ test "permutations" {
         defer perms2.deinit();
         try std.testing.expectEqual(@as(usize, 1024), perms.count());
     }
+}
+
+test "not reducible" {
+    const vars: []const []const u8 = &.{ "x", "y", "z", "w" };
+    const input =
+        \\x'yzw + xy'zw + xyz'w + 
+        \\x'yzw' + xy'zw' + xyz'w' + x'y'zw + xy'z'w + 
+        \\x'y'zw'
+    ;
+    const ones = try QMu8.parseTerms(allr, input, " + ", vars);
+    defer allr.free(ones);
+    var qm = QMu8.init(allr, vars);
+    defer qm.deinit();
+    // const stderr = std.io.getStdErr().writer();
+    var output = std.ArrayList(u8).init(allr);
+    defer output.deinit();
+    // try qm.reduceDebug(ones, &.{}, output.writer(), " + ");
+    try qm.reduce(ones, &.{});
+    try qm.printEssentialTerms(output.writer(), " + ");
+    try std.testing.expectEqualStrings("x'z + y'z + xyz'", output.items);
+
+    // TODO: this is actually incorrect. there are 2 minimal disjunctive forms:
+    //   note the final terms on each line
+    // This can be allomplished by deleting columns of
+    // essential prime implicants and rows that contain their symbols
+    // x'z + y'z + xyz' + xy'w
+    // x'z + y'z + xyz' + xz'w
+
 }

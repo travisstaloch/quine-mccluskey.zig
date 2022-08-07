@@ -32,6 +32,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
         pub const TList = std.ArrayListUnmanaged(T);
         pub const ImplList = std.MultiArrayList(Implicant);
+        pub const ImplTsList = std.ArrayListUnmanaged(ImplTs);
         pub const ImplListList = std.ArrayListUnmanaged(ImplList);
 
         comptime {
@@ -100,7 +101,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             _ = try writer.write("\ntable\n");
             for (self.table.items) |list, i| {
                 try writer.print("{}", .{i});
-                for (list.items) |it| {
+                for (list.items(.imp)) |it| {
                     try writer.print("\tm{}\t" ++ bfmt ++ "\n", .{ it.number, it.number });
                 }
                 _ = try writer.write("-------------------------------------\n");
@@ -141,7 +142,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             _ = try writer.write("\np_group\n");
             for (self.p_group.items) |list, i| {
                 try writer.print("{}", .{i});
-                for (list.items) |it| {
+                for (list.items(.imp)) |it| {
                     _ = try writer.write("\t\t");
                     try self.printTermBin(it, writer);
                     // try writer.print("\t\t" ++ bfmt ++ "{}\n", .{ it.number, it.dashes });
@@ -205,13 +206,13 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         // print all the values from the final table, except for duplicates.
         // print all the unused numbers from original table and mid process table
         pub fn printFinalGroup(self: *Self, writer: anytype) !void {
-            var seen: ImplList = .{};
+            var seen: ImplTsList = .{};
             defer seen.deinit(self.allocator);
             _ = try writer.write("\nfinal_group\n");
 
             for (self.final_group.items) |list| {
-                for (list.items) |it| {
-                    if (!contains(seen, it)) {
+                for (list.items(.imp)) |it| {
+                    if (!containsTs(seen, it)) {
                         try self.printTermBin(it, writer);
                         _ = try writer.write("\n");
                         try seen.append(self.allocator, it);
@@ -220,8 +221,9 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
 
             for (self.p_group.items) |list| {
-                for (list.items) |it| {
-                    if (!it.used) {
+                for (list.items(.imp)) |it, i| {
+                    const used = list.items(.used)[i];
+                    if (!used) {
                         try self.printTermBin(it, writer);
                         _ = try writer.write("\n");
                     }
@@ -229,8 +231,9 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
 
             for (self.table.items) |list| {
-                for (list.items) |it| {
-                    if (!it.used) {
+                for (list.items(.imp)) |it, i| {
+                    const used = list.items(.used)[i];
+                    if (!used) {
                         try self.printTermBin(it, writer);
                         _ = try writer.write("\n");
                     }
@@ -352,6 +355,14 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
             return false;
         }
+        fn containsTs(seen: ImplTsList, n: ImplTs) bool {
+            for (seen.items) |it| {
+                if (n.number == it.number and n.dashes == it.dashes)
+                    return true;
+            }
+
+            return false;
+        }
 
         pub const ImplSet = std.AutoArrayHashMapUnmanaged(ImplTs, void);
         pub const PrimeInfo = struct {
@@ -367,6 +378,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         };
 
         pub const TSet = std.AutoArrayHashMap(T, void);
+        // TODO: make this into an iterator
         pub fn permutations(self: *Self, imp: ImplTs) !TSet {
             var terms = TSet.init(self.allocator);
 
@@ -389,13 +401,13 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         }
 
         /// for a given `imp`, reconstruct its input terms
-        /// given a imp={0100, 1000}, adds 4 and 12 to `prime_info.map`
+        /// given a imp={0100, 1000}, adds 0100 and 1100 to `prime_info.map`
         /// in binary {0100, (0100 | 1000)}
         fn primeGroupCb(imp: ImplTs, qm: *Self, prime_info: *PrimeInfo) !void {
-            var terms = try qm.permutations(imp);
-            defer terms.deinit();
+            var perms = try qm.permutations(imp);
+            defer perms.deinit();
 
-            for (terms.keys()) |k| {
+            for (perms.keys()) |k| {
                 if (std.mem.indexOfScalar(T, qm.dontcares, k) != null) continue;
                 const gop = try prime_info.map.getOrPut(qm.allocator, k);
                 if (!gop.found_existing) gop.value_ptr.* = .{};
@@ -419,13 +431,28 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
         }
 
-        pub fn reduce(allocator: Allocator, ones: []const T, dontcares: []const T, variables: []const []const u8) !Self {
+        pub fn initAndReduce(allocator: Allocator, ones: []const T, dontcares: []const T, variables: []const []const u8) !Self {
             var qm = Self.init(allocator, variables);
+            try qm.reduce(ones, dontcares);
+            return qm;
+        }
+
+        pub fn reduce(qm: *Self, ones: []const T, dontcares: []const T) !void {
             try qm.createTable(ones, dontcares);
             try qm.createPGroup();
             try qm.createFinalGroup();
             try qm.createEssentialGroup();
-            return qm;
+        }
+
+        pub fn reduceDebug(qm: *Self, ones: []const T, dontcares: []const T, writer: anytype, delimiter: []const u8) !void {
+            try qm.createTable(ones, dontcares);
+            try qm.printTable(writer, TBitSize);
+            try qm.createPGroup();
+            try qm.printPGroup(writer);
+            try qm.createFinalGroup();
+            try qm.printFinalGroup(writer);
+            try qm.createEssentialGroup();
+            try qm.printEssentialTerms(writer, delimiter);
         }
 
         // don't build lookup table for large int sizes as bitReverseLookup
@@ -480,7 +507,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         ///     - if "A" were before "AB" in `variables` then the result would be the same as 1.
         pub fn parseTerms(allocator: Allocator, input: []const u8, delimiter: []const u8, variables: []const []const u8) ![]T {
             var iter = std.mem.split(u8, input, delimiter);
-            var terms: std.ArrayListUnmanaged(T) = .{};
+            var terms: TList = .{};
             defer terms.deinit(allocator);
             while (iter.next()) |_term| {
                 const term = std.mem.trim(u8, _term, &std.ascii.spaces);
