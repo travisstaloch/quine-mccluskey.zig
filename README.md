@@ -20,3 +20,8 @@ see [src/tests.zig](src/tests.zig)
 - https://publications.waset.org/4728/pdf
 - https://www.ijcaonline.org/archives/volume177/number39/gidde-2020-ijca-919845.pdf
 - http://eprints.lqdtu.edu.vn/id/eprint/10375/1/main_camera_ready.pdf
+- https://en.wikipedia.org/wiki/Canonical_normal_form
+- Petrick's method
+  - https://en.wikipedia.org/wiki/Petrick's_method
+  - https://www.allaboutcircuits.com/technical-articles/prime-implicant-simplification-using-petricks-method/
+  - https://uweb.engr.arizona.edu/~ece474a/uploads/Main/lecture_logicopt.pdf

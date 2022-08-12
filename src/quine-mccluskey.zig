@@ -65,9 +65,9 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         /// stores indices of another (non specified) list and divides it into groups by index
         pub const Groups = struct {
             /// indices for some other list, describes other list's ordering
-            indices: std.ArrayListUnmanaged(usize),
+            indices: std.ArrayListUnmanaged(usize) = .{},
             /// bounds are indexes of `indices` - dividing them into groups
-            bounds: std.ArrayListUnmanaged(usize),
+            bounds: std.ArrayListUnmanaged(usize) = .{},
 
             pub fn deinit(self: *Groups, allocator: Allocator) void {
                 self.indices.deinit(allocator);
@@ -103,8 +103,16 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         }
 
         pub fn reduce(qm: *Self) !void {
-            try qm.findPrimeTs();
-            try qm.findEssentialPrimeTs();
+            var timer = try std.time.Timer.start();
+            try qm.findPrimes();
+            const t1 = timer.lap();
+            try qm.findEssentialPrimes();
+            const t2 = timer.lap();
+            const trace_this = false;
+            if (trace_this) {
+                std.debug.print("findPrimes took          {}\n", .{std.fmt.fmtDuration(t1)});
+                std.debug.print("findEssentialPrimes took {}\n", .{std.fmt.fmtDuration(t2)});
+            }
         }
 
         /// widens each bit into two. allocates and returns caller owned slice.
@@ -354,7 +362,8 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         }
 
         /// reduce and populate `prime_list`
-        fn findPrimeTs(self: *Self) !void {
+        fn findPrimes(self: *Self) !void {
+            const trace_this = false;
             const m = @intCast(TLog2, self.variables.len);
 
             var minterms = if (self.minterms.len != self.ones.len + self.dontcares.len) blk: {
@@ -368,7 +377,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
             var implicant_lists = [1]ImplicantList{.{}} ** 2;
             var prime_list: ImplicantList = .{};
-            var groups: Groups = .{ .indices = .{}, .bounds = .{} };
+            var groups: Groups = .{};
             defer {
                 for (implicant_lists) |*l| l.deinit(self.allocator);
                 prime_list.deinit(self.allocator);
@@ -384,7 +393,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 const new_implicant_list = &implicant_lists[listid +% 1];
 
                 try self.makeGroups(implicant_list, &groups);
-                trace("groups: indices {any} bounds {any}\n", .{ groups.indices.items, groups.bounds.items });
+                if (trace_this) trace("groups: indices {any} bounds {any}\n", .{ groups.indices.items, groups.bounds.items });
                 const ilistkeys = implicant_list.ts.keys();
                 var boundid: usize = 0;
                 var bound0: usize = 0;
@@ -393,16 +402,18 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     var bound2 = groups.bounds.items[boundid + 1];
                     const group0 = groups.indices.items[bound0..bound1];
                     const group1 = groups.indices.items[bound1..bound2];
-                    trace("round {} bound0 {} bound1 {} bound2 {} \ng0\n", .{ boundid, bound0, bound1, bound2 });
                     var reversed = false;
-                    for (group0) |i| {
-                        const t0 = ilistkeys[i];
-                        trace("  {} {} {}\n", .{ i, TFmt.init(t0, m), TFmtVars.init(t0, self.variables) });
-                    }
-                    trace("g1\n", .{});
-                    for (group1) |i| {
-                        const t1 = ilistkeys[i];
-                        trace("  {} {} {}\n", .{ i, TFmt.init(t1, m), TFmtVars.init(t1, self.variables) });
+                    if (trace_this) {
+                        trace("round {} bound0 {} bound1 {} bound2 {} \ng0\n", .{ boundid, bound0, bound1, bound2 });
+                        for (group0) |i| {
+                            const t0 = ilistkeys[i];
+                            trace("  {} {} {}\n", .{ i, TFmt.init(t0, m), TFmtVars.init(t0, self.variables) });
+                        }
+                        trace("g1\n", .{});
+                        for (group1) |i| {
+                            const t1 = ilistkeys[i];
+                            trace("  {} {} {}\n", .{ i, TFmt.init(t1, m), TFmtVars.init(t1, self.variables) });
+                        }
                     }
                     for (group0) |id0| {
                         const it0 = ilistkeys[id0];
@@ -417,7 +428,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                                 var newitem = it0 & ~xor;
                                 xor <<= 1;
                                 newitem |= xor;
-                                trace(
+                                if (trace_this) trace(
                                     "combining {}:{} {}:{} newitem {}:{}\n",
                                     .{ id0, TFmt.init(it0, m), id1, TFmt.init(it1, m), TFmt.init(newitem, m), TFmtVars.init(newitem, self.variables) },
                                 );
@@ -441,7 +452,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
             var primeiter = prime_list.ts.iterator();
             while (primeiter.next()) |it| {
-                trace("prime {}:{}-{}\n", .{ TFmt.init(it.key_ptr.*, m), TFmtVars.init(it.key_ptr.*, self.variables), it.value_ptr.* });
+                if (trace_this) trace("prime {}:{}-{}\n", .{ TFmt.init(it.key_ptr.*, m), TFmtVars.init(it.key_ptr.*, self.variables), it.value_ptr.* });
                 assert(!it.value_ptr.*);
                 try self.prime_list.append(self.allocator, it.key_ptr.*);
             }
@@ -471,19 +482,20 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         /// minterms is a bitset of indices into minterms list
         /// cover means that the prime has been reduced from the minterms
         pub const PrimeCoverage = struct {
-            // minterm_set_indices: std.StaticBitSet(TBitSize),
             minterm_set_indices: std.DynamicBitSetUnmanaged,
             prime: T,
-            added: bool = false,
         };
 
-        fn findEssentialPrimeTs(self: *Self) !void {
+        fn findEssentialPrimes(self: *Self) !void {
+            const trace_this = false;
 
+            var timer = try std.time.Timer.start();
             // make list of prime coverages
             // generate bitset of indices from permutations of prime
-            var primecovs: std.ArrayListUnmanaged(PrimeCoverage) = .{};
+            var primecovs: std.AutoHashMapUnmanaged(PrimeCoverage, void) = .{};
             defer {
-                for (primecovs.items) |*pc| pc.minterm_set_indices.deinit(self.allocator);
+                var kiter = primecovs.keyIterator();
+                while (kiter.next()) |k| k.minterm_set_indices.deinit(self.allocator);
                 primecovs.deinit(self.allocator);
             }
             for (self.prime_list.items) |prime| {
@@ -510,30 +522,38 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                         primecov.minterm_set_indices.set(mt_idx);
                     }
                 }
-                trace("{} minterms : ", .{TFmtVars.init(prime, self.variables)});
-                var mtsiter = primecov.minterm_set_indices.iterator(.{});
-                while (mtsiter.next()) |mtidx|
-                    trace("{}, ", .{compressT(self.minterms[mtidx], 1)});
-                trace("\n", .{});
-                try primecovs.append(self.allocator, primecov);
+                if (trace_this) {
+                    trace("{} minterms : ", .{TFmtVars.init(prime, self.variables)});
+                    var mtsiter = primecov.minterm_set_indices.iterator(.{});
+                    while (mtsiter.next()) |mtidx|
+                        trace("{}, ", .{compressT(self.minterms[mtidx], 1)});
+                    trace("\n", .{});
+                }
+                try primecovs.put(self.allocator, primecov, {});
             }
 
             const m = @intCast(TLog2, self.variables.len);
             var max_rank: usize = 1;
-            std.sort.sort(PrimeCoverage, primecovs.items, {}, gtByRank);
+            {
+                const t1 = timer.lap();
+                if (trace_this)
+                    std.debug.print("findPrimes1 took         {}\n", .{std.fmt.fmtDuration(t1)});
+            }
 
             var victim: ?*PrimeCoverage = null;
             while (max_rank != 0) {
                 max_rank = 0;
                 var temp: ?*PrimeCoverage = null;
-                for (primecovs.items) |*primecov| {
-                    if (primecov.added) continue;
+                var kiter = primecovs.keyIterator();
+                while (kiter.next()) |primecov| {
                     const prime = primecov.prime;
-                    trace("prime {} ", .{TFmt.init(prime, m)});
-                    if (victim) |v|
-                        trace("victim {}\n", .{TFmt.init(v.prime, m)})
-                    else
-                        trace("victim null\n", .{});
+                    if (trace_this) {
+                        trace("prime {} ", .{TFmt.init(prime, m)});
+                        if (victim) |v|
+                            trace("victim {}\n", .{TFmt.init(v.prime, m)})
+                        else
+                            trace("victim null\n", .{});
+                    }
                     // Let val-1 be the minterm set of a prime implicant
                     // victim is the prime implicant that is merged from the largest number of minterm
                     if (victim) |v| {
@@ -541,7 +561,8 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                         // trace("victim indices {b:0>16}\n", .{v.minterm_set_indices.mask});
                         // trace("before removal {b:0>16}\n", .{primecov.minterm_set_indices.mask});
                         const num_masks = (primecov.minterm_set_indices.bit_length + (@bitSizeOf(std.DynamicBitSetUnmanaged.MaskInt) - 1)) / @bitSizeOf(std.DynamicBitSetUnmanaged.MaskInt);
-                        for ((primecov.minterm_set_indices.masks)[0..num_masks]) |*mask, i| mask.* &= ~(v.minterm_set_indices.masks)[i];
+                        for ((primecov.minterm_set_indices.masks)[0..num_masks]) |*mask, i|
+                            mask.* &= ~(v.minterm_set_indices.masks)[i];
                         // trace("after removal  {b:0>16}\n", .{primecov.minterm_set_indices.mask});
                     }
                     const rk = primecov.minterm_set_indices.count();
@@ -551,11 +572,18 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     }
                 }
                 if (temp) |t| {
-                    t.added = true;
-                    trace("adding {}\n", .{TFmtVars.init(t.prime, self.variables)});
+                    if (trace_this) trace("adding {}\n", .{TFmtVars.init(t.prime, self.variables)});
                     try self.final_prime_list.append(self.allocator, t.prime);
+                    t.minterm_set_indices.deinit(self.allocator);
+                    _ = primecovs.remove(t.*);
                 }
                 victim = temp;
+            }
+
+            {
+                const t1 = timer.lap();
+                if (trace_this)
+                    std.debug.print("findPrimes2 took         {}\n", .{std.fmt.fmtDuration(t1)});
             }
         }
     };

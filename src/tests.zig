@@ -28,6 +28,7 @@ test "widen compress" {
 const ABCD: []const []const u8 = &.{ "A", "B", "C", "D" };
 const AB_CD: []const []const u8 = &.{ "AB", "CD" };
 const ABCDEFGH: []const []const u8 = &.{ "A", "B", "C", "D", "E", "F", "G", "H" };
+const wxyz: []const []const u8 = &.{ "w", "x", "y", "z" };
 
 fn testReduce(comptime QM: type) !void {
     // i've been using this online tool to find expected reductions:
@@ -97,6 +98,14 @@ fn testReduce(comptime QM: type) !void {
         //     .result = "BC' + AC'",
         //     .variables = ABCD,
         // },
+        // from https://uweb.engr.arizona.edu/~ece474a/uploads/Main/lecture_logicopt.pdf
+        // example 2
+        .{ // 8
+            .input = "w'x'y'z' + w'x'yz + w'x'yz' + w'xy'z' + w'xyz + w'xyz' + wxy'z + wxyz + wx'y'z + wx'yz",
+            .ones = &.{},
+            .result = "w'z' + wz + yz",
+            .variables = wxyz,
+        },
     };
     const delimiter = " + ";
     for (tests) |tst, tsti| {
@@ -107,7 +116,8 @@ fn testReduce(comptime QM: type) !void {
         // workaround: can't use std.testing{expextEqualSlices, expectEqual}
         // with T > u128 due to LLVM ERROR.  the error only happens when trying
         // to print T > u128
-        try std.testing.expectEqual(tst.ones.len, terms.len);
+        if (tst.ones.len != 0)
+            try std.testing.expectEqual(tst.ones.len, terms.len);
         std.sort.sort(QM.THalf, terms, {}, comptime QM.lessThan(QM.THalf));
         for (tst.ones) |x, i| {
             if (x != terms[i])
@@ -180,6 +190,28 @@ fn parseIntoSet(
     return result;
 }
 
+fn parseIntoStringSet(
+    allocator: Allocator,
+    input: []const u8,
+    delimiter: []const u8,
+) !std.StringHashMap(void) {
+    var result = std.StringHashMap(void).init(allocator);
+    var iter = std.mem.split(u8, input, delimiter);
+    while (iter.next()) |s| try result.put(s, {});
+    return result;
+}
+
+fn expectEqualStringSets(expected: []const u8, actual: []const u8, delimiter: []const u8, tsti: usize) !void {
+    var expecteds = try parseIntoStringSet(allr, expected, delimiter);
+    defer expecteds.deinit();
+    var actuals = try parseIntoStringSet(allr, actual, delimiter);
+    defer actuals.deinit();
+    const equal = setsEqual(@TypeOf(expecteds), expecteds, actuals);
+    if (!equal)
+        std.debug.print("test{} expected {s}\nactual  {s}\n", .{ tsti, expected, actual });
+    try std.testing.expect(equal);
+}
+
 const QMu8192 = QuineMcCluskey(u8192);
 const QMu4096 = QuineMcCluskey(u4096);
 const QMu2048 = QuineMcCluskey(u2048);
@@ -197,8 +229,6 @@ const test_large_integers = true;
 const test_large = @hasDecl(@This(), "test_large_integers");
 
 test "reduce" {
-
-    // try testReduce(QMu4);
     try testReduce(QMu8);
     try testReduce(QMu16);
     try testReduce(QMu32);
@@ -228,10 +258,10 @@ test "reduce binary" {
         .{ .res = "----", .ons = &.{ 1, 3, 5, 7, 9, 11, 13, 15 }, .dnc = &.{ 0, 2, 4, 6, 8, 10, 12, 14 } },
     };
     const noxor_tests = [_]Test{
-        .{ .res = "-1-1 + 111- + 0-11 + 1-01 + 010-", .ons = &.{ 3, 4, 5, 7, 9, 13, 14, 15 } },
+        .{ .res = "-1-1 + 0-11 + 010- + 111- + 1-01", .ons = &.{ 3, 4, 5, 7, 9, 13, 14, 15 } },
     };
 
-    inline for (common_tests ++ noxor_tests) |t| {
+    inline for (common_tests ++ noxor_tests) |t, tsti| {
         var qm = try QMu32.initAndReduce(allr, ABCD, t.ons, t.dnc);
         defer qm.deinit();
         var list = std.ArrayList(u8).init(allr);
@@ -239,7 +269,7 @@ test "reduce binary" {
         const writer = list.writer();
         const delimiter = " + ";
         try qm.printEssentialTermsBin(writer, delimiter);
-        try std.testing.expectEqualStrings(t.res, list.items);
+        try expectEqualStringSets(t.res, list.items, delimiter, tsti);
     }
 
     // const xor_tests = [_]Test{
@@ -325,15 +355,16 @@ test "not reducible" {
         \\x'yzw' + xy'zw' + xyz'w' + x'y'zw + xy'z'w + 
         \\x'y'zw'
     ;
-    const ones = try QMu8.parseTerms(allr, input, " + ", vars);
+    const delimiter = " + ";
+    const ones = try QMu8.parseTerms(allr, input, delimiter, vars);
     defer allr.free(ones);
     var qm = QMu8.init(allr, vars, ones, &.{});
     defer qm.deinit();
     var output = std.ArrayList(u8).init(allr);
     defer output.deinit();
     try qm.reduce();
-    try qm.printEssentialTerms(output.writer(), " + ");
-    try std.testing.expectEqualStrings("x'z + xyz' + xy'w + y'z", output.items);
+    try qm.printEssentialTerms(output.writer(), delimiter);
+    try expectEqualStringSets("x'z + y'z + xy'w + xyz' + xz'w", output.items, delimiter, 0);
     // TODO: this ^ is actually incorrect. there are 2 minimal disjunctive forms:
     //   note the final terms on each line
     // This can be allomplished by deleting columns of
