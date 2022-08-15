@@ -598,3 +598,77 @@ fn trace(comptime fmt: []const u8, args: anytype) void {
     if (@hasDecl(@This(), "show_trace"))
         std.debug.print(fmt, args);
 }
+
+// following tests removed from tests.zig during rewrite. left here commented out as they need fixups.
+
+// test "sanity checks" {
+//     try std.testing.expectEqual(@as(u8, 0b10101010), QMu8.dashes);
+//     try std.testing.expectEqual(@as(u8, 0b01010101), QMu8.dashes_complement);
+// }
+
+// test "widen" {
+//     const ones = [_]u8{ 2, 6, 10, 12, 3, 9, 7, 11, 13 };
+//     var ones_wide: [ones.len]u16 = undefined;
+//     for (ones) |o, i| ones_wide[i] = QMu16.widenT(o);
+//     try std.testing.expectEqualSlices(u16, &.{ 4, 20, 68, 80, 5, 65, 21, 69, 81 }, &ones_wide);
+// }
+
+// test "widen compress" {
+//     const one = 0b110011;
+//     const one_wide = QMu32.widenT(one);
+//     try std.testing.expectEqual(@as(u32, 0b0000010100000101), one_wide);
+//     try std.testing.expectEqual(@as(u32, one), QMu32.compressT(one_wide, 1));
+// }
+
+// fn testPerms(imp: QMu32.ImplTs, expecteds: []const @TypeOf(@as(QMu32.TSet.KV, undefined).key), comptime fmt: []const u8) !void {
+//     var q = QMu32.init(allr, &.{});
+//     defer q.deinit();
+//     var perms = try q.permutations(imp);
+//     defer perms.deinit();
+//     const eq = setsEqual2(QMu32.TSet, perms, expecteds);
+//     if (!eq)
+//         std.debug.print("expected " ++ fmt ++ " actual " ++ fmt ++ "\n", .{ expecteds, perms.keys() });
+//     try std.testing.expect(eq);
+// }
+
+// test "permutations" {
+//     const fmt = "{b:0>4}";
+//     try testPerms(
+//         .{ .number = 0b0011, .dashes = 0b1100 },
+//         &.{ 0b0011, 0b0111, 0b1011, 0b1111 },
+//         fmt,
+//     );
+//     try testPerms(
+//         .{ .number = 0b0000, .dashes = 0b1100 },
+//         &.{ 0b0000, 0b0100, 0b1000, 0b1100 },
+//         fmt,
+//     );
+//     try testPerms(
+//         .{ .number = 0b0000, .dashes = 0b1000 },
+//         &.{ 0b0000, 0b1000 },
+//         fmt,
+//     );
+//     try testPerms(
+//         .{ .number = 0b0000, .dashes = 0b1110 },
+//         &.{ 0b0000, 0b0010, 0b0100, 0b0110, 0b1000, 0b1010, 0b1100, 0b1110 },
+//         fmt,
+//     );
+
+//     {
+//         // this block exercises a bug which happens when iterating over set keys while adding to the set.
+//         // the bug only manifests when set.keys() grows big enough that a reallocation happens.
+//         // this is the old buggy code from premutations:
+//         //   for (set.keys()) |k|
+//         //     try set.put(k | mask, {});
+//         var q = QMu32.init(allr, &.{});
+//         defer q.deinit();
+//         // -00--------
+//         var perms = try q.permutations(.{ .number = 0, .dashes = 0b10011111111 });
+//         defer perms.deinit();
+//         // -11--------
+//         var perms2 = try q.permutations(.{ .number = 0b01100000000, .dashes = 0b10011111111 });
+//         for (perms2.keys()) |k| try perms.put(k, {});
+//         defer perms2.deinit();
+//         try std.testing.expectEqual(@as(usize, 1024), perms.count());
+//     }
+// }
