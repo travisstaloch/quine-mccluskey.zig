@@ -2,28 +2,10 @@ const std = @import("std");
 const Allocator = std.mem.Allocator;
 
 const qmc = @import("quine-mccluskey.zig");
+const p = @import("parsing.zig");
 const QuineMcCluskey = qmc.QuineMcCluskey;
 
 const allr = std.testing.allocator;
-
-test "sanity checks" {
-    try std.testing.expectEqual(@as(u8, 0b10101010), QMu8.dashes);
-    try std.testing.expectEqual(@as(u8, 0b01010101), QMu8.dashes_complement);
-}
-
-test "widen" {
-    const ones = [_]u8{ 2, 6, 10, 12, 3, 9, 7, 11, 13 };
-    var ones_wide: [ones.len]u16 = undefined;
-    for (ones) |o, i| ones_wide[i] = QMu16.widenT(o);
-    try std.testing.expectEqualSlices(u16, &.{ 4, 20, 68, 80, 5, 65, 21, 69, 81 }, &ones_wide);
-}
-
-test "widen compress" {
-    const one = 0b110011;
-    const one_wide = QMu32.widenT(one);
-    try std.testing.expectEqual(@as(u32, 0b0000010100000101), one_wide);
-    try std.testing.expectEqual(@as(u32, one), QMu32.compressT(one_wide, 1));
-}
 
 const ABCD: []const []const u8 = &.{ "A", "B", "C", "D" };
 const AB_CD: []const []const u8 = &.{ "AB", "CD" };
@@ -36,177 +18,93 @@ fn testReduce(comptime QM: type) !void {
     // note: default is different syntax for NOT operator: A' -> ~A
     //   so have to replace trailing apostrophes with leading tildes as shown in comments below
     const Test = struct {
-        input: []const u8,
-        ones: []const QM.THalf = &.{},
+        ones: []const QM.T = &.{},
         result: []const u8,
-        variables: []const []const u8,
     };
 
     const tests = [_]Test{
         .{ // 0
             // ~A~B~C~D + A~B~C~D + AB~C~D + ABC~D + ~A~B~CD + A~B~CD + AB~CD + ABCD
-            .input = "A'B'C'D' + AB'C'D' + ABC'D' + ABCD' + A'B'C'D + AB'C'D + ABC'D + ABCD",
+            // .input = "A'B'C'D' + AB'C'D' + ABC'D' + ABCD' + A'B'C'D + AB'C'D + ABC'D + ABCD",
             .ones = &.{ 0, 1, 8, 9, 12, 13, 14, 15 },
-            .result = "B'C' + AB",
-            .variables = ABCD,
+            // .result = "B'C' + AB",
+            .result = "-00- + 11--",
         },
         .{ // 1
             // ~A~B~C~D + ~A~B~CD + ~A~BCD + ~ABCD + A~B~C~D + A~B~CD + A~BCD + ABCD
-            .input = "A'B'C'D' + A'B'C'D + A'B'CD + A'BCD + AB'C'D' + AB'C'D + AB'CD + ABCD",
+            // .input = "A'B'C'D' + A'B'C'D + A'B'CD + A'BCD + AB'C'D' + AB'C'D + AB'CD + ABCD",
             .ones = &.{ 0, 1, 3, 7, 8, 9, 11, 15 },
-            .result = "B'C' + CD",
-            .variables = ABCD,
+            // .result = "B'C' + CD",
+            .result = "-00- + --11",
         },
         .{ // 2
             // ~AB~C~D + A~B~C~D + A~B~CD + A~BC~D + A~BCD + AB~C~D + ABC~D + ABCD
-            .input = "A'BC'D' + AB'C'D' + AB'C'D + AB'CD' + AB'CD + ABC'D' + ABCD' + ABCD",
+            // .input = "A'BC'D' + AB'C'D' + AB'C'D + AB'CD' + AB'CD + ABC'D' + ABCD' + ABCD",
             .ones = &.{ 4, 8, 9, 10, 11, 12, 14, 15 },
-            .result = "AB' + BC'D' + AC",
-            .variables = ABCD,
+            // .result = "AB' + BC'D' + AC",
+            .result = "1-1- + -100 + 10--",
         },
         .{ // 3
             // ~A~BC~D + ~ABC~D + A~B~C~D + A~B~CD + A~BC~D + A~BCD + ABC~D + ABCD
-            .input = "A'B'CD' + A'BCD' + AB'C'D' + AB'C'D + AB'CD' + AB'CD + ABCD' + ABCD",
+            // .input = "A'B'CD' + A'BCD' + AB'C'D' + AB'C'D + AB'CD' + AB'CD + ABCD' + ABCD",
             .ones = &.{ 2, 6, 8, 9, 10, 11, 14, 15 },
-            .result = "CD' + AB' + AC",
-            .variables = ABCD,
+            // .result = "CD' + AB' + AC",
+            .result = "1-1- + --10 + 10--",
         },
         .{ // 4
             // ~AB~C~D + ~AB~CD + ~ABC~D + ~ABCD + A~B~C~D
-            .input = "A'BC'D' + A'BC'D + A'BCD' + A'BCD + AB'C'D'",
+            // .input = "A'BC'D' + A'BC'D + A'BCD' + A'BCD + AB'C'D'",
             .ones = &.{ 4, 5, 6, 7, 8 },
-            .result = "A'B + AB'C'D'",
-            .variables = ABCD,
+            // .result = "A'B + AB'C'D'",
+            .result = "1000 + 01--",
         },
         .{ // 5
             // ~F~GH + ~FG~H + ~FGH + F~G~H + F~GH + FG~H + FGH
-            .input = "F'G'H + F'GH' + F'GH + FG'H' + FG'H + FGH' + FGH",
+            // .input = "F'G'H + F'GH' + F'GH + FG'H' + FG'H + FGH' + FGH",
             .ones = &.{ 1, 2, 3, 4, 5, 6, 7 },
-            .result = "A'B'C'D'E'H + A'B'C'D'E'G + A'B'C'D'E'F",
-            .variables = ABCDEFGH,
+            // .result = "A + B + C",
+            .result = "--1 + 1-- + -1-",
         },
         .{ // 6
             // variable names longer than 1
-            .input = "ABCD' + ABCD",
+            // .input = "ABCD' + ABCD",
             .ones = &.{ 2, 3 },
-            .result = "AB",
-            .variables = AB_CD,
+            // .result = "AB",
+            .result = "1-",
         },
-        // .{ // 7
-        //     .input = "A'BC + A'B + AB'C'D' + ABC'D'",
-        //     .ones = &.{ 4, 6, 8, 12 },
-        //     .result = "BC' + AC'",
-        //     .variables = ABCD,
-        // },
+        .{ // 7
+            // .input = "A'BC + A'B + AB'C'D' + ABC'D'",
+            .ones = &.{ 4, 6, 8, 12 },
+            // .result = "A'BC' + AC'D'",
+            .result = "1-00 + 01-0",
+        },
         // from https://uweb.engr.arizona.edu/~ece474a/uploads/Main/lecture_logicopt.pdf
         // example 2
         .{ // 8
-            .input = "w'x'y'z' + w'x'yz + w'x'yz' + w'xy'z' + w'xyz + w'xyz' + wxy'z + wxyz + wx'y'z + wx'yz",
-            .ones = &.{},
-            .result = "w'z' + wz + yz",
-            .variables = wxyz,
+            // .input = "w'x'y'z' + w'x'yz + w'x'yz' + w'xy'z' + w'xyz + w'xyz' + wxy'z + wxyz + wx'y'z + wx'yz",
+            .ones = &.{ 0, 3, 2, 4, 7, 6, 13, 15, 9, 11 },
+            // .result = "w'z' + wz + yz",
+            .result = "1--1 + --11 + 0--0",
         },
     };
     const delimiter = " + ";
     for (tests) |tst, tsti| {
-        if (@bitSizeOf(QM.TLog2) < tst.variables.len) continue;
-        const terms = try QM.parseTerms(allr, tst.input, delimiter, tst.variables);
-        defer allr.free(terms);
-
-        // workaround: can't use std.testing{expextEqualSlices, expectEqual}
-        // with T > u128 due to LLVM ERROR.  the error only happens when trying
-        // to print T > u128
-        if (tst.ones.len != 0)
-            try std.testing.expectEqual(tst.ones.len, terms.len);
-        std.sort.sort(QM.THalf, terms, {}, comptime QM.lessThan(QM.THalf));
-        for (tst.ones) |x, i| {
-            if (x != terms[i])
-                if (!test_large) // don't try to print large integers
-                    std.debug.print("test{} index {} expected {}:{b} != {}:{b} actual\n", .{ tsti, i, x, x, terms[i], terms[i] });
-            try std.testing.expect(x == terms[i]);
-        }
-        // std.debug.print("\nterms {b}\n", .{terms});
-        var qm = try QM.initAndReduce(allr, tst.variables, terms, &.{});
+        var qm = try QM.initAndReduce(allr, tst.ones, &.{}, .{});
         defer qm.deinit();
         var output = std.ArrayList(u8).init(allr);
         defer output.deinit();
-        try qm.printEssentialTerms(output.writer(), " + ");
+        try p.printEssentialTermsBin(QM, qm, output.writer(), " + ");
 
-        // FIXME: why does T >= u32 produce different ordering? the following test should succeed
-        //   ie "B'C' + AB" turns into "AB + B'C"
-        // try std.testing.expectEqualStrings(tst.result, output.items);
-        // if (!test_large and !std.mem.eql(u8, tst.result, output.items)) {
-        //     std.debug.print("\ntst.result   {s} !=\n", .{tst.result});
-        //     std.debug.print("output.items {s}\n", .{output.items});
-        // }
-        // workaround for FIXME: parse terms into sets and compare
-        var expecteds = try parseIntoSet(QM, allr, tst.result, delimiter, tst.variables);
-        defer expecteds.deinit();
-        var actuals = try parseIntoSet(QM, allr, output.items, delimiter, tst.variables);
-        defer actuals.deinit();
-        const equal = setsEqual(@TypeOf(expecteds), expecteds, actuals);
-        if (!equal)
-            std.debug.print("test{} expected {s}\nactual  {s}\n", .{ tsti, tst.result, output.items });
-        try std.testing.expect(equal);
+        try expectEqualStringSets(QM, tst.result, output.items, delimiter, tsti);
     }
 }
 
-fn setsEqual(comptime Set: type, a: Set, b: Set) bool {
-    if (a.count() != b.count()) return false;
-    var iter = a.iterator();
-    while (iter.next()) |it| {
-        if (!b.contains(it.key_ptr.*)) return false;
-    }
-    return true;
-}
-
-fn isSubSet(comptime Set: type, set: Set, subset: []const @TypeOf(@as(Set.KV, undefined).key)) bool {
-    if (subset.len > set.count()) return false;
-    for (subset) |key| {
-        if (!set.contains(key)) return false;
-    }
-    return true;
-}
-
-fn setsEqual2(comptime Set: type, a: Set, keys: []const @TypeOf(@as(Set.KV, undefined).key)) bool {
-    if (keys.len != a.count()) return false;
-    for (keys) |key| {
-        if (!a.contains(key)) return false;
-    }
-    return true;
-}
-
-fn parseIntoSet(
-    comptime QM: type,
-    allocator: Allocator,
-    input: []const u8,
-    delimiter: []const u8,
-    variables: []const []const u8,
-) !std.AutoHashMap(QM.T, void) {
-    var result = std.AutoHashMap(QM.T, void).init(allocator);
-    const terms = try QM.parseTerms2(allocator, input, delimiter, variables);
-    defer allocator.free(terms);
-    for (terms) |term| try result.put(term, {});
-    return result;
-}
-
-fn parseIntoStringSet(
-    allocator: Allocator,
-    input: []const u8,
-    delimiter: []const u8,
-) !std.StringHashMap(void) {
-    var result = std.StringHashMap(void).init(allocator);
-    var iter = std.mem.split(u8, input, delimiter);
-    while (iter.next()) |s| try result.put(s, {});
-    return result;
-}
-
-fn expectEqualStringSets(expected: []const u8, actual: []const u8, delimiter: []const u8, tsti: usize) !void {
-    var expecteds = try parseIntoStringSet(allr, expected, delimiter);
+fn expectEqualStringSets(comptime QM: type, expected: []const u8, actual: []const u8, delimiter: []const u8, tsti: usize) !void {
+    var expecteds = try p.parseIntoStringSet(allr, expected, delimiter);
     defer expecteds.deinit();
-    var actuals = try parseIntoStringSet(allr, actual, delimiter);
+    var actuals = try p.parseIntoStringSet(allr, actual, delimiter);
     defer actuals.deinit();
-    const equal = setsEqual(@TypeOf(expecteds), expecteds, actuals);
+    const equal = QM.setsEqual(@TypeOf(expecteds), expecteds, actuals);
     if (!equal)
         std.debug.print("test{} expected {s}\nactual  {s}\n", .{ tsti, expected, actual });
     try std.testing.expect(equal);
@@ -228,6 +126,8 @@ const QMu4 = QuineMcCluskey(u4);
 const test_large_integers = true;
 const test_large = @hasDecl(@This(), "test_large_integers");
 
+// TODO: add tests with dontcares
+
 test "reduce" {
     try testReduce(QMu8);
     try testReduce(QMu16);
@@ -247,8 +147,8 @@ test "reduce" {
 test "reduce binary" {
     const Test = struct {
         res: []const u8,
-        ons: []const QMu32.THalf = &.{},
-        dnc: []const QMu32.THalf = &.{},
+        ons: []const QMu32.T = &.{},
+        dnc: []const QMu32.T = &.{},
     };
 
     const common_tests = [_]Test{
@@ -258,18 +158,18 @@ test "reduce binary" {
         .{ .res = "----", .ons = &.{ 1, 3, 5, 7, 9, 11, 13, 15 }, .dnc = &.{ 0, 2, 4, 6, 8, 10, 12, 14 } },
     };
     const noxor_tests = [_]Test{
-        .{ .res = "-1-1 + 0-11 + 010- + 111- + 1-01", .ons = &.{ 3, 4, 5, 7, 9, 13, 14, 15 } },
+        .{ .res = "010- + 111- + 0-11 + 1-01", .ons = &.{ 3, 4, 5, 7, 9, 13, 14, 15 } },
     };
 
     inline for (common_tests ++ noxor_tests) |t, tsti| {
-        var qm = try QMu32.initAndReduce(allr, ABCD, t.ons, t.dnc);
+        var qm = try QMu32.initAndReduce(allr, t.ons, t.dnc, .{});
         defer qm.deinit();
         var list = std.ArrayList(u8).init(allr);
         defer list.deinit();
         const writer = list.writer();
         const delimiter = " + ";
-        try qm.printEssentialTermsBin(writer, delimiter);
-        try expectEqualStringSets(t.res, list.items, delimiter, tsti);
+        try p.printEssentialTermsBin(QMu32, qm, writer, delimiter);
+        try expectEqualStringSets(QMu32, t.res, list.items, delimiter, tsti);
     }
 
     // const xor_tests = [_]Test{
@@ -292,59 +192,6 @@ test "reduce binary" {
     // };
 }
 
-fn testPerms(imp: QMu32.ImplTs, expecteds: []const @TypeOf(@as(QMu32.TSet.KV, undefined).key), comptime fmt: []const u8) !void {
-    var q = QMu32.init(allr, &.{});
-    defer q.deinit();
-    var perms = try q.permutations(imp);
-    defer perms.deinit();
-    const eq = setsEqual2(QMu32.TSet, perms, expecteds);
-    if (!eq)
-        std.debug.print("expected " ++ fmt ++ " actual " ++ fmt ++ "\n", .{ expecteds, perms.keys() });
-    try std.testing.expect(eq);
-}
-
-// test "permutations" {
-//     const fmt = "{b:0>4}";
-//     try testPerms(
-//         .{ .number = 0b0011, .dashes = 0b1100 },
-//         &.{ 0b0011, 0b0111, 0b1011, 0b1111 },
-//         fmt,
-//     );
-//     try testPerms(
-//         .{ .number = 0b0000, .dashes = 0b1100 },
-//         &.{ 0b0000, 0b0100, 0b1000, 0b1100 },
-//         fmt,
-//     );
-//     try testPerms(
-//         .{ .number = 0b0000, .dashes = 0b1000 },
-//         &.{ 0b0000, 0b1000 },
-//         fmt,
-//     );
-//     try testPerms(
-//         .{ .number = 0b0000, .dashes = 0b1110 },
-//         &.{ 0b0000, 0b0010, 0b0100, 0b0110, 0b1000, 0b1010, 0b1100, 0b1110 },
-//         fmt,
-//     );
-
-//     {
-//         // this block exercises a bug which happens when iterating over set keys while adding to the set.
-//         // the bug only manifests when set.keys() grows big enough that a reallocation happens.
-//         // this is the old buggy code from premutations:
-//         //   for (set.keys()) |k|
-//         //     try set.put(k | mask, {});
-//         var q = QMu32.init(allr, &.{});
-//         defer q.deinit();
-//         // -00--------
-//         var perms = try q.permutations(.{ .number = 0, .dashes = 0b10011111111 });
-//         defer perms.deinit();
-//         // -11--------
-//         var perms2 = try q.permutations(.{ .number = 0b01100000000, .dashes = 0b10011111111 });
-//         for (perms2.keys()) |k| try perms.put(k, {});
-//         defer perms2.deinit();
-//         try std.testing.expectEqual(@as(usize, 1024), perms.count());
-//     }
-// }
-
 test "not reducible" {
     // example from https://citeseerx.ist.psu.edu/viewdoc/download?rep=rep1&type=pdf&doi=10.1.1.213.287
     // ^ look for table II and table III
@@ -356,15 +203,15 @@ test "not reducible" {
         \\x'y'zw'
     ;
     const delimiter = " + ";
-    const ones = try QMu8.parseTerms(allr, input, delimiter, vars);
+    const ones = try p.parseTerms(QMu8, allr, input, delimiter, vars, .reverse);
     defer allr.free(ones);
-    var qm = QMu8.init(allr, vars, ones, &.{});
+    var qm = QMu8.init(allr, ones, &.{}, .{});
     defer qm.deinit();
     var output = std.ArrayList(u8).init(allr);
     defer output.deinit();
     try qm.reduce();
-    try qm.printEssentialTerms(output.writer(), delimiter);
-    try expectEqualStringSets("x'z + y'z + xy'w + xyz' + xz'w", output.items, delimiter, 0);
+    try p.printEssentialTerms(QMu8, qm, output.writer(), delimiter, vars);
+    try expectEqualStringSets(QMu8, "xyz' + xz'w + y'z + x'z", output.items, delimiter, 0);
     // TODO: this ^ is actually incorrect. there are 2 minimal disjunctive forms:
     //   note the final terms on each line
     // This can be allomplished by deleting columns of

@@ -1,590 +1,826 @@
-//! adapated from http://eprints.lqdtu.edu.vn/id/eprint/10375/1/main_camera_ready.pdf
+//! adapted from https://github.com/tpircher/quine-mccluskey/
 
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 const assert = std.debug.assert;
 
-/// T is the storage type for implicants.
-/// 2bits are required per variable.  so for 16 variables, use T = u32.
-/// this is because each 2bits of an implicant stores either 0, 1 or 2
-/// where 2 means 'dash' or '-'
+/// this imlementation packs 2 elements per byte.
+/// this packed representation is called a 'dual' here.
+/// this means that each byte holds 2 'Element' where
+/// Element is an enum(u4){zero,one,xor,xnor,dash}.
 pub fn QuineMcCluskey(comptime _T: type) type {
     return struct {
-        variables: []const []const u8,
         allocator: Allocator,
-        minterms: []T,
-        ones: []const THalf,
-        dontcares: []const THalf,
-        prime_list: TList = .{},
-        final_prime_list: TList = .{},
+        bitcount: TLen,
+        ones: []const T,
+        dontcares: []const T,
+        terms: []Term,
+        flags: std.enums.EnumSet(enum { use_xor }),
+        reduced_implicants: TermSet = .{},
 
-        const Self = @This();
+        comptime {
+            assert(std.math.isPowerOfTwo(TBitSize));
+            assert(fromDual(toDual(0x10)) == fromDual(Dual.init(1, 0)));
+        }
         pub const T = _T;
-        pub const TLog2 = std.math.Log2Int(T);
-        pub const TBitSize = @bitSizeOf(T);
-        pub const TLen = LenInt(T);
-        pub const TList = std.ArrayListUnmanaged(T);
-        pub const THalf = std.meta.Int(.unsigned, TBitSize / 2);
-        pub const THalfLen = LenInt(TLen);
-        pub const THalfLog2 = std.math.Log2Int(THalf);
-        pub const THalfList = std.ArrayListUnmanaged(THalf);
-        pub const Masks = [TBitSize / @bitSizeOf(usize)]usize;
-        pub const TUsedMap = std.AutoArrayHashMapUnmanaged(T, bool);
-        pub const TBitSet = std.StaticBitSet(TBitSize);
 
-        pub fn LenInt(comptime U: type) type {
-            return std.meta.Int(.unsigned, std.math.log2(@bitSizeOf(U)) + 1);
+        /// b is intentionally before a so that the byte 0x10 is
+        /// equivalent to Dual{.a = 1, .b = 0}
+        pub const Dual = packed struct {
+            b: u4,
+            a: u4,
+
+            pub fn init(a: u4, b: u4) Dual {
+                return .{ .a = a, .b = b };
+            }
+        };
+
+        pub const Element = enum(u4) { zero, one, xnor, xor, dash, invalid };
+        pub const Term = []const u8;
+        pub const TBitSize = @bitSizeOf(T);
+        pub const TLog2 = std.math.Log2Int(T);
+
+        pub const TLen = std.meta.Int(.unsigned, std.math.log2_int(T, TBitSize) + 1);
+        pub const TLog2Signed = std.meta.Int(.signed, std.math.log2_int(T, TBitSize) + 1);
+
+        pub inline fn toDual(c: u8) Dual {
+            return @bitCast(Dual, c);
+        }
+        pub inline fn toDualPtr(c: *u8) *Dual {
+            return @ptrCast(*Dual, c);
+        }
+        pub inline fn fromDual(dual: Dual) u8 {
+            return @bitCast(u8, dual);
         }
 
-        pub const ImplicantList = struct {
-            ts: TUsedMap = .{},
+        pub const TSet = std.AutoHashMapUnmanaged(T, void);
+        pub const TList = std.ArrayListUnmanaged(T);
+        pub const TermSet = std.StringArrayHashMapUnmanaged(void);
+        pub const GroupKey = [3]u8;
+        pub const TermList = std.ArrayListUnmanaged(Term);
+        pub const TermMap = std.AutoHashMapUnmanaged(GroupKey, TermSet);
+        pub const TermMapOrdered = std.ArrayHashMapUnmanaged(u16, TermSet, std.array_hash_map.AutoContext(u16), true);
+        pub const PermMap = std.StringHashMapUnmanaged(TermSet);
 
-            pub fn deinit(ilist: *ImplicantList, allocator: Allocator) void {
-                ilist.ts.deinit(allocator);
-            }
-            pub fn append(ilist: *ImplicantList, allocator: Allocator, t: T, used: bool) !void {
-                try ilist.ts.put(allocator, t, used);
-            }
-            pub fn appendSliceTs(ilist: *ImplicantList, allocator: Allocator, ts: []const T, useds: struct { useds: []const bool = &.{} }) !void {
-                if (useds.useds.len == 0) {
-                    for (ts) |t| {
-                        const gop = try ilist.ts.getOrPut(allocator, t);
-                        if (!gop.found_existing) gop.value_ptr.* = false;
-                    }
-                } else {
-                    assert(useds.useds.len == ts.len);
-                    for (useds.useds) |used, i| {
-                        if (!used) {
-                            try ilist.ts.put(allocator, ts[i], used);
-                        }
-                    }
-                }
-            }
-        };
+        pub const zero = @enumToInt(Element.zero);
+        pub const one = @enumToInt(Element.one);
+        pub const xor = @enumToInt(Element.xor);
+        pub const xnor = @enumToInt(Element.xnor);
+        pub const dash = @enumToInt(Element.dash);
+        pub const invalid = @enumToInt(Element.invalid);
 
-        /// stores indices of another (non specified) list and divides it into groups by index
-        pub const Groups = struct {
-            /// indices for some other list, describes other list's ordering
-            indices: std.ArrayListUnmanaged(usize) = .{},
-            /// bounds are indexes of `indices` - dividing them into groups
-            bounds: std.ArrayListUnmanaged(usize) = .{},
+        /// used by printing methods
+        pub var comma_delim = ", ";
 
-            pub fn deinit(self: *Groups, allocator: Allocator) void {
-                self.indices.deinit(allocator);
-                self.bounds.deinit(allocator);
-            }
-        };
-
-        pub fn init(
-            allocator: Allocator,
-            variables: []const []const u8,
-            ones: []const THalf,
-            dontcares: []const THalf,
-        ) Self {
-            return Self{
-                .variables = variables,
+        const Self = @This();
+        const Options = struct { bitcount: ?TLen = null };
+        pub fn init(allocator: Allocator, ones: []const T, dontcares: []const T, options: Options) Self {
+            return .{
                 .allocator = allocator,
                 .ones = ones,
                 .dontcares = dontcares,
-                .minterms = &.{},
+                .bitcount = if (options.bitcount) |bc| bc else 0,
+                .flags = .{},
+                .terms = &.{},
             };
         }
 
-        pub fn deinit(self: *Self) void {
-            self.prime_list.deinit(self.allocator);
-            self.final_prime_list.deinit(self.allocator);
-            self.allocator.free(self.minterms);
-        }
-
-        pub fn initAndReduce(allocator: Allocator, variables: []const []const u8, ones: []const THalf, dontcares: []const THalf) !Self {
-            var qm = Self.init(allocator, variables, ones, dontcares);
+        pub fn initAndReduce(allocator: Allocator, ones: []const T, dontcares: []const T, options: Options) !Self {
+            var qm = init(allocator, ones, dontcares, options);
             try qm.reduce();
             return qm;
         }
 
-        pub fn reduce(qm: *Self) !void {
-            var timer = try std.time.Timer.start();
-            try qm.findPrimes();
-            const t1 = timer.lap();
-            try qm.findEssentialPrimes();
-            const t2 = timer.lap();
-            const trace_this = false;
-            if (trace_this) {
-                std.debug.print("findPrimes took          {}\n", .{std.fmt.fmtDuration(t1)});
-                std.debug.print("findEssentialPrimes took {}\n", .{std.fmt.fmtDuration(t2)});
-            }
+        pub fn deinit(self: *Self) void {
+            self.deinitTermSet(&self.reduced_implicants);
         }
 
-        /// widens each bit into two. allocates and returns caller owned slice.
-        /// allows for storing additional state in each 2bits.
-        pub fn widenT(t: THalf) T {
-            @setEvalBranchQuota(TBitSize);
-            var tmut = t;
-            var s: T = 0;
-            comptime var i: TLog2 = 0;
-            inline while (i < TBitSize / 2) : (i += 1) {
-                // trace("{b:0>32} {b:0>32}\n", .{ t, s });
-                s |= @as(T, @truncate(u1, tmut)) << (i * 2);
-                tmut >>= 1;
-            }
-            comptime assert(i == @bitSizeOf(THalf));
-            return s;
+        pub fn freeTerms(self: *Self, terms: []Term) void {
+            for (terms) |term| self.allocator.free(term);
+            self.allocator.free(terms);
+        }
+        pub fn freeTermSetKeys(self: *Self, termset: *TermSet) void {
+            for (termset.keys()) |k|
+                self.allocator.free(k);
+        }
+        pub fn deinitTermSet(self: *Self, termset: *TermSet) void {
+            self.freeTermSetKeys(termset);
+            termset.deinit(self.allocator);
         }
 
-        /// compress a T which has been widened into half as many bits.
-        /// only 2bit sequences matching `target` are counted as 1 bits in result.
-        pub fn compressT(t: T, comptime target: u2) THalf {
-            var result: THalf = 0;
-            var tmut = t;
-            comptime var i: TLog2 = 0;
-            inline while (i < TBitSize / 2) : (i += 1) {
-                result <<= 1;
-                switch (@truncate(u2, tmut)) {
-                    target => result |= 1,
-                    else => {},
-                }
-                tmut >>= 2;
+        // allocate a slice and pack t into its bytes
+        pub fn toTerm(allocator: Allocator, t: T, bitcount: TLen) !Term {
+            var terms = try allocator.alloc(u8, bitcount);
+            return toTermBuf(terms, t, bitcount);
+        }
+        // pack t into buf
+        pub fn toTermBuf(buf: []u8, t: T, bitcount: TLen) Term {
+            // trace("toTermBuf t {} bitcount {}\n", .{ t, bitcount });
+            var mutt = t;
+
+            var i = bitcount - 1;
+            while (true) : (i -= 1) {
+                const dual = toDualPtr(&buf[i]);
+                dual.b = @truncate(u1, mutt);
+                mutt >>= 1;
+                dual.a = @truncate(u1, mutt);
+                if (i == 0) break;
+                mutt >>= 1;
             }
-            comptime assert(i == @bitSizeOf(THalf));
-            return @bitReverse(THalf, result);
+            return buf[0..bitcount];
+        }
+        /// widen e into a byte wide human readable representation
+        pub fn elementToByte(e: Element) u8 {
+            return switch (e) {
+                .zero => '0',
+                .one => '1',
+                .xor => '^',
+                .xnor => '~',
+                .dash => '-',
+            };
         }
 
-        /// helper for making sequence of 2s: 101010...
-        fn allDashesT() T {
-            @setEvalBranchQuota(TBitSize);
-            var t: T = 0;
-            var i: TLen = 0;
-            while (i < TBitSize) : (i += 2) {
-                t <<= 2;
-                t |= 2;
-            }
-            assert(i == TBitSize);
-            return t;
+        /// widen e into a byte wide human readable representation
+        pub fn nibbleToByte(e: u4) u8 {
+            return switch (e) {
+                zero => '0',
+                one => '1',
+                xor => '^',
+                xnor => '~',
+                dash => '-',
+                else => std.debug.panic("invalid nibble {}", .{e}),
+            };
         }
 
-        pub const dashes = allDashesT();
-        pub const dashes_complement = ~dashes;
-
-        /// reverse only lower `len` in 2-bit chunks
-        pub fn bitReverse(
-            comptime U: type,
-            num: U,
-            len: LenInt(U),
-            comptime chunk_size: u8,
-        ) U {
-            var reverse_num: U = 0;
-            var i: LenInt(U) = 0;
-            var n = num;
-            const I = std.meta.Int(.unsigned, chunk_size);
-            while (i < len) : (i += 1) {
-                reverse_num <<= chunk_size;
-                reverse_num |= @truncate(I, n);
-                n >>= chunk_size;
-            }
-            return reverse_num;
+        /// widen e's nibbles into a 2-byte wide human readable representation
+        pub fn nibblesToBytes(e: u8) [2]u8 {
+            const dual = toDual(e);
+            return .{ nibbleToByte(dual.a), nibbleToByte(dual.b) };
+        }
+        /// pack a human readable byte into nibble
+        pub fn byteToNibble(b: u8) u4 {
+            return switch (b) {
+                '0' => zero,
+                '1' => one,
+                '^' => xor,
+                '~' => xnor,
+                '-' => dash,
+                else => std.debug.panic("invalid byte {}", .{b}),
+            };
         }
 
-        /// wrapper for printing an implicant in binary with dashes
-        pub const TFmt = struct {
-            t: T,
-            bitcount: TLog2,
-            pub fn init(t: T, bitcount: TLog2) TFmt {
-                return .{ .t = t, .bitcount = bitcount };
-            }
-            pub fn format(self: TFmt, comptime _: []const u8, _: std.fmt.FormatOptions, writer: anytype) !void {
-                var t = bitReverse(T, self.t, self.bitcount, 2);
-                var i: usize = 0;
-                while (i < self.bitcount) : (i += 1) {
-                    try writer.writeByte(switch (@truncate(u2, t)) {
-                        0b00 => '0',
-                        0b01 => '1',
-                        0b10 => '-',
-                        else => @panic("invalid bit"),
-                    });
-                    t >>= 2;
-                }
-            }
-        };
+        /// pack a human readable bytes into single byte
+        pub fn bytesToNibbles(bytes: [2]u8) u8 {
+            return fromDual(.{ .a = byteToNibble(bytes[0]), .b = byteToNibble(bytes[1]) });
+        }
 
-        /// wrapper for printing an implicant as variable names
-        pub const TFmtVars = struct {
-            t: T,
-            variables: []const []const u8,
-            pub fn init(t: T, variables: []const []const u8) TFmtVars {
-                return .{ .t = t, .variables = variables };
+        /// wrapper for printing Terms, can be passed to print functions like this:
+        ///   std.debug.print("{}", .{TermFmt.init(term, bitcount)});
+        pub const TermFmt = struct {
+            term: Term,
+            bitcount: TLen,
+            pub fn init(term: Term, bitcount: TLen) TermFmt {
+                return .{ .term = term, .bitcount = bitcount };
             }
-            pub fn format(self: TFmtVars, comptime _: []const u8, _: std.fmt.FormatOptions, writer: anytype) !void {
-                const bitcount = @intCast(TLog2, self.variables.len);
-                var t = bitReverse(T, self.t, bitcount, 2);
-                var i: usize = 0;
-                while (i < bitcount) : (i += 1) {
-                    const variable = self.variables[i];
-                    switch (@truncate(u2, t)) {
-                        0b00 => try writer.print("{s}'", .{variable}),
-                        0b01 => try writer.print("{s}", .{variable}),
-                        0b10 => {},
-                        else => @panic("invalid bit"),
-                    }
-                    t >>= 2;
+
+            pub fn format(self: TermFmt, comptime _: []const u8, _: std.fmt.FormatOptions, writer: anytype) !void {
+                // sometimes have to skip leading nibble so that extra nibbles aren't shown in output.
+                // for instance when bitcount == 3, 2 bytes/4 nibbles are required, skiplen will equal 1
+                const skiplen = std.math.sub(usize, self.term.len * 2, self.bitcount) catch return;
+                for (self.term) |e, i| {
+                    const bytes = nibblesToBytes(e);
+                    if (i * 2 >= skiplen)
+                        try writer.writeByte(bytes[0]);
+                    if (i * 2 + 1 >= skiplen)
+                        try writer.writeByte(bytes[1]);
                 }
             }
         };
 
-        /// 1. given `variables`={"A", "B"} and `delimiter`=" + "
-        ///   - AB'         => (A and !B)
-        ///   - AB' + C'D   => (A and !B) or (!C and D)
-        /// 2. given `variables`={"AB", "A", "B"} and `delimiter`=" + "
-        ///   - AB'         => (!AB)
-        ///     - if "A" were before "AB" in `variables` then the result would be the same as 1.
-        pub fn parseTerms(allocator: Allocator, input: []const u8, delimiter: []const u8, variables: []const []const u8) ![]THalf {
-            // TODO: move this into separate parsers module
-            const m = @intCast(THalfLen, variables.len - 1);
-            var iter = std.mem.split(u8, input, delimiter);
-            var terms: THalfList = .{};
-            defer terms.deinit(allocator);
-            while (iter.next()) |_term| {
-                const term = std.mem.trim(u8, _term, &std.ascii.spaces);
-                var termval: THalf = 0;
-                var i: usize = 0;
-                while (i < term.len) {
-                    const idx = for (variables) |v, j| {
-                        if (std.mem.startsWith(u8, term[i..], v))
-                            break @intCast(THalfLen, j);
-                    } else return error.ParseError;
-                    i += variables[idx].len;
-                    const not = @boolToInt(i < term.len and term[i] == '\'');
-                    // this is just a branchless equivalent of:
-                    //   if(!not) termval |= (1 << (m-idx)) else i += 1;
-                    termval |= (@as(THalf, not +% 1) << @intCast(THalfLog2, m - idx));
-                    i += not;
-                }
-                try terms.append(allocator, termval);
+        /// wrapper for printing slice of Terms, can be passed to print functions like this:
+        ///   std.debug.print("{}", .{TermsFmt.init(terms, delimiter, bitcount)});
+        pub const TermsFmt = struct {
+            terms: []const Term,
+            delimiter: []const u8,
+            bitcount: TLen,
+            pub fn init(terms: []const Term, delimiter: []const u8, bitcount: TLen) TermsFmt {
+                return .{ .terms = terms, .delimiter = delimiter, .bitcount = bitcount };
             }
 
-            var result = terms.toOwnedSlice(allocator);
-            std.sort.sort(THalf, result, {}, comptime ltByPopCount(THalf));
-            return result;
-        }
-
-        /// like parseTerms except
-        ///   - returns []T rather than []THalf which allows for dashes
-        ///   - each term starts out all dashes. this way you can tell the
-        ///     difference between a missing term variable and a negated term variable
-        pub fn parseTerms2(allocator: Allocator, input: []const u8, delimiter: []const u8, variables: []const []const u8) ![]T {
-            // TODO: move this into separate parsers module
-            var iter = std.mem.split(u8, input, delimiter);
-            var terms: TList = .{};
-            defer terms.deinit(allocator);
-            while (iter.next()) |_term| {
-                const term = std.mem.trim(u8, _term, &std.ascii.spaces);
-                var termval: std.StaticBitSet(TBitSize) = if (TBitSize <= 64) .{ .mask = dashes } else .{ .masks = @bitCast(Masks, dashes) };
-                var i: usize = 0;
-                while (i < term.len) {
-                    const idx = for (variables) |v, j| {
-                        if (std.mem.startsWith(u8, term[i..], v))
-                            break @intCast(TLog2, j);
-                    } else return error.ParseError;
-                    i += variables[idx].len;
-                    const not = i < term.len and term[i] == '\'';
-                    termval.setValue(variables.len - idx - 1, !not);
-                    i += @boolToInt(not);
-                }
-                try terms.append(allocator, if (TBitSize <= 64) termval.mask else @bitCast(T, termval.masks));
-            }
-
-            var result = terms.toOwnedSlice(allocator);
-            std.sort.sort(T, result, {}, comptime ltByPopCount(T));
-            return result;
-        }
-
-        pub fn lessThan(comptime U: type) fn (void, U, U) bool {
-            return struct {
-                fn func(_: void, lhs: U, rhs: U) bool {
-                    return lhs < rhs;
-                }
-            }.func;
-        }
-
-        pub fn ltByPopCount(comptime U: type) fn (void, U, U) bool {
-            return struct {
-                fn func(_: void, lhs: U, rhs: U) bool {
-                    return @popCount(U, lhs) < @popCount(U, rhs);
-                }
-            }.func;
-        }
-
-        pub fn ltIndicesByPopCount(ts: []const T, lhs: usize, rhs: usize) bool {
-            return @popCount(T, ts[lhs]) < @popCount(T, ts[rhs]);
-        }
-
-        pub fn printEssentialTerms(self: *Self, writer: anytype, delimiter: []const u8) !void {
-            for (self.final_prime_list.items) |imp, i| {
-                if (i != 0) _ = try writer.write(delimiter);
-                try writer.print("{}", .{TFmtVars.init(imp, self.variables)});
-            }
-            if (self.final_prime_list.items.len == 0)
-                try writer.writeByteNTimes('-', self.variables.len);
-        }
-
-        pub fn printEssentialTermsBin(self: *Self, writer: anytype, delimiter: []const u8) !void {
-            for (self.final_prime_list.items) |imp, i| {
-                if (i != 0) _ = try writer.write(delimiter);
-                try writer.print("{}", .{TFmt.init(imp, @intCast(TLog2, self.variables.len))});
-            }
-            if (self.final_prime_list.items.len == 0)
-                try writer.writeByteNTimes('-', self.variables.len);
-        }
-
-        /// group all `ilist` indices into `groups.indices`
-        /// sorted by the corresponding ilist entry's popCount.
-        /// store group boundaries in `groups.bounds`.
-        /// note that `groups.bounds` sores indices to the `groups.indices` list
-        pub fn makeGroups(self: Self, ilist: ImplicantList, groups: *Groups) !void {
-            groups.indices.items.len = 0;
-            groups.bounds.items.len = 0;
-            const keys = ilist.ts.keys();
-            // trace("keys {b:0>8}\n", .{keys});
-            for (keys) |_, i| {
-                try groups.indices.append(self.allocator, i);
-            }
-            std.sort.sort(usize, groups.indices.items, keys, ltIndicesByPopCount);
-            var popcount: T = 0;
-            for (groups.indices.items) |idx, idxidx| {
-                const it = keys[idx];
-                // trace("makeGroups it {b:0>8}\n", .{it});
-                const pc = @popCount(T, it);
-                if (pc != popcount) {
-                    try groups.bounds.append(self.allocator, idxidx);
-                    popcount = pc;
+            pub fn format(self: TermsFmt, comptime _: []const u8, _: std.fmt.FormatOptions, writer: anytype) !void {
+                for (self.terms) |term, i| {
+                    if (i != 0) _ = try writer.write(self.delimiter);
+                    try writer.print("{}", .{TermFmt.init(term, self.bitcount)});
                 }
             }
-            try groups.bounds.append(self.allocator, groups.indices.items.len);
+        };
+
+        /// wrapper for printing TermSets, can be passed to print functions like this:
+        ///   std.debug.print("{}", .{TermSetFmt.init(termset, delimiter, bitcount)});
+        pub const TermSetFmt = struct {
+            termset: TermSet,
+            delimiter: []const u8,
+            bitcount: TLen,
+            pub fn init(termset: TermSet, delimiter: []const u8, bitcount: TLen) TermSetFmt {
+                return .{ .termset = termset, .delimiter = delimiter, .bitcount = bitcount };
+            }
+
+            pub fn format(self: TermSetFmt, comptime _: []const u8, _: std.fmt.FormatOptions, writer: anytype) !void {
+                for (self.termset.keys()) |k, i| {
+                    if (i != 0) _ = try writer.write(self.delimiter);
+                    try writer.print("{}", .{TermFmt.init(k, self.bitcount)});
+                }
+            }
+        };
+
+        /// allocates self.reduced_implicants which can be freed by calling self.deinit().
+        /// reduced_implicants may be printed out like this:
+        ///   std.debug.print("{}\n", .{TermsFmt.init(self.reduced_implicants, ", ", self.bitcount)});
+        pub fn reduce(self: *Self) !void {
+            var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+            const arenaallr = arena.allocator();
+            defer arena.deinit();
+
+            var ones: TermList = .{};
+            var dontcares: TermList = .{};
+
+            // find max bitcount if not provided
+            if (self.bitcount == 0) {
+                for (self.ones) |x|
+                    self.bitcount = std.math.max(self.bitcount, TBitSize - @clz(T, x));
+                for (self.dontcares) |x|
+                    self.bitcount = std.math.max(self.bitcount, TBitSize - @clz(T, x));
+            }
+            trace("bitcount {} ones {b}:{any}\n", .{ self.bitcount, self.ones, self.ones });
+
+            for (self.ones) |x| {
+                const term = try toTerm(arenaallr, x, try std.math.divCeil(TLen, self.bitcount, 2));
+                try ones.append(arenaallr, term);
+            }
+            for (self.dontcares) |x| {
+                const term = try toTerm(arenaallr, x, try std.math.divCeil(TLen, self.bitcount, 2));
+                try dontcares.append(arenaallr, term);
+            }
+
+            self.reduced_implicants = try self.simplifyLos(ones.items, dontcares.items, arenaallr);
         }
 
-        /// reduce and populate `prime_list`
-        fn findPrimes(self: *Self) !void {
-            const trace_this = false;
-            const m = @intCast(TLog2, self.variables.len);
+        pub fn simplifyLos(self: *Self, ones: []Term, dontcares: []Term, arena: Allocator) !TermSet {
+            var terms: TermSet = .{};
+            for (ones) |x| try terms.put(arena, try arena.dupe(u8, x), {});
+            for (dontcares) |x| try terms.put(arena, try arena.dupe(u8, x), {});
 
-            var minterms = if (self.minterms.len != self.ones.len + self.dontcares.len) blk: {
-                self.allocator.free(self.minterms);
-                break :blk try self.allocator.alloc(T, self.ones.len + self.dontcares.len);
-            } else self.minterms;
-            for (self.ones) |x, i| minterms[i] = widenT(x);
-            for (self.dontcares) |x, i| minterms[self.ones.len + i] = widenT(x);
-            std.sort.sort(T, minterms, {}, comptime ltByPopCount(T));
-            self.minterms = minterms;
+            if (terms.count() == 0) return TermSet{};
 
-            var implicant_lists = [1]ImplicantList{.{}} ** 2;
-            var prime_list: ImplicantList = .{};
-            var groups: Groups = .{};
-            defer {
-                for (implicant_lists) |*l| l.deinit(self.allocator);
-                prime_list.deinit(self.allocator);
-                groups.deinit(self.allocator);
+            // FIXME: optimize - deinit the arena after each of these 3 function calls
+            var prime_implicants = try self.getPrimeImplicants(arena, &terms);
+            defer self.deinitTermSet(&prime_implicants);
+            trace("\n\nprime_implicants {} {}\n", .{ prime_implicants.count(), TermSetFmt.init(prime_implicants, comma_delim, self.bitcount) });
+
+            var dcset: TSet = .{};
+            for (self.dontcares) |t| try dcset.put(arena, t, {});
+
+            var essential_implicants = try self.getEssentialImplicants(arena, &prime_implicants, dcset);
+            defer self.deinitTermSet(&essential_implicants);
+            trace("\n\nessential_implicants {} {}\n", .{ essential_implicants.count(), TermSetFmt.init(essential_implicants, comma_delim, self.bitcount) });
+
+            var reduced_implicants = try self.reduceImplicants(arena, &essential_implicants, dcset);
+            trace("\n\nreduced_implicants {} {}\n", .{ reduced_implicants.count(), TermSetFmt.init(reduced_implicants, comma_delim, self.bitcount) });
+            return reduced_implicants;
+        }
+
+        fn termCount(t: Term, e: Element) u8 {
+            var r: u8 = 0;
+            for (t) |byte| {
+                const dual = toDual(byte);
+                r += @boolToInt(dual.a == @enumToInt(e));
+                r += @boolToInt(dual.b == @enumToInt(e));
             }
-            var listid: u1 = 0;
-            try implicant_lists[listid].appendSliceTs(self.allocator, self.minterms, .{});
+            return r;
+        }
 
-            var combined = true;
-            while (combined) : (listid +%= 1) {
-                combined = false;
-                const implicant_list = implicant_lists[listid];
-                const new_implicant_list = &implicant_lists[listid +% 1];
+        pub fn getPrimeImplicants(self: *Self, arena: Allocator, terms: *TermSet) !TermSet {
+            const ngroups = self.bitcount + 1;
+            trace("getPrimeImplicants terms {}\n", .{TermSetFmt.init(terms.*, comma_delim, self.bitcount)});
 
-                try self.makeGroups(implicant_list, &groups);
-                if (trace_this) trace("groups: indices {any} bounds {any}\n", .{ groups.indices.items, groups.bounds.items });
-                const ilistkeys = implicant_list.ts.keys();
-                var boundid: usize = 0;
-                var bound0: usize = 0;
-                while (boundid + 1 < groups.bounds.items.len) : (boundid += 1) {
-                    var bound1 = groups.bounds.items[boundid];
-                    var bound2 = groups.bounds.items[boundid + 1];
-                    const group0 = groups.indices.items[bound0..bound1];
-                    const group1 = groups.indices.items[bound1..bound2];
-                    var reversed = false;
-                    if (trace_this) {
-                        trace("round {} bound0 {} bound1 {} bound2 {} \ng0\n", .{ boundid, bound0, bound1, bound2 });
-                        for (group0) |i| {
-                            const t0 = ilistkeys[i];
-                            trace("  {} {} {}\n", .{ i, TFmt.init(t0, m), TFmtVars.init(t0, self.variables) });
-                        }
-                        trace("g1\n", .{});
-                        for (group1) |i| {
-                            const t1 = ilistkeys[i];
-                            trace("  {} {} {}\n", .{ i, TFmt.init(t1, m), TFmtVars.init(t1, self.variables) });
-                        }
+            if (false) {
+                var groups = try arena.alloc(TermSet, ngroups);
+                for (groups) |*g| g.* = .{};
+                {
+                    var kiter = terms.keyIterator();
+                    while (kiter.next()) |t| {
+                        const bitcount = termCount(t.*, .one);
+                        try groups[bitcount].put(arena, t.*, {});
                     }
-                    for (group0) |id0| {
-                        const it0 = ilistkeys[id0];
-                        // TODO: optimization - if reversed, iterate group1 backwards
-                        _ = reversed;
-                        for (group1) |id1| {
-                            const it1 = ilistkeys[id1];
+                }
+                if (self.flags.contains(.use_xor))
+                    todo("use_xor");
+            }
 
-                            var xor = (it0 ^ it1) & dashes_complement;
-                            if ((it0 & dashes) == (it1 & dashes) and @popCount(T, xor) == 1) {
-                                combined = true;
-                                var newitem = it0 & ~xor;
-                                xor <<= 1;
-                                newitem |= xor;
-                                if (trace_this) trace(
-                                    "combining {}:{} {}:{} newitem {}:{}\n",
-                                    .{ id0, TFmt.init(it0, m), id1, TFmt.init(it1, m), TFmt.init(newitem, m), TFmtVars.init(newitem, self.variables) },
-                                );
-                                implicant_list.ts.getPtr(it0).?.* = true;
-                                implicant_list.ts.getPtr(it1).?.* = true;
+            var groups: TermMap = .{};
+            var used: TermSet = .{};
+            var marked: TermSet = .{};
+            var t2 = try arena.alloc(u8, try std.math.divCeil(TLen, self.bitcount, 2));
 
-                                try new_implicant_list.append(self.allocator, newitem, false);
+            while (true) {
+                groups.clearRetainingCapacity();
+                {
+                    for (terms.keys()) |t| {
+                        const key = GroupKey{ termCount(t, .one), termCount(t, .xor), termCount(t, .xnor) };
+                        // trace("t {} key {any}\n", .{ TermFmt.init(t), key });
+                        assert(key[1] == 0 or key[2] == 0);
+                        const gop = try groups.getOrPut(arena, key);
+                        if (!gop.found_existing) gop.value_ptr.* = .{};
+                        try gop.value_ptr.put(arena, t, {});
+                    }
+                }
+
+                {
+                    var groupsiter = groups.iterator();
+                    while (groupsiter.next()) |it| {
+                        trace("group{any}: {} {}\n", .{ it.key_ptr.*, it.value_ptr.*.count(), TermSetFmt.init(it.value_ptr.*, comma_delim, self.bitcount) });
+                    }
+                }
+
+                used.clearRetainingCapacity();
+                terms.clearRetainingCapacity();
+
+                // Find prime implicants
+                var groupsiter = groups.iterator();
+                while (groupsiter.next()) |it| {
+                    var key_next = it.key_ptr.*;
+                    key_next[0] += 1;
+                    const group_next = groups.get(key_next) orelse continue;
+                    const group = it.value_ptr.*;
+                    for (group.keys()) |t1| {
+                        // trace("t1 {}\n", .{TermFmt.init(t1)});
+                        for (t1) |cs1, i| {
+                            const dual = toDual(cs1);
+                            // check both nibbles
+                            inline for (comptime std.meta.fieldNames(Dual)) |f| {
+                                const c1 = @field(dual, f);
+                                if (c1 == zero) {
+                                    std.mem.copy(u8, t2, t1);
+                                    var dual2 = toDual(t2[i]);
+                                    @field(dual2, f) = one;
+                                    t2[i] = fromDual(dual2);
+                                    // trace("t2 {}\n", .{TermFmt.init(t2)});
+                                    if (group_next.contains(t2)) {
+                                        const t12 = try arena.dupe(u8, t1);
+                                        var dual12 = toDual(t12[i]);
+                                        @field(dual12, f) = dash;
+                                        t12[i] = fromDual(dual12);
+                                        // trace("{} {} {}\n", .{ TermFmt.init(t1, self.bitcount), TermFmt.init(t2, self.bitcount), TermFmt.init(t12, self.bitcount) });
+                                        try used.put(arena, t1, {});
+                                        try used.put(arena, try arena.dupe(u8, t2), {});
+                                        try terms.put(arena, t12, {});
+                                    }
+                                }
                             }
                         }
-                        reversed = !reversed;
                     }
-                    bound0 = bound1;
                 }
 
-                var iter = implicant_list.ts.iterator();
-                while (iter.next()) |it|
-                    if (!it.value_ptr.*)
-                        try prime_list.ts.put(self.allocator, it.key_ptr.*, it.value_ptr.*);
-                implicant_lists[listid].ts.clearRetainingCapacity();
+                // TODO; Find XOR combinations
+
+                // TODO; Find XNOR combinations
+
+                // Add the unused terms to the list of marked terms
+                // for g in list(groups.values()):
+                //     marked |= g - used
+                var gvalsiter = groups.valueIterator();
+                while (gvalsiter.next()) |g| {
+                    for (g.keys()) |t| {
+                        if (!used.contains(t))
+                            try marked.put(arena, t, {});
+                    }
+                }
+                // TODO: audit marked inconsistency w/ qm.py
+                trace("groups.len {} used.len {} marked.len {}\n", .{ groups.count(), used.count(), marked.count() });
+                if (used.count() == 0) break;
             }
 
-            var primeiter = prime_list.ts.iterator();
-            while (primeiter.next()) |it| {
-                if (trace_this) trace("prime {}:{}-{}\n", .{ TFmt.init(it.key_ptr.*, m), TFmtVars.init(it.key_ptr.*, self.variables), it.value_ptr.* });
-                assert(!it.value_ptr.*);
-                try self.prime_list.append(self.allocator, it.key_ptr.*);
-            }
-        }
+            trace("groups.len {} used.len {} marked.len {}\n", .{ groups.count(), used.count(), marked.count() });
 
-        fn rank(t: T) T {
-            var tmut = t;
-            var result: T = 0;
-            var i: TLen = 0;
-            while (i < TBitSize / 2 - 1) : (i += 1) {
-                result += @as(T, switch (@truncate(u2, tmut)) {
-                    0 => 0,
-                    1 => 1,
-                    2 => 8,
-                    else => @panic("unreachable"),
-                });
-                tmut >>= 2;
+            // Prepare the list of prime implicants
+            var result: TermSet = .{};
+            for (marked.keys()) |k| {
+                try result.put(self.allocator, try self.allocator.dupe(u8, k), {});
+            }
+
+            var gvaluesiter = groups.valueIterator();
+            while (gvaluesiter.next()) |g| {
+                for (g.keys()) |k| {
+                    const dupe = try self.allocator.dupe(u8, k);
+                    const gop = try result.getOrPut(self.allocator, dupe);
+                    if (gop.found_existing) self.allocator.free(dupe);
+                }
             }
             return result;
         }
 
-        pub fn gtByRank(_: void, lhs: PrimeCoverage, rhs: PrimeCoverage) bool {
-            return rank(lhs.prime) > rank(rhs.prime);
+        fn termRank(t: u4) u16 {
+            return if (t == 0 or t == invalid) 0 else @as(u16, 1) << t - 1;
         }
 
-        /// represents a prime and the minterms which it covers.
-        /// minterms is a bitset of indices into minterms list
-        /// cover means that the prime has been reduced from the minterms
-        pub const PrimeCoverage = struct {
-            minterm_set_indices: std.DynamicBitSetUnmanaged,
-            prime: T,
+        fn getTermRank(term: Term, term_range: u16) !u16 {
+            comptime {
+                assert(5 == invalid);
+                assert(4 == dash);
+                assert(3 == xor);
+                assert(2 == xnor);
+                assert(1 == one);
+                assert(0 == zero);
+                assert(8 == termRank(dash));
+                assert(4 == termRank(xor));
+                assert(2 == termRank(xnor));
+                assert(1 == termRank(one));
+                assert(0 == termRank(zero));
+                assert(0 == termRank(invalid));
+            }
+            var n: u16 = 0;
+            for (term) |byte| {
+                const dual = toDual(byte);
+                n += termRank(dual.a);
+                n += termRank(dual.b);
+            }
+            return 4 * term_range + n;
+        }
+
+        pub fn isSubSet(comptime Set: type, maybe_subset: Set, set: Set) bool {
+            if (maybe_subset.count() > set.count()) return false;
+            for (maybe_subset.keys()) |k| {
+                if (!set.contains(k)) return false;
+            }
+            return true;
+        }
+
+        pub fn setsEqual(comptime Set: type, a: Set, b: Set) bool {
+            if (a.count() != b.count()) return false;
+            for (a.keys()) |k| {
+                if (!b.contains(k)) return false;
+            }
+            return true;
+        }
+
+        pub const Permutations = struct {
+            value: Term,
+            n_bits: TLog2,
+            n_xor: u8,
+            xor_value: u8 = 0,
+            seen_xors: u8 = 0,
+            res: A = [1]u8{0} ** (TBitSize / 2),
+            i: TLog2Signed = 0,
+            direction: i2 = 1,
+            exclude: TSet,
+
+            pub const A = [TBitSize / 2]u8;
+            pub const V = @Vector(TBitSize / 2, u8);
+
+            pub fn init(term: Term, exclude: TSet) Permutations {
+                var result = Permutations{
+                    .n_bits = @intCast(TLog2, term.len),
+                    .n_xor = termCount(term, .xor) + termCount(term, .xnor),
+                    .exclude = exclude,
+                    .value = term,
+                };
+                return result;
+            }
+
+            inline fn setDualFieldIf(is_a: bool, dest_byte: *u8, src_byte: u8) void {
+                const dest_dual = toDualPtr(dest_byte);
+                const src_dual = toDual(src_byte);
+                if (is_a)
+                    dest_dual.a = src_dual.a
+                else
+                    dest_dual.b = src_dual.b;
+            }
+
+            pub fn next(self: *Permutations) Term {
+                const trace_this = false;
+                if (trace_this) trace("value {} \n", .{TermFmt.init(self.value[0..self.n_bits])});
+
+                // unlike the python version, in this one, self.i ranges from 0..(n_bits * 2)
+                // (rather than 0...n_bits).  this is because each byte stores two elements.
+                while (self.i >= 0) {
+                    {
+                        const i = @intCast(TLen, @divTrunc(self.i, 2));
+                        if (trace_this) trace("next()  i {} direction {} value[i] {c} res[i] {c}\n", .{
+                            i,
+                            self.direction,
+                            nibblesToBytes(self.value[i]),
+                            nibblesToBytes(self.res[i]),
+                        });
+                        // on even indices, use low nibble 'a' otherwise high nibble 'b'
+                        const is_a = @truncate(i1, self.i) == 0;
+                        const dual = toDual(self.value[i]);
+                        const ele = if (is_a) dual.a else dual.b;
+                        switch (ele) {
+                            zero, one => setDualFieldIf(is_a, &self.res[i], self.value[i]),
+                            dash => if (self.direction == 1) {
+                                setDualFieldIf(is_a, &self.res[i], fromDual(Dual.init(zero, zero)));
+                            } else {
+                                const dualres = toDual(self.res[i]);
+                                const nibble = if (is_a) dualres.a else dualres.b;
+                                if (nibble == zero) {
+                                    setDualFieldIf(is_a, &self.res[i], fromDual(Dual.init(one, one)));
+                                    self.direction = 1;
+                                }
+                            },
+                            xor => todo("xor"),
+                            xnor => todo("xnor"),
+                            invalid => todo("invalid"),
+                            else => std.debug.panic("invalid TermElement {}", .{ele}),
+                        }
+                        if (trace_this and i < self.value.len)
+                            trace("next()2 i {} direction {} value[i] {c} res[i] {c}\n", .{
+                                i,
+                                self.direction,
+                                nibblesToBytes(self.value[i]),
+                                nibblesToBytes(self.res.get(i)),
+                            });
+                    }
+
+                    self.i += self.direction;
+                    if (std.math.cast(TLen, self.i)) |i| {
+                        if (i == self.n_bits * 2) {
+                            self.direction = -1;
+                            self.i = self.n_bits * 2 - 1;
+
+                            // TODO: verify this works
+                            var t: T = 0;
+                            const skiplen = std.math.sub(usize, self.value.len * 2, self.n_bits) catch unreachable;
+                            var j: TLog2 = 0;
+                            for (self.res) |c| {
+                                const dual = toDual(c);
+                                if (j >= skiplen) {
+                                    const b = @boolToInt(dual.a == one);
+                                    t |= @as(T, b) << j;
+                                }
+                                j += 1;
+                                if (j >= skiplen) {
+                                    const b = @boolToInt(dual.b == one);
+                                    t |= @as(T, b) << j;
+                                }
+                                if (j == TBitSize - 1) break;
+                                j += 1;
+                            }
+
+                            if (trace_this) {
+                                var buf: A = undefined;
+                                const tterm = toTermBuf(&buf, t, self.n_bits);
+                                trace(
+                                    "t {b:0>8} tterm {} self.res {} self.exclude.contains(t) {}\n",
+                                    .{ t, TermFmt.init(tterm), TermFmt.init(@as(A, self.res)[0..self.n_bits]), self.exclude.contains(t) },
+                                );
+                            }
+                            if (!self.exclude.contains(t)) {
+                                return self.res[0..self.n_bits];
+                            }
+                        }
+                    }
+                }
+                return &[0]u8{};
+            }
         };
 
-        fn findEssentialPrimes(self: *Self) !void {
-            const trace_this = false;
-
-            var timer = try std.time.Timer.start();
-            // make list of prime coverages
-            // generate bitset of indices from permutations of prime
-            var primecovs: std.AutoHashMapUnmanaged(PrimeCoverage, void) = .{};
-            defer {
-                var kiter = primecovs.keyIterator();
-                while (kiter.next()) |k| k.minterm_set_indices.deinit(self.allocator);
-                primecovs.deinit(self.allocator);
+        fn collectPerms(arena: Allocator, term: Term, result: *TermSet, excludes: TSet) !void {
+            var permsiter = Permutations.init(term, excludes);
+            while (true) {
+                const p = permsiter.next();
+                if (p.len == 0) break;
+                try result.putNoClobber(arena, try arena.dupe(u8, p), {});
             }
-            for (self.prime_list.items) |prime| {
-                const pdashes = prime & dashes;
-                // find first minterm which is the prime with 0s for dashes
-                const pnodashes = prime & dashes_complement;
-                // trace("{}:{} prime {b:0>8} pnodashes {} minterms {any}\n", .{ TFmt.init(prime, @intCast(TLog2, self.variables.len)), TFmtVars.init(prime, self.variables), prime, pnodashes, self.minterms });
-                const mts_idx0 = std.mem.indexOfScalar(T, self.minterms, pnodashes).?;
-                var primecov: PrimeCoverage = .{ .minterm_set_indices = try std.DynamicBitSetUnmanaged.initEmpty(self.allocator, self.minterms.len), .prime = prime };
-                primecov.minterm_set_indices.set(mts_idx0);
+        }
 
-                // loop over dashes, adding to primecov.minterms
-                var pdashes_bitset: TBitSet = if (TBitSize <= 64) .{ .mask = pdashes } else .{ .masks = @bitCast(Masks, pdashes) };
-                var pdashes_iter = pdashes_bitset.iterator(.{});
-                // trace("pdashes {b:0>8} pnodashes {b:0>8} prime {b:0>8}:{}\n", .{ pdashes, pnodashes, prime, TFmtVars.init(prime, self.variables) });
-                while (pdashes_iter.next()) |dash_idx| {
-                    const dash_mask = (@as(T, 1) << @intCast(TLog2, dash_idx)) >> 1;
-                    const mts = primecov.minterm_set_indices;
-                    var mts_iter = mts.iterator(.{});
-                    while (mts_iter.next()) |mts_idx| {
-                        const minterm = self.minterms[mts_idx] | dash_mask;
-                        // trace("this minterms[mts_idx] {} minterm {} {} minterms.len {} minterms {any} \n", .{ self.minterms[mts_idx], minterm, TLog2, self.minterms.len, self.minterms });
-                        const mt_idx = std.mem.indexOfScalar(T, self.minterms, minterm).?;
-                        primecov.minterm_set_indices.set(mt_idx);
-                    }
-                }
-                if (trace_this) {
-                    trace("{} minterms : ", .{TFmtVars.init(prime, self.variables)});
-                    var mtsiter = primecov.minterm_set_indices.iterator(.{});
-                    while (mtsiter.next()) |mtidx|
-                        trace("{}, ", .{compressT(self.minterms[mtidx], 1)});
-                    trace("\n", .{});
-                }
-                try primecovs.put(self.allocator, primecov, {});
-            }
+        pub fn getEssentialImplicants(self: *Self, arena: Allocator, terms: *TermSet, dcset: TSet) !TermSet {
 
-            const m = @intCast(TLog2, self.variables.len);
-            var max_rank: usize = 1;
+            // Create all permutations for each term in terms.
+            var perms: PermMap = .{};
             {
-                const t1 = timer.lap();
-                if (trace_this)
-                    std.debug.print("findPrimes1 took         {}\n", .{std.fmt.fmtDuration(t1)});
+                for (terms.keys()) |term| {
+                    const gop = try perms.getOrPut(arena, term);
+                    if (!gop.found_existing) gop.value_ptr.* = .{};
+                    // trace("t {}\n", .{TermFmt.init(term)});
+                    try collectPerms(arena, term, gop.value_ptr, dcset);
+                    // trace("term {} perms {}\n", .{ TermFmt.init(term, self.bitcount), gop.value_ptr.count() });
+                }
+            }
+            trace("perms.len {}\n", .{perms.count()});
+            // Now group the remaining terms and see if any term can be covered
+            // by a combination of terms.
+            var ei: TermSet = .{};
+            var ei_range: TermSet = .{};
+            var groups: TermMapOrdered = .{};
+
+            for (terms.keys()) |t| {
+                const permset = perms.get(t).?;
+                const permcount = permset.count();
+                trace("t {} permcount {} perms[t] {}\n", .{ TermFmt.init(t, self.bitcount), permcount, TermSetFmt.init(permset, comma_delim, self.bitcount) });
+                const n = try getTermRank(t, @intCast(u16, permcount));
+                const gop = try groups.getOrPut(arena, n);
+                if (!gop.found_existing) gop.value_ptr.* = .{};
+                try gop.value_ptr.putNoClobber(arena, t, {});
             }
 
-            var victim: ?*PrimeCoverage = null;
-            while (max_rank != 0) {
-                max_rank = 0;
-                var temp: ?*PrimeCoverage = null;
-                var kiter = primecovs.keyIterator();
-                while (kiter.next()) |primecov| {
-                    const prime = primecov.prime;
-                    if (trace_this) {
-                        trace("prime {} ", .{TFmt.init(prime, m)});
-                        if (victim) |v|
-                            trace("victim {}\n", .{TFmt.init(v.prime, m)})
-                        else
-                            trace("victim null\n", .{});
-                    }
-                    // Let val-1 be the minterm set of a prime implicant
-                    // victim is the prime implicant that is merged from the largest number of minterm
-                    if (victim) |v| {
-                        // remove victim minterms from this one
-                        // trace("victim indices {b:0>16}\n", .{v.minterm_set_indices.mask});
-                        // trace("before removal {b:0>16}\n", .{primecov.minterm_set_indices.mask});
-                        const num_masks = (primecov.minterm_set_indices.bit_length + (@bitSizeOf(std.DynamicBitSetUnmanaged.MaskInt) - 1)) / @bitSizeOf(std.DynamicBitSetUnmanaged.MaskInt);
-                        for ((primecov.minterm_set_indices.masks)[0..num_masks]) |*mask, i|
-                            mask.* &= ~(v.minterm_set_indices.masks)[i];
-                        // trace("after removal  {b:0>16}\n", .{primecov.minterm_set_indices.mask});
-                    }
-                    const rk = primecov.minterm_set_indices.count();
-                    if (rk > max_rank) {
-                        max_rank = rk;
-                        temp = primecov;
+            trace("groups.len {}\n", .{groups.count()});
+            groups.sort(struct {
+                keys: []const u16,
+                pub fn lessThan(this: @This(), aidx: usize, bidx: usize) bool {
+                    return this.keys[aidx] > this.keys[bidx];
+                }
+            }{ .keys = groups.keys() });
+
+            // trace("groups.keys :", .{});
+            // for (groups.keys()) |k| {
+            //     trace("{}, ", .{k});
+            // }
+            // trace("\n", .{});
+            // for (groups.keys()) |t| {
+            //     const gt = groups.get(t).?;
+            //     trace("t {} {}\n", .{ t, TermSetFmt.init(gt, comma_delim, self.bitcount) });
+            //     for (gt.keys()) |g| {
+            //         const gperms = perms.get(g).?;
+            //         trace("  {}: {}\n", .{ TermFmt.init(g, self.bitcount), TermSetFmt.init(gperms, comma_delim, self.bitcount) });
+            //     }
+            // }
+
+            var giter = groups.iterator();
+            while (giter.next()) |git| {
+                const term = git.key_ptr.*;
+                const group = git.value_ptr.*;
+                trace("t {} gs.len {} ei_range.len {}\n", .{ term, group.count(), ei_range.count() });
+                // const gs = groups.get(t).?;
+                for (group.keys()) |g| {
+                    const gperms = perms.get(g).?;
+                    const issubset = isSubSet(TermSet, gperms, ei_range);
+                    // trace("perms[{}] {} {}\n", .{ TermFmt.init(g, self.bitcount), gperms.count(), TermSetFmt.init(gperms, comma_delim, self.bitcount) });
+                    // // trace("ei_range {} {}\n", .{ ei_range.count(), TermSetFmt.init(ei_range, comma_delim, self.bitcount) });
+                    // trace("ei_range {}\n", .{ei_range.count()});
+                    // trace("not perms[g] <= ei_range {}\n", .{!issubset});
+                    if (!issubset) {
+                        try ei.put(self.allocator, try self.allocator.dupe(u8, g), {});
+                        for (gperms.keys()) |gpk| {
+                            try ei_range.put(arena, gpk, {});
+                        }
                     }
                 }
-                if (temp) |t| {
-                    if (trace_this) trace("adding {}\n", .{TFmtVars.init(t.prime, self.variables)});
-                    try self.final_prime_list.append(self.allocator, t.prime);
-                    t.minterm_set_indices.deinit(self.allocator);
-                    _ = primecovs.remove(t.*);
-                }
-                victim = temp;
+            }
+            if (ei.count() == 0) {
+                const x = try self.allocator.alloc(u8, try std.math.divCeil(TLen, self.bitcount, 2));
+                std.mem.set(u8, x, fromDual(.{ .a = dash, .b = dash }));
+                try ei.put(self.allocator, x, {});
             }
 
+            return ei;
+        }
+
+        fn elementCount(term: Term, e: u4, bitcount: TLen) TLen {
+            var result: TLen = 0;
+            const skiplen = term.len * 2 - bitcount;
+            var j: TLen = 0;
+            for (term) |byte| {
+                const dual = toDual(byte);
+                if (j >= skiplen)
+                    result += @boolToInt(dual.a == e);
+                j += 1;
+                if (j >= skiplen)
+                    result += @boolToInt(dual.b == e);
+                j += 1;
+            }
+            return result;
+        }
+
+        fn complexity(term: Term, bitcount: TLen) f32 {
+            var result: f32 = 0;
+            result += 1.00 * @intToFloat(f32, elementCount(term, one, bitcount));
+            result += 1.50 * @intToFloat(f32, elementCount(term, zero, bitcount));
+            result += 1.25 * @intToFloat(f32, elementCount(term, xor, bitcount));
+            result += 1.75 * @intToFloat(f32, elementCount(term, xnor, bitcount));
+            return result;
+        }
+
+        fn ltByComplexity(bitcount: TLen, a: Term, b: Term) bool {
+            return complexity(a, bitcount) < complexity(b, bitcount);
+        }
+
+        fn combineImplicants(self: Self, arena: Allocator, a: Term, b: Term, dcset: TSet) !Term {
+            var permutations_a: TermSet = .{};
+            try collectPerms(arena, a, &permutations_a, dcset);
+            var permutations_b: TermSet = .{};
+            try collectPerms(arena, b, &permutations_b, dcset);
+            var a_potential = try arena.dupe(u8, a);
+            var b_potential = try arena.dupe(u8, b);
+
+            // FIXME: optimize - seems like these loops could be combined
+            // const a_term_dcs = try indices(arena, a, dash);
+            // for (a_term_dcs) |index| a_potential[index] = b[index];
+            for (a) |_, i| {
+                const adual = toDual(a[i]);
+                const bdual = toDual(b[i]);
+                const apotdual = toDualPtr(&a_potential[i]);
+                if (adual.a == dash) apotdual.a = bdual.a;
+                if (adual.b == dash) apotdual.b = bdual.b;
+            }
+            // const b_term_dcs = try indices(arena, b, dash);
+            // for (b_term_dcs) |index| b_potential[index] = a[index];
+            for (b) |_, i| {
+                const adual = toDual(a[i]);
+                const bdual = toDual(b[i]);
+                const bpotdual = toDualPtr(&b_potential[i]);
+                if (bdual.a == dash) bpotdual.a = adual.a;
+                if (bdual.b == dash) bpotdual.b = adual.b;
+            }
+            for (permutations_b.keys()) |bp| try permutations_a.put(arena, bp, {});
+            var valid: TermList = .{};
+            var set: TermSet = .{};
+            try collectPerms(arena, a_potential, &set, dcset);
+            if (setsEqual(TermSet, set, permutations_a))
+                try valid.append(arena, a_potential);
+            set.clearRetainingCapacity();
+            try collectPerms(arena, b_potential, &set, dcset);
+            if (setsEqual(TermSet, set, permutations_a))
+                try valid.append(arena, a_potential);
+            // trace("valid {}\n", .{TermsFmt.init(valid.items, comma_delim, self.bitcount)});
+            _ = self;
+            std.sort.sort(Term, valid.items, self.bitcount, ltByComplexity);
+            return if (valid.items.len > 0)
+                valid.items[0]
+            else
+                &[0]u8{};
+        }
+
+        pub fn reduceImplicants(self: *Self, arena: Allocator, implicants: *TermSet, dcset: TSet) !TermSet {
+            trace("implicants.len {}\n", .{implicants.count()});
+            while (true) {
+                outer: for (implicants.keys()) |a, i| {
+                    for (implicants.keys()[i + 1 ..]) |b| {
+                        const replacement = try self.combineImplicants(arena, a, b, dcset);
+                        if (replacement.len > 0) {
+                            trace("a {} b {} replacement {}\n", .{ TermFmt.init(a, self.bitcount), TermFmt.init(b, self.bitcount), TermFmt.init(replacement, self.bitcount) });
+                            _ = implicants.swapRemove(a);
+                            _ = implicants.swapRemove(b);
+                            try implicants.put(arena, replacement, {});
+                            break :outer;
+                        }
+                    }
+                } else break;
+            }
+
+            var coverage: PermMap = .{};
+            var combined_len: usize = 0;
             {
-                const t1 = timer.lap();
-                if (trace_this)
-                    std.debug.print("findPrimes2 took         {}\n", .{std.fmt.fmtDuration(t1)});
+                for (implicants.keys()) |implicant| {
+                    const gop = try coverage.getOrPut(arena, implicant);
+                    if (!gop.found_existing) gop.value_ptr.* = .{};
+                    // trace("implicant {}\n", .{TermFmt.init(implicant)});
+                    try collectPerms(arena, implicant, gop.value_ptr, dcset);
+                    combined_len += gop.value_ptr.count();
+                }
             }
+            trace("coverage.len {} combined {}\n", .{ coverage.count(), combined_len });
+
+            var others_coverage: TermSet = .{};
+            var redundant: std.ArrayListUnmanaged(Term) = .{};
+            while (true) {
+                redundant.clearRetainingCapacity();
+                var coviter = coverage.iterator();
+                while (coviter.next()) |it| {
+                    const this_implicant = it.key_ptr.*;
+                    const this_coverage = it.value_ptr.*;
+                    others_coverage.clearRetainingCapacity();
+                    var coviter2 = coverage.keyIterator();
+                    while (coviter2.next()) |other_implicantp| {
+                        const other_implicant = other_implicantp.*;
+                        if (std.mem.eql(u8, other_implicant, this_implicant)) continue;
+                        const cov = coverage.get(other_implicant).?;
+                        for (cov.keys()) |n|
+                            try others_coverage.put(arena, n, {});
+                    }
+                    const issubset = isSubSet(TermSet, this_coverage, others_coverage);
+                    if (issubset) trace("this_coverage.len {} others_coverage.len {}\n", .{ this_coverage.count(), others_coverage.count() });
+                    if (issubset)
+                        try redundant.append(arena, this_implicant);
+                }
+                trace("redundant {}\n", .{redundant.items.len});
+                if (redundant.items.len > 0) {
+                    std.sort.sort(Term, redundant.items, self.bitcount, ltByComplexity);
+                    const worst = redundant.items[redundant.items.len - 1];
+                    trace("worst {}\nsorted redundant {}\n", .{ TermFmt.init(worst, self.bitcount), TermsFmt.init(redundant.items, comma_delim, self.bitcount) });
+                    _ = coverage.remove(worst);
+                } else break;
+            }
+
+            var result: TermSet = .{};
+            var citer = coverage.keyIterator();
+            while (citer.next()) |k|
+                try result.put(self.allocator, try self.allocator.dupe(u8, k.*), {});
+            if (result.count() == 0) {
+                const x = try self.allocator.alloc(u8, try std.math.divCeil(TLen, self.bitcount, 2));
+                std.mem.set(u8, x, fromDual(.{ .a = dash, .b = dash }));
+                try result.put(self.allocator, x, {});
+            }
+            return result;
         }
     };
 }
@@ -593,82 +829,38 @@ fn todo(msg: []const u8) noreturn {
     @panic(msg);
 }
 
-// const show_trace = true;
-fn trace(comptime fmt: []const u8, args: anytype) void {
-    if (@hasDecl(@This(), "show_trace"))
+pub const show_trace = false;
+pub fn trace(comptime fmt: []const u8, args: anytype) void {
+    if (@hasDecl(@This(), "show_trace") and @field(@This(), "show_trace"))
         std.debug.print(fmt, args);
 }
 
-// following tests removed from tests.zig during rewrite. left here commented out as they need fixups.
+const allr = std.testing.allocator;
+const Qm32 = QuineMcCluskey(u32);
+const parsing = @import("parsing.zig");
+fn doTest(ones: []const Qm32.T, dontcares: []const Qm32.T, expected: []const u8) !void {
+    var q = Qm32.init(allr, ones, dontcares, .{});
+    try q.reduce();
+    defer q.deinit();
+    const s = try std.fmt.allocPrint(allr, "{}", .{Qm32.TermSetFmt.init(q.reduced_implicants, Qm32.comma_delim, q.bitcount)});
+    defer allr.free(s);
+    const equal = try parsing.testEqualStringSets(Qm32, allr, expected, s, Qm32.comma_delim);
+    // std.debug.print("reduced_implicants.len {}\n", .{q.reduced_implicants.count()});
+    try std.testing.expect(equal);
+}
 
-// test "sanity checks" {
-//     try std.testing.expectEqual(@as(u8, 0b10101010), QMu8.dashes);
-//     try std.testing.expectEqual(@as(u8, 0b01010101), QMu8.dashes_complement);
-// }
-
-// test "widen" {
-//     const ones = [_]u8{ 2, 6, 10, 12, 3, 9, 7, 11, 13 };
-//     var ones_wide: [ones.len]u16 = undefined;
-//     for (ones) |o, i| ones_wide[i] = QMu16.widenT(o);
-//     try std.testing.expectEqualSlices(u16, &.{ 4, 20, 68, 80, 5, 65, 21, 69, 81 }, &ones_wide);
-// }
-
-// test "widen compress" {
-//     const one = 0b110011;
-//     const one_wide = QMu32.widenT(one);
-//     try std.testing.expectEqual(@as(u32, 0b0000010100000101), one_wide);
-//     try std.testing.expectEqual(@as(u32, one), QMu32.compressT(one_wide, 1));
-// }
-
-// fn testPerms(imp: QMu32.ImplTs, expecteds: []const @TypeOf(@as(QMu32.TSet.KV, undefined).key), comptime fmt: []const u8) !void {
-//     var q = QMu32.init(allr, &.{});
-//     defer q.deinit();
-//     var perms = try q.permutations(imp);
-//     defer perms.deinit();
-//     const eq = setsEqual2(QMu32.TSet, perms, expecteds);
-//     if (!eq)
-//         std.debug.print("expected " ++ fmt ++ " actual " ++ fmt ++ "\n", .{ expecteds, perms.keys() });
-//     try std.testing.expect(eq);
-// }
-
-// test "permutations" {
-//     const fmt = "{b:0>4}";
-//     try testPerms(
-//         .{ .number = 0b0011, .dashes = 0b1100 },
-//         &.{ 0b0011, 0b0111, 0b1011, 0b1111 },
-//         fmt,
-//     );
-//     try testPerms(
-//         .{ .number = 0b0000, .dashes = 0b1100 },
-//         &.{ 0b0000, 0b0100, 0b1000, 0b1100 },
-//         fmt,
-//     );
-//     try testPerms(
-//         .{ .number = 0b0000, .dashes = 0b1000 },
-//         &.{ 0b0000, 0b1000 },
-//         fmt,
-//     );
-//     try testPerms(
-//         .{ .number = 0b0000, .dashes = 0b1110 },
-//         &.{ 0b0000, 0b0010, 0b0100, 0b0110, 0b1000, 0b1010, 0b1100, 0b1110 },
-//         fmt,
-//     );
-
-//     {
-//         // this block exercises a bug which happens when iterating over set keys while adding to the set.
-//         // the bug only manifests when set.keys() grows big enough that a reallocation happens.
-//         // this is the old buggy code from premutations:
-//         //   for (set.keys()) |k|
-//         //     try set.put(k | mask, {});
-//         var q = QMu32.init(allr, &.{});
-//         defer q.deinit();
-//         // -00--------
-//         var perms = try q.permutations(.{ .number = 0, .dashes = 0b10011111111 });
-//         defer perms.deinit();
-//         // -11--------
-//         var perms2 = try q.permutations(.{ .number = 0b01100000000, .dashes = 0b10011111111 });
-//         for (perms2.keys()) |k| try perms.put(k, {});
-//         defer perms2.deinit();
-//         try std.testing.expectEqual(@as(usize, 1024), perms.count());
-//     }
-// }
+test "basic" {
+    try doTest(&.{ 2, 6, 10, 14, 15, 8, 9 }, &.{}, "--10, 111-, 100-");
+    try doTest(&.{ 4, 8, 6, 12 }, &.{}, "1-00, 01-0");
+    try doTest(&.{ 1, 2, 3, 6 }, &.{}, "0-1, -10");
+    try doTest(
+        &.{ 0, 1, 2, 4, 8, 64, 3, 5, 6, 9, 12, 20, 48, 66, 144, 7, 13, 14, 26, 42, 50, 52, 74, 133, 15, 29, 30, 51, 75, 89, 101, 114, 177, 31, 47, 55, 59, 143, 185, 248, 126 },
+        &.{},
+        "-0000101, 0000--0-, 01100101, 11111000, 1011-001, 0-110010, 0-0000-0, 00101010, 000-11-1, 0011-011, 00110-00, 00000---, -0001111, 0000-1--, 10010000, 00-01111, 01111110, 01011001, 00110-11, 0100101-, 00011-10, 00-10100",
+    );
+    try doTest(
+        &.{ 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 142, 399, 20, 21, 22, 279, 24, 25, 23, 29, 31, 38, 39, 44, 45, 46, 179, 51, 53, 54, 185, 60, 62, 196, 211, 87, 89, 227, 101, 235, 238, 495, 239, 242, 243, 244, 118, 120, 508, 125 },
+        &.{},
+        "000-0011-, 001111000, 000-10101, 0111-0011, 00-010111, 00000--1-, 0000--1-1, 111111100, 0-0110011, 011-10011, 010111001, 011000100, 011101-11, -11101111, 001111101, 01110111-, 0000101--, 000-0110-, 0001-11-0, 00-011001, 0000-100-, 00-110110, 0-0001110, 001100101, 01111001-, 110001111, 00000---1, 011110100, -00010111",
+    );
+}
