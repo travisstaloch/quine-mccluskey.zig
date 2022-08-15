@@ -1,8 +1,11 @@
 //! adapted from https://github.com/tpircher/quine-mccluskey/
+//! TODO: add support for xor/xnor reductions
 
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 const assert = std.debug.assert;
+
+pub const parsing = @import("parsing.zig");
 
 /// this imlementation packs 2 elements per byte.
 /// this packed representation is called a 'dual' here.
@@ -833,34 +836,4 @@ pub const show_trace = false;
 pub fn trace(comptime fmt: []const u8, args: anytype) void {
     if (@hasDecl(@This(), "show_trace") and @field(@This(), "show_trace"))
         std.debug.print(fmt, args);
-}
-
-const allr = std.testing.allocator;
-const Qm32 = QuineMcCluskey(u32);
-const parsing = @import("parsing.zig");
-fn doTest(ones: []const Qm32.T, dontcares: []const Qm32.T, expected: []const u8) !void {
-    var q = Qm32.init(allr, ones, dontcares, .{});
-    try q.reduce();
-    defer q.deinit();
-    const s = try std.fmt.allocPrint(allr, "{}", .{Qm32.TermSetFmt.init(q.reduced_implicants, Qm32.comma_delim, q.bitcount)});
-    defer allr.free(s);
-    const equal = try parsing.testEqualStringSets(Qm32, allr, expected, s, Qm32.comma_delim);
-    // std.debug.print("reduced_implicants.len {}\n", .{q.reduced_implicants.count()});
-    try std.testing.expect(equal);
-}
-
-test "basic" {
-    try doTest(&.{ 2, 6, 10, 14, 15, 8, 9 }, &.{}, "--10, 111-, 100-");
-    try doTest(&.{ 4, 8, 6, 12 }, &.{}, "1-00, 01-0");
-    try doTest(&.{ 1, 2, 3, 6 }, &.{}, "0-1, -10");
-    try doTest(
-        &.{ 0, 1, 2, 4, 8, 64, 3, 5, 6, 9, 12, 20, 48, 66, 144, 7, 13, 14, 26, 42, 50, 52, 74, 133, 15, 29, 30, 51, 75, 89, 101, 114, 177, 31, 47, 55, 59, 143, 185, 248, 126 },
-        &.{},
-        "-0000101, 0000--0-, 01100101, 11111000, 1011-001, 0-110010, 0-0000-0, 00101010, 000-11-1, 0011-011, 00110-00, 00000---, -0001111, 0000-1--, 10010000, 00-01111, 01111110, 01011001, 00110-11, 0100101-, 00011-10, 00-10100",
-    );
-    try doTest(
-        &.{ 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 142, 399, 20, 21, 22, 279, 24, 25, 23, 29, 31, 38, 39, 44, 45, 46, 179, 51, 53, 54, 185, 60, 62, 196, 211, 87, 89, 227, 101, 235, 238, 495, 239, 242, 243, 244, 118, 120, 508, 125 },
-        &.{},
-        "000-0011-, 001111000, 000-10101, 0111-0011, 00-010111, 00000--1-, 0000--1-1, 111111100, 0-0110011, 011-10011, 010111001, 011000100, 011101-11, -11101111, 001111101, 01110111-, 0000101--, 000-0110-, 0001-11-0, 00-011001, 0000-100-, 00-110110, 0-0001110, 001100101, 01111001-, 110001111, 00000---1, 011110100, -00010111",
-    );
 }

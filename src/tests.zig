@@ -110,18 +110,18 @@ fn expectEqualStringSets(comptime QM: type, expected: []const u8, actual: []cons
     try std.testing.expect(equal);
 }
 
-const QMu8192 = QuineMcCluskey(u8192);
-const QMu4096 = QuineMcCluskey(u4096);
-const QMu2048 = QuineMcCluskey(u2048);
-const QMu1024 = QuineMcCluskey(u1024);
-const QMu512 = QuineMcCluskey(u512);
-const QMu256 = QuineMcCluskey(u256);
-const QMu128 = QuineMcCluskey(u128);
-const QMu64 = QuineMcCluskey(u64);
-const QMu32 = QuineMcCluskey(u32);
-const QMu16 = QuineMcCluskey(u16);
-const QMu8 = QuineMcCluskey(u8);
-const QMu4 = QuineMcCluskey(u4);
+const Qm8192 = QuineMcCluskey(u8192);
+const Qm4096 = QuineMcCluskey(u4096);
+const Qm2048 = QuineMcCluskey(u2048);
+const Qm1024 = QuineMcCluskey(u1024);
+const Qm512 = QuineMcCluskey(u512);
+const Qm256 = QuineMcCluskey(u256);
+const Qm128 = QuineMcCluskey(u128);
+const Qm64 = QuineMcCluskey(u64);
+const Qm32 = QuineMcCluskey(u32);
+const Qm16 = QuineMcCluskey(u16);
+const Qm8 = QuineMcCluskey(u8);
+const Qm4 = QuineMcCluskey(u4);
 
 const test_large_integers = true;
 const test_large = @hasDecl(@This(), "test_large_integers");
@@ -129,14 +129,14 @@ const test_large = @hasDecl(@This(), "test_large_integers");
 // TODO: add tests with dontcares
 
 test "reduce" {
-    try testReduce(QMu8);
-    try testReduce(QMu16);
-    try testReduce(QMu32);
-    try testReduce(QMu64);
+    try testReduce(Qm8);
+    try testReduce(Qm16);
+    try testReduce(Qm32);
+    try testReduce(Qm64);
     if (test_large) {
-        try testReduce(QMu128);
-        try testReduce(QMu256);
-        try testReduce(QMu512);
+        try testReduce(Qm128);
+        try testReduce(Qm256);
+        try testReduce(Qm512);
         // try testReduce(QMu1024);
         // try testReduce(QMu2048);
         // try testReduce(QMu4096);
@@ -147,8 +147,8 @@ test "reduce" {
 test "reduce binary" {
     const Test = struct {
         res: []const u8,
-        ons: []const QMu32.T = &.{},
-        dnc: []const QMu32.T = &.{},
+        ons: []const Qm32.T = &.{},
+        dnc: []const Qm32.T = &.{},
     };
 
     const common_tests = [_]Test{
@@ -162,14 +162,14 @@ test "reduce binary" {
     };
 
     inline for (common_tests ++ noxor_tests) |t, tsti| {
-        var qm = try QMu32.initAndReduce(allr, t.ons, t.dnc, .{});
+        var qm = try Qm32.initAndReduce(allr, t.ons, t.dnc, .{});
         defer qm.deinit();
         var list = std.ArrayList(u8).init(allr);
         defer list.deinit();
         const writer = list.writer();
         const delimiter = " + ";
-        try p.printEssentialTermsBin(QMu32, qm, writer, delimiter);
-        try expectEqualStringSets(QMu32, t.res, list.items, delimiter, tsti);
+        try p.printEssentialTermsBin(Qm32, qm, writer, delimiter);
+        try expectEqualStringSets(Qm32, t.res, list.items, delimiter, tsti);
     }
 
     // const xor_tests = [_]Test{
@@ -203,19 +203,61 @@ test "not reducible" {
         \\x'y'zw'
     ;
     const delimiter = " + ";
-    const ones = try p.parseTerms(QMu8, allr, input, delimiter, vars, .reverse);
+    const ones = try p.parseTerms(Qm8, allr, input, delimiter, vars, .reverse);
     defer allr.free(ones);
-    var qm = QMu8.init(allr, ones, &.{}, .{});
+    var qm = Qm8.init(allr, ones, &.{}, .{});
     defer qm.deinit();
     var output = std.ArrayList(u8).init(allr);
     defer output.deinit();
     try qm.reduce();
-    try p.printEssentialTerms(QMu8, qm, output.writer(), delimiter, vars);
-    try expectEqualStringSets(QMu8, "xyz' + xz'w + y'z + x'z", output.items, delimiter, 0);
+    try p.printEssentialTerms(Qm8, qm, output.writer(), delimiter, vars);
+    try expectEqualStringSets(Qm8, "xyz' + xz'w + y'z + x'z", output.items, delimiter, 0);
     // TODO: this ^ is actually incorrect. there are 2 minimal disjunctive forms:
     //   note the final terms on each line
     // This can be allomplished by deleting columns of
     // essential prime implicants and rows that contain their symbols
     // x'z + y'z + xyz' + xy'w
     // x'z + y'z + xyz' + xz'w
+}
+
+fn doTest(ones: []const Qm32.T, dontcares: []const Qm32.T, expected: []const u8) !void {
+    var q = Qm32.init(allr, ones, dontcares, .{});
+    try q.reduce();
+    defer q.deinit();
+    const s = try std.fmt.allocPrint(allr, "{}", .{Qm32.TermSetFmt.init(q.reduced_implicants, Qm32.comma_delim, q.bitcount)});
+    defer allr.free(s);
+    const equal = try p.testEqualStringSets(Qm32, allr, expected, s, Qm32.comma_delim);
+    // std.debug.print("reduced_implicants.len {}\n", .{q.reduced_implicants.count()});
+    try std.testing.expect(equal);
+}
+
+test "basic" {
+    try doTest(&.{ 2, 6, 10, 14, 15, 8, 9 }, &.{}, "--10, 111-, 100-");
+    try doTest(&.{ 4, 8, 6, 12 }, &.{}, "1-00, 01-0");
+    try doTest(&.{ 1, 2, 3, 6 }, &.{}, "0-1, -10");
+    try doTest(
+        &.{ 0, 1, 2, 4, 8, 64, 3, 5, 6, 9, 12, 20, 48, 66, 144, 7, 13, 14, 26, 42, 50, 52, 74, 133, 15, 29, 30, 51, 75, 89, 101, 114, 177, 31, 47, 55, 59, 143, 185, 248, 126 },
+        &.{},
+        "-0000101, 0000--0-, 01100101, 11111000, 1011-001, 0-110010, 0-0000-0, 00101010, 000-11-1, 0011-011, 00110-00, 00000---, -0001111, 0000-1--, 10010000, 00-01111, 01111110, 01011001, 00110-11, 0100101-, 00011-10, 00-10100",
+    );
+    try doTest(
+        &.{ 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 142, 399, 20, 21, 22, 279, 24, 25, 23, 29, 31, 38, 39, 44, 45, 46, 179, 51, 53, 54, 185, 60, 62, 196, 211, 87, 89, 227, 101, 235, 238, 495, 239, 242, 243, 244, 118, 120, 508, 125 },
+        &.{},
+        "000-0011-, 001111000, 000-10101, 0111-0011, 00-010111, 00000--1-, 0000--1-1, 111111100, 0-0110011, 011-10011, 010111001, 011000100, 011101-11, -11101111, 001111101, 01110111-, 0000101--, 000-0110-, 0001-11-0, 00-011001, 0000-100-, 00-110110, 0-0001110, 001100101, 01111001-, 110001111, 00000---1, 011110100, -00010111",
+    );
+}
+
+test "readme" {
+    const allocator = std.testing.allocator;
+    const qm = @import("quine-mccluskey.zig");
+    const Qm = qm.QuineMcCluskey(u32);
+    const ones = &.{ 0, 1, 8, 9, 12, 13, 14, 15 };
+    var q = try Qm.initAndReduce(allocator, ones, &.{}, .{});
+    defer q.deinit();
+    const stdout = std.io.getStdOut().writer();
+    try qm.parsing.printEssentialTermsBin(Qm, q, stdout, " + ");
+    // outputs "-00- + 11--"
+    const variables = .{ "A", "B", "C", "D" };
+    try qm.parsing.printEssentialTerms(Qm, q, stdout, " + ", &variables);
+    // outputs "B'C' + AB"
 }
