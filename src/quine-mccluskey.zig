@@ -114,18 +114,19 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         pub fn tToTerm(allocator: Allocator, t: T, bitcount: TLen) !Term {
             const halfbitcount = try std.math.divCeil(TLen, bitcount, 2);
             var term = try allocator.alloc(u8, halfbitcount);
-            return tToTermBuf(term, t, bitcount);
+            return try tToTermBuf(term, t, bitcount);
         }
 
         /// write bits of t into nibbles of buf
-        pub fn tToTermBuf(buf: []u8, t: T, bitcount: TLen) Term {
+        pub fn tToTermBuf(buf: []u8, t: T, bitcount: TLen) !Term {
             // trace("toTermBuf t {} halfbitcount {}\n", .{ t, halfbitcount });
+            const halfbitcount = (bitcount + 1) / 2;
+            if (buf.len < halfbitcount) return error.BufferTooSmall;
             var i: TLen = 0;
             while (true) {
                 const idiv2 = i / 2;
                 var mask = @as(T, 1) << @intCast(TLog2, bitcount - i - 1);
                 // trace("\ni {} idiv2 {} mask {b} @clz(T, mask) {} halfbitcount {}\n", .{ i, idiv2, mask, @clz(T, mask), halfbitcount });
-                // TODO: make this return an error if OOB
                 const c = &buf[idiv2];
                 const dual = toDualPtr(c);
                 dual.a = if (i < bitcount) @truncate(u1, @boolToInt(mask & t != 0)) else ele_uninit;
@@ -152,6 +153,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             // trace("buf.len {} bitcount {} bytes.len {}\n", .{ buf.len, bitcount, bytes.len });
             const halfbitcount = (bitcount + 1) / 2;
             if (buf.len < halfbitcount) return error.BufferTooSmall;
+            if (bytes.len < bitcount) return error.BufferTooSmall;
             var i: usize = 0;
 
             for (buf) |*c| {
@@ -375,12 +377,12 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     }
                 }
 
-                {
-                    var groupsiter = groups.iterator();
-                    while (groupsiter.next()) |it| {
-                        trace("group{any}: {} {}\n", .{ it.key_ptr.*, it.value_ptr.*.count(), TermSetFmt.init(it.value_ptr.*, comma_delim, self.bitcount) });
-                    }
-                }
+                // {
+                //     var groupsiter = groups.iterator();
+                //     while (groupsiter.next()) |it| {
+                //         trace("group{any}: {} {}\n", .{ it.key_ptr.*, it.value_ptr.*.count(), TermSetFmt.init(it.value_ptr.*, comma_delim, self.bitcount) });
+                //     }
+                // }
 
                 used.clearRetainingCapacity();
                 terms.clearRetainingCapacity();
@@ -486,8 +488,12 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             return 4 * term_range + n;
         }
 
-        pub fn isSubSet(comptime Set: type, maybe_subset: Set, set: Set) bool {
-            if (maybe_subset.count() > set.count()) return false;
+        pub fn isSubSet(comptime Set: type, maybe_subset: Set, set: Set, comptime mode: enum { strict, lenient }) bool {
+            if (mode == .strict and maybe_subset.count() >= set.count()) {
+                return false;
+            } else if (mode == .lenient and maybe_subset.count() > set.count())
+                return false;
+
             for (maybe_subset.keys()) |k| {
                 if (!set.contains(k)) return false;
             }
@@ -562,7 +568,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                             },
                             xor => todo("xor"),
                             xnor => todo("xnor"),
-                            else => std.debug.panic("invalid TermElement {}", .{ele}),
+                            else => std.debug.panic("invalid Element {}", .{ele}),
                         }
                     }
 
@@ -644,11 +650,11 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
             var totaln: usize = 0;
             var totalperms: usize = 0;
-            for (terms.keys()) |t, i| {
+            for (terms.keys()) |t| {
                 const permset = perms.get(t).?;
                 const permcount = permset.count();
                 const dashcount = termCount(t, .dash);
-                trace("t{: >2} {} {} {}:{}\n", .{ i, TermFmt.init(t, self.bitcount), std.fmt.fmtSliceHexLower(t), permcount, TermSetFmt.init(permset, comma_delim, self.bitcount) });
+                // trace("t{: >2} {} {} {}:{}\n", .{ i, TermFmt.init(t, self.bitcount), std.fmt.fmtSliceHexLower(t), permcount, TermSetFmt.init(permset, comma_delim, self.bitcount) });
                 const n = try getTermRank(t, @intCast(u16, permcount), self.bitcount);
                 if (is_debug_build) {
                     totaln += n;
@@ -669,11 +675,11 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 }
             }{ .keys = groups.keys() });
 
-            trace("groups.keys :", .{});
-            for (groups.keys()) |k| {
-                trace("{}, ", .{k});
-            }
-            trace("\n", .{});
+            // trace("groups.keys :", .{});
+            // for (groups.keys()) |k| {
+            //     trace("{}, ", .{k});
+            // }
+            // trace("\n", .{});
             // for (groups.keys()) |t| {
             //     const gt = groups.get(t).?;
             //     trace("t {} {}\n", .{ t, TermSetFmt.init(gt, comma_delim, self.bitcount) });
@@ -690,7 +696,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 trace("t {} gs.len {} ei_range.len {}\n", .{ term, group.count(), ei_range.count() });
                 for (group.keys()) |g| {
                     const gperms = perms.get(g).?;
-                    const issubset = isSubSet(TermSet, gperms, ei_range);
+                    const issubset = isSubSet(TermSet, gperms, ei_range, .lenient);
                     // trace("perms[{}] {} {}\n", .{ TermFmt.init(g, self.bitcount), gperms.count(), TermSetFmt.init(gperms, comma_delim, self.bitcount) });
                     // // trace("ei_range {} {}\n", .{ ei_range.count(), TermSetFmt.init(ei_range, comma_delim, self.bitcount) });
                     // trace("ei_range {}\n", .{ei_range.count()});
@@ -776,7 +782,6 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             if (setsEqual(TermSet, set, permutations_a))
                 try valid.append(arena, a_potential);
             // trace("valid {}\n", .{TermsFmt.init(valid.items, comma_delim, self.bitcount)});
-            _ = self;
             std.sort.sort(Term, valid.items, self.bitcount, ltByComplexity);
             return if (valid.items.len > 0)
                 valid.items[0]
@@ -816,34 +821,43 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
             var others_coverage: TermSet = .{};
             var redundant: std.ArrayListUnmanaged(Term) = .{};
-            // TODO: audit why is there an extra redundant.
-            // i belive this is responsible for a failing skipped test
+
             while (true) {
+                // check if each implicant's coverage is a subset of all the other coverages combined.
+                // if so add to 'redundant'.
+                // at each step remove worst redundant from coverages until no more redundants remain
                 redundant.clearRetainingCapacity();
                 var coviter = coverage.iterator();
+                var others_total_count: usize = 0;
                 while (coviter.next()) |it| {
-                    // this bitCast is is necessary due to redundant.append(this_implicant) below
-                    const this_implicant = @bitCast([]u8, it.key_ptr.*);
+                    const this_implicant = it.key_ptr.*;
                     const this_coverage = it.value_ptr.*;
                     others_coverage.clearRetainingCapacity();
-                    var coviter2 = coverage.keyIterator();
-                    while (coviter2.next()) |other_implicantp| {
-                        const other_implicant = other_implicantp.*;
+
+                    var coviter2 = coverage.iterator();
+                    while (coviter2.next()) |it2| {
+                        const other_implicant = it2.key_ptr.*;
                         if (std.mem.eql(u8, other_implicant, this_implicant)) continue;
-                        const cov = coverage.get(other_implicant).?;
-                        for (cov.keys()) |n|
-                            try others_coverage.put(arena, n, {});
+                        const other_coverage = it2.value_ptr.*;
+                        for (other_coverage.keys()) |ok|
+                            try others_coverage.put(arena, ok, {});
                     }
-                    const issubset = isSubSet(TermSet, this_coverage, others_coverage);
-                    if (issubset) trace("this_coverage.len {} others_coverage.len {}\n", .{ this_coverage.count(), others_coverage.count() });
-                    if (issubset)
+                    if (is_debug_build)
+                        others_total_count += others_coverage.count();
+
+                    const issubset = isSubSet(TermSet, this_coverage, others_coverage, .lenient);
+                    if (issubset) {
+                        trace("issubset {} this_coverage.len {} others_coverage.len {}\n", .{ issubset, this_coverage.count(), others_coverage.count() });
+                        // trace("this {}:{} others {}\n", .{ TermFmt.init(this_implicant, self.bitcount), TermSetFmt.init(this_coverage, comma_delim, self.bitcount), TermSetFmt.init(others_coverage, comma_delim, self.bitcount) });
+
                         try redundant.append(arena, this_implicant); // <--- here
+                    }
                 }
-                trace("redundant {}\n", .{redundant.items.len});
+                trace("redundant {} others_total_count {}\n", .{ redundant.items.len, others_total_count });
                 if (redundant.items.len > 0) {
                     std.sort.sort(Term, redundant.items, self.bitcount, ltByComplexity);
                     const worst = redundant.items[redundant.items.len - 1];
-                    trace("worst {}\nsorted redundant {}\n", .{ TermFmt.init(worst, self.bitcount), TermsFmt.init(redundant.items, comma_delim, self.bitcount) });
+                    // trace("worst {}\nsorted redundant {}\n", .{ TermFmt.init(worst, self.bitcount), TermsFmt.init(redundant.items, comma_delim, self.bitcount) });
                     _ = coverage.remove(worst);
                 } else break;
             }

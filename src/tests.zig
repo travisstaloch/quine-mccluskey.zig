@@ -7,11 +7,6 @@ const QuineMcCluskey = qmc.QuineMcCluskey;
 
 const allr = std.testing.allocator;
 
-const ABCD: []const []const u8 = &.{ "A", "B", "C", "D" };
-const AB_CD: []const []const u8 = &.{ "AB", "CD" };
-const ABCDEFGH: []const []const u8 = &.{ "A", "B", "C", "D", "E", "F", "G", "H" };
-const wxyz: []const []const u8 = &.{ "w", "x", "y", "z" };
-
 fn testReduce(comptime QM: type) !void {
     // i've been using this online tool to find expected reductions:
     //   https://www.emathhelp.net/calculators/discrete-mathematics/boolean-algebra-calculator/
@@ -25,65 +20,65 @@ fn testReduce(comptime QM: type) !void {
     const tests = [_]Test{
         .{ // 0
             // ~A~B~C~D + A~B~C~D + AB~C~D + ABC~D + ~A~B~CD + A~B~CD + AB~CD + ABCD
-            // .input = "A'B'C'D' + AB'C'D' + ABC'D' + ABCD' + A'B'C'D + AB'C'D + ABC'D + ABCD",
+            //"A'B'C'D' + AB'C'D' + ABC'D' + ABCD' + A'B'C'D + AB'C'D + ABC'D + ABCD",
             .ones = &.{ 0, 1, 8, 9, 12, 13, 14, 15 },
-            // .result = "B'C' + AB",
+            //        "B'C' + AB",
             .result = "-00- + 11--",
         },
         .{ // 1
             // ~A~B~C~D + ~A~B~CD + ~A~BCD + ~ABCD + A~B~C~D + A~B~CD + A~BCD + ABCD
-            // .input = "A'B'C'D' + A'B'C'D + A'B'CD + A'BCD + AB'C'D' + AB'C'D + AB'CD + ABCD",
+            //"A'B'C'D' + A'B'C'D + A'B'CD + A'BCD + AB'C'D' + AB'C'D + AB'CD + ABCD",
             .ones = &.{ 0, 1, 3, 7, 8, 9, 11, 15 },
-            // .result = "B'C' + CD",
+            //        "B'C' + CD",
             .result = "-00- + --11",
         },
         .{ // 2
             // ~AB~C~D + A~B~C~D + A~B~CD + A~BC~D + A~BCD + AB~C~D + ABC~D + ABCD
-            // .input = "A'BC'D' + AB'C'D' + AB'C'D + AB'CD' + AB'CD + ABC'D' + ABCD' + ABCD",
+            //"A'BC'D' + AB'C'D' + AB'C'D + AB'CD' + AB'CD + ABC'D' + ABCD' + ABCD",
             .ones = &.{ 4, 8, 9, 10, 11, 12, 14, 15 },
-            // .result = "AB' + BC'D' + AC",
+            //        "AB' + BC'D' + AC",
             .result = "1-1- + -100 + 10--",
         },
         .{ // 3
             // ~A~BC~D + ~ABC~D + A~B~C~D + A~B~CD + A~BC~D + A~BCD + ABC~D + ABCD
-            // .input = "A'B'CD' + A'BCD' + AB'C'D' + AB'C'D + AB'CD' + AB'CD + ABCD' + ABCD",
+            //"A'B'CD' + A'BCD' + AB'C'D' + AB'C'D + AB'CD' + AB'CD + ABCD' + ABCD",
             .ones = &.{ 2, 6, 8, 9, 10, 11, 14, 15 },
-            // .result = "CD' + AB' + AC",
+            //        "CD' + AB' + AC",
             .result = "1-1- + --10 + 10--",
         },
         .{ // 4
             // ~AB~C~D + ~AB~CD + ~ABC~D + ~ABCD + A~B~C~D
-            // .input = "A'BC'D' + A'BC'D + A'BCD' + A'BCD + AB'C'D'",
+            //"A'BC'D' + A'BC'D + A'BCD' + A'BCD + AB'C'D'",
             .ones = &.{ 4, 5, 6, 7, 8 },
-            // .result = "A'B + AB'C'D'",
+            //        "A'B + AB'C'D'",
             .result = "1000 + 01--",
         },
         .{ // 5
             // ~F~GH + ~FG~H + ~FGH + F~G~H + F~GH + FG~H + FGH
-            // .input = "F'G'H + F'GH' + F'GH + FG'H' + FG'H + FGH' + FGH",
+            //"F'G'H + F'GH' + F'GH + FG'H' + FG'H + FGH' + FGH",
             .ones = &.{ 1, 2, 3, 4, 5, 6, 7 },
-            // .result = "A + B + C",
+            //        "A + B + C",
             .result = "--1 + 1-- + -1-",
         },
         .{ // 6
             // variable names longer than 1
-            // .input = "ABCD' + ABCD",
+            //"ABCD' + ABCD",
             .ones = &.{ 2, 3 },
-            // .result = "AB",
+            //        "AB",
             .result = "1-",
         },
         .{ // 7
-            // .input = "A'BC + A'B + AB'C'D' + ABC'D'",
+            //"A'BC + A'B + AB'C'D' + ABC'D'",
             .ones = &.{ 4, 6, 8, 12 },
-            // .result = "A'BC' + AC'D'",
+            //        "A'BC' + AC'D'",
             .result = "1-00 + 01-0",
         },
         // from https://uweb.engr.arizona.edu/~ece474a/uploads/Main/lecture_logicopt.pdf
         // example 2
         .{ // 8
-            // .input = "w'x'y'z' + w'x'yz + w'x'yz' + w'xy'z' + w'xyz + w'xyz' + wxy'z + wxyz + wx'y'z + wx'yz",
+            //"w'x'y'z' + w'x'yz + w'x'yz' + w'xy'z' + w'xyz + w'xyz' + wxy'z + wxyz + wx'y'z + wx'yz",
             .ones = &.{ 0, 3, 2, 4, 7, 6, 13, 15, 9, 11 },
-            // .result = "w'z' + wz + yz",
+            //        "w'z' + wz + yz",
             .result = "1--1 + --11 + 0--0",
         },
     };
@@ -210,7 +205,7 @@ test "not reducible" {
     try qm.reduce();
     try p.printEssentialTerms(Qm8, qm, output.writer(), delimiter, vars);
     try expectEqualStringSets(Qm8, "xyz' + xz'w + y'z + x'z", output.items, delimiter, 0);
-    // TODO: this ^ is actually incorrect. there are 2 minimal disjunctive forms:
+    // TODO: this ^ is technically incorrect. there are 2 minimal disjunctive forms:
     //   note the final terms on each line
     // This can be allomplished by deleting columns of
     // essential prime implicants and rows that contain their symbols
@@ -224,6 +219,9 @@ fn doTest(ones: []const Qm32.T, dontcares: []const Qm32.T, expected: []const u8,
     defer q.deinit();
     // std.debug.print("reduced_implicants.len {}\n", .{q.reduced_implicants.count()});
     var expecteds = try parseIntoTermSet(Qm32, expected, delimiter, q.bitcount);
+    // std.debug.print("expected reduced_implicants {}\n", .{Qm32.TermSetFmt.init(expecteds, Qm32.comma_delim, q.bitcount)});
+    // for (expecteds.keys()) |k|
+    //     std.debug.print("{} ({})\n", .{ Qm32.TermFmt.init(k, q.bitcount), std.fmt.fmtSliceHexLower(k) });
     var expecteds_rev: Qm32.TermSet = .{};
     for (expecteds.keys()) |k| {
         const k2 = try allr.dupe(u8, k);
@@ -246,13 +244,26 @@ test "basic" {
         "-0000101, 0000--0-, 01100101, 11111000, 1011-001, 0-110010, 0-0000-0, 00101010, 000-11-1, 0011-011, 00110-00, 00000---, -0001111, 0000-1--, 10010000, 00-01111, 01111110, 01011001, 00110-11, 0100101-, 00011-10, 00-10100",
         Qm32.comma_delim,
     );
-}
-test "failing" {
-    if (true) return error.SkipZigTest;
+    // the following test case was previously failing because the output from qm.py is inconsistent between runs.
+    // see https://github.com/tpircher/quine-mccluskey/issues/8
+    // the output from the larger set (29 reduced implicants) was deemed incorrect and the smaller set (28)
+    // was deemed correct.  i am not yet convinced this is actually correct.
     try doTest(
         &.{ 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 142, 399, 20, 21, 22, 279, 24, 25, 23, 29, 31, 38, 39, 44, 45, 46, 179, 51, 53, 54, 185, 60, 62, 196, 211, 87, 89, 227, 101, 235, 238, 495, 239, 242, 243, 244, 118, 120, 508, 125 },
         &.{},
-        "000-0011-, 001111000, 000-10101, 0111-0011, 00-010111, 00000--1-, 0000--1-1, 111111100, 0-0110011, 011-10011, 010111001, 011000100, 011101-11, -11101111, 001111101, 01110111-, 0000101--, 000-0110-, 0001-11-0, 00-011001, 0000-100-, 00-110110, 0-0001110, 001100101, 01111001-, 110001111, 00000---1, 011110100, -00010111",
+        "0000-100-, 001111000, 0001-11-0, 000-10101, 00000---1, 000-0110-, 00-011001, 01110111-, 00000--1-, 011-10011, 01110-011, 0000101--, 0-0001110, 0000--1-1, 010111001, 001100101, -11101111, 110001111, -00010111, 0-0110011, 00-010111, 111111100, 001111101, 011110100, 01111001-, 011000100, 00-110110, 000-0011-",
+        Qm32.comma_delim,
+    );
+    try doTest(
+        &.{ 1, 2, 5, 6, 7 },
+        &.{},
+        "-01, -10, 1-1",
+        Qm32.comma_delim,
+    );
+    try doTest(
+        &.{ 1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 19 },
+        &.{},
+        "001-1, 010--, 0--10, 01--0, 0--01, 10011",
         Qm32.comma_delim,
     );
 }
@@ -293,7 +304,7 @@ fn testTermSetsEqual(comptime QM: type, expecteds: QM.TermSet, actuals: QM.TermS
                 defer allr.free(exterm);
                 const missing = !actuals.contains(exterm);
                 if (missing) {
-                    std.debug.print("ERROR: expected not found at index {: >3}: {s} - {}\n", .{ i, QM.TermFmt.init(exterm, bitcount), std.fmt.fmtSliceHexLower(exterm) });
+                    std.debug.print("ERROR: expected not found at index {: >3}: {s} ({})\n", .{ i, QM.TermFmt.init(exterm, bitcount), std.fmt.fmtSliceHexLower(exterm) });
                 }
             }
         }
@@ -301,7 +312,7 @@ fn testTermSetsEqual(comptime QM: type, expecteds: QM.TermSet, actuals: QM.TermS
         for (actuals.keys()) |actual, i| {
             const extra = !expecteds.contains(actual);
             if (extra) {
-                std.debug.print("ERROR: unexpected item at index    {: >3}: {s} - {}\n", .{ i, QM.TermFmt.init(actual, bitcount), std.fmt.fmtSliceHexLower(actual) });
+                std.debug.print("ERROR: unexpected item at index    {: >3}: {s} ({})\n", .{ i, QM.TermFmt.init(actual, bitcount), std.fmt.fmtSliceHexLower(actual) });
             }
         }
     }
@@ -313,7 +324,7 @@ fn parseIntoTermSet(comptime QM: type, input: []const u8, delimiter: []const u8,
 
     var spliter = std.mem.split(u8, input, delimiter);
     while (spliter.next()) |termbytes| {
-        // std.debug.print("termbytes {s}\n", .{termbytes});
+        // std.debug.print("termbytes {}:{s} bitcount {}\n", .{ termbytes.len, termbytes, bitcount });
         var buf: [QM.TBitSize]u8 = undefined;
         var term = try QM.bytesToTermBuf(&buf, std.mem.trim(u8, termbytes, &std.ascii.spaces), bitcount);
         // std.debug.print("term {} bitcount {}\n", .{ Qm32.TermFmt.init(term, bitcount), bitcount });
