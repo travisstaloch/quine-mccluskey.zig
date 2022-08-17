@@ -7,6 +7,8 @@ const assert = std.debug.assert;
 
 pub const parsing = @import("parsing.zig");
 
+const is_debug_build = @import("builtin").mode == .Debug;
+
 /// this imlementation packs 2 elements per byte.
 /// this packed representation is called a 'dual' here.
 /// this means that each byte holds 2 'Element' where
@@ -17,7 +19,6 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         bitcount: TLen,
         ones: []const T,
         dontcares: []const T,
-        terms: []Term,
         flags: std.enums.EnumSet(enum { use_xor }),
         reduced_implicants: TermSet = .{},
 
@@ -42,9 +43,8 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         pub const Term = []const u8;
         pub const TBitSize = @bitSizeOf(T);
         pub const TLog2 = std.math.Log2Int(T);
-
-        pub const TLen = std.meta.Int(.unsigned, std.math.log2_int(T, TBitSize) + 1);
-        pub const TLog2Signed = std.meta.Int(.signed, std.math.log2_int(T, TBitSize) + 1);
+        pub const TLen = std.math.Log2IntCeil(T);
+        pub const TLenSigned = std.meta.Int(.signed, std.math.log2_int(T, TBitSize) + 2);
 
         pub inline fn toDual(c: u8) Dual {
             return @bitCast(Dual, c);
@@ -84,7 +84,6 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 .dontcares = dontcares,
                 .bitcount = if (options.bitcount) |bc| bc else 0,
                 .flags = .{},
-                .terms = &.{},
             };
         }
 
@@ -111,28 +110,61 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             termset.deinit(self.allocator);
         }
 
-        // allocate a slice and pack t into its bytes
-        pub fn toTerm(allocator: Allocator, t: T, bitcount: TLen) !Term {
-            var terms = try allocator.alloc(u8, bitcount);
-            return toTermBuf(terms, t, bitcount);
+        /// allocate a slice and write bits of t into nibbles of it
+        pub fn tToTerm(allocator: Allocator, t: T, bitcount: TLen) !Term {
+            const halfbitcount = try std.math.divCeil(TLen, bitcount, 2);
+            var term = try allocator.alloc(u8, halfbitcount);
+            return tToTermBuf(term, t, bitcount);
         }
-        // pack t into buf
-        pub fn toTermBuf(buf: []u8, t: T, bitcount: TLen) Term {
-            // trace("toTermBuf t {} bitcount {}\n", .{ t, bitcount });
-            var mutt = t;
 
-            var i = bitcount - 1;
-            while (true) : (i -= 1) {
-                const dual = toDualPtr(&buf[i]);
-                dual.b = @truncate(u1, mutt);
-                mutt >>= 1;
-                dual.a = @truncate(u1, mutt);
-                if (i == 0) break;
-                mutt >>= 1;
+        /// write bits of t into nibbles of buf
+        pub fn tToTermBuf(buf: []u8, t: T, bitcount: TLen) Term {
+            // trace("toTermBuf t {} halfbitcount {}\n", .{ t, halfbitcount });
+            var i: TLen = 0;
+            while (true) {
+                const idiv2 = i / 2;
+                var mask = @as(T, 1) << @intCast(TLog2, bitcount - i - 1);
+                // trace("\ni {} idiv2 {} mask {b} @clz(T, mask) {} halfbitcount {}\n", .{ i, idiv2, mask, @clz(T, mask), halfbitcount });
+                // TODO: make this return an error if OOB
+                const c = &buf[idiv2];
+                const dual = toDualPtr(c);
+                dual.a = if (i < bitcount) @truncate(u1, @boolToInt(mask & t != 0)) else ele_uninit;
+                mask >>= 1;
+                i += 1;
+                dual.b = if (i < bitcount) @truncate(u1, @boolToInt(mask & t != 0)) else ele_uninit;
+                i += 1;
+                if (i >= bitcount) break;
             }
-            return buf[0..bitcount];
+            return buf;
         }
-        /// widen e into a byte wide human readable representation
+
+        /// allocate a slice and pack human readable 'bytes' into it.
+        /// if bitcount is odd, last nibble will == ele_uninit (0xF)
+        pub fn bytesToTerm(allocator: Allocator, bytes: []const u8, bitcount: TLen) !Term {
+            const halfbitcount = (bitcount + 1) / 2;
+            var term = try allocator.alloc(u8, halfbitcount);
+            return try bytesToTermBuf(term, bytes, bitcount);
+        }
+
+        /// pack human readable 'bytes' into buf.
+        /// if bitcount is odd, last nibble will == ele_uninit (0xF)
+        pub fn bytesToTermBuf(buf: []u8, bytes: []const u8, bitcount: TLen) !Term {
+            // trace("buf.len {} bitcount {} bytes.len {}\n", .{ buf.len, bitcount, bytes.len });
+            const halfbitcount = (bitcount + 1) / 2;
+            if (buf.len < halfbitcount) return error.BufferTooSmall;
+            var i: usize = 0;
+
+            for (buf) |*c| {
+                const dual = toDualPtr(c);
+                dual.a = if (i < bitcount) byteToNibble(bytes[i]) else ele_uninit;
+                i += 1;
+                dual.b = if (i < bitcount) byteToNibble(bytes[i]) else ele_uninit;
+                i += 1;
+                if (i >= bitcount) break;
+            }
+            return buf[0..halfbitcount];
+        }
+
         pub fn elementToByte(e: Element) u8 {
             return switch (e) {
                 .zero => '0',
@@ -144,21 +176,21 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         }
 
         /// widen e into a byte wide human readable representation
-        pub fn nibbleToByte(e: u4) u8 {
+        pub fn nibbleToByte(e: u4) !u8 {
             return switch (e) {
                 zero => '0',
                 one => '1',
                 xor => '^',
                 xnor => '~',
                 dash => '-',
-                else => std.debug.panic("invalid nibble {}", .{e}),
+                else => error.InvalidNibble,
             };
         }
 
         /// widen e's nibbles into a 2-byte wide human readable representation
-        pub fn nibblesToBytes(e: u8) [2]u8 {
+        pub fn nibblesToBytes(e: u8) ![2]u8 {
             const dual = toDual(e);
-            return .{ nibbleToByte(dual.a), nibbleToByte(dual.b) };
+            return [2]u8{ try nibbleToByte(dual.a), try nibbleToByte(dual.b) };
         }
         /// pack a human readable byte into nibble
         pub fn byteToNibble(b: u8) u4 {
@@ -186,16 +218,21 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 return .{ .term = term, .bitcount = bitcount };
             }
 
+            /// skip invalid nibbles and write at most bitcount bytes
             pub fn format(self: TermFmt, comptime _: []const u8, _: std.fmt.FormatOptions, writer: anytype) !void {
-                // sometimes have to skip leading nibble so that extra nibbles aren't shown in output.
-                // for instance when bitcount == 3, 2 bytes/4 nibbles are required, skiplen will equal 1
-                const skiplen = std.math.sub(usize, self.term.len * 2, self.bitcount) catch return;
-                for (self.term) |e, i| {
-                    const bytes = nibblesToBytes(e);
-                    if (i * 2 >= skiplen)
-                        try writer.writeByte(bytes[0]);
-                    if (i * 2 + 1 >= skiplen)
-                        try writer.writeByte(bytes[1]);
+                var i: usize = 0;
+                for (self.term) |e| {
+                    const dual = toDual(e);
+                    if (i >= self.bitcount) break;
+                    if (nibbleToByte(dual.a)) |a| {
+                        try writer.writeByte(a);
+                        i += 1;
+                    } else |_| {}
+                    if (i >= self.bitcount) break;
+                    if (nibbleToByte(dual.b)) |b| {
+                        try writer.writeByte(b);
+                        i += 1;
+                    } else |_| {}
                 }
             }
         };
@@ -257,11 +294,11 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             trace("bitcount {} ones {b}:{any}\n", .{ self.bitcount, self.ones, self.ones });
 
             for (self.ones) |x| {
-                const term = try toTerm(arenaallr, x, try std.math.divCeil(TLen, self.bitcount, 2));
+                const term = try tToTerm(arenaallr, x, self.bitcount);
                 try ones.append(arenaallr, term);
             }
             for (self.dontcares) |x| {
-                const term = try toTerm(arenaallr, x, try std.math.divCeil(TLen, self.bitcount, 2));
+                const term = try tToTerm(arenaallr, x, self.bitcount);
                 try dontcares.append(arenaallr, term);
             }
 
@@ -389,8 +426,6 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 // TODO; Find XNOR combinations
 
                 // Add the unused terms to the list of marked terms
-                // for g in list(groups.values()):
-                //     marked |= g - used
                 var gvalsiter = groups.valueIterator();
                 while (gvalsiter.next()) |g| {
                     for (g.keys()) |t| {
@@ -411,8 +446,8 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 try result.put(self.allocator, try self.allocator.dupe(u8, k), {});
             }
 
-            var gvaluesiter = groups.valueIterator();
-            while (gvaluesiter.next()) |g| {
+            var gvalsiter = groups.valueIterator();
+            while (gvalsiter.next()) |g| {
                 for (g.keys()) |k| {
                     const dupe = try self.allocator.dupe(u8, k);
                     const gop = try result.getOrPut(self.allocator, dupe);
@@ -426,7 +461,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             return if (t == 0 or t == invalid) 0 else @as(u16, 1) << t - 1;
         }
 
-        fn getTermRank(term: Term, term_range: u16) !u16 {
+        fn getTermRank(term: Term, term_range: u16, bitcount: TLen) !u16 {
             comptime {
                 assert(5 == invalid);
                 assert(4 == dash);
@@ -442,10 +477,11 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 assert(0 == termRank(invalid));
             }
             var n: u16 = 0;
-            for (term) |byte| {
+            for (term) |byte, i| {
                 const dual = toDual(byte);
-                n += termRank(dual.a);
-                n += termRank(dual.b);
+                const ii = i * 2;
+                n += @boolToInt(ii < bitcount) * termRank(dual.a);
+                n += @boolToInt(ii + 1 < bitcount) * termRank(dual.b);
             }
             return 4 * term_range + n;
         }
@@ -466,23 +502,26 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             return true;
         }
 
+        pub const ele_uninit = @as(u4, 0xf);
+        pub const byte_uninit = @as(u8, 0xff);
+
         pub const Permutations = struct {
             value: Term,
-            n_bits: TLog2,
+            bitcount: TLen,
             n_xor: u8,
             xor_value: u8 = 0,
             seen_xors: u8 = 0,
-            res: A = [1]u8{0} ** (TBitSize / 2),
-            i: TLog2Signed = 0,
+            res: A = [1]u8{byte_uninit} ** (TBitSize / 2),
+            i: TLenSigned = 0,
             direction: i2 = 1,
             exclude: TSet,
 
             pub const A = [TBitSize / 2]u8;
             pub const V = @Vector(TBitSize / 2, u8);
 
-            pub fn init(term: Term, exclude: TSet) Permutations {
+            pub fn init(term: Term, exclude: TSet, bitcount: TLen) Permutations {
                 var result = Permutations{
-                    .n_bits = @intCast(TLog2, term.len),
+                    .bitcount = @intCast(TLog2, bitcount),
                     .n_xor = termCount(term, .xor) + termCount(term, .xnor),
                     .exclude = exclude,
                     .value = term,
@@ -501,19 +540,10 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
             pub fn next(self: *Permutations) Term {
                 const trace_this = false;
-                if (trace_this) trace("value {} \n", .{TermFmt.init(self.value[0..self.n_bits])});
 
-                // unlike the python version, in this one, self.i ranges from 0..(n_bits * 2)
-                // (rather than 0...n_bits).  this is because each byte stores two elements.
                 while (self.i >= 0) {
-                    {
+                    if (true) {
                         const i = @intCast(TLen, @divTrunc(self.i, 2));
-                        if (trace_this) trace("next()  i {} direction {} value[i] {c} res[i] {c}\n", .{
-                            i,
-                            self.direction,
-                            nibblesToBytes(self.value[i]),
-                            nibblesToBytes(self.res[i]),
-                        });
                         // on even indices, use low nibble 'a' otherwise high nibble 'b'
                         const is_a = @truncate(i1, self.i) == 0;
                         const dual = toDual(self.value[i]);
@@ -532,54 +562,32 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                             },
                             xor => todo("xor"),
                             xnor => todo("xnor"),
-                            invalid => todo("invalid"),
                             else => std.debug.panic("invalid TermElement {}", .{ele}),
                         }
-                        if (trace_this and i < self.value.len)
-                            trace("next()2 i {} direction {} value[i] {c} res[i] {c}\n", .{
-                                i,
-                                self.direction,
-                                nibblesToBytes(self.value[i]),
-                                nibblesToBytes(self.res.get(i)),
-                            });
                     }
 
                     self.i += self.direction;
                     if (std.math.cast(TLen, self.i)) |i| {
-                        if (i == self.n_bits * 2) {
+                        if (i == self.bitcount) {
                             self.direction = -1;
-                            self.i = self.n_bits * 2 - 1;
-
-                            // TODO: verify this works
-                            var t: T = 0;
-                            const skiplen = std.math.sub(usize, self.value.len * 2, self.n_bits) catch unreachable;
-                            var j: TLog2 = 0;
-                            for (self.res) |c| {
-                                const dual = toDual(c);
-                                if (j >= skiplen) {
-                                    const b = @boolToInt(dual.a == one);
-                                    t |= @as(T, b) << j;
-                                }
-                                j += 1;
-                                if (j >= skiplen) {
-                                    const b = @boolToInt(dual.b == one);
-                                    t |= @as(T, b) << j;
-                                }
-                                if (j == TBitSize - 1) break;
-                                j += 1;
-                            }
-
-                            if (trace_this) {
-                                var buf: A = undefined;
-                                const tterm = toTermBuf(&buf, t, self.n_bits);
+                            self.i = self.bitcount - 1;
+                            if (trace_this)
                                 trace(
-                                    "t {b:0>8} tterm {} self.res {} self.exclude.contains(t) {}\n",
-                                    .{ t, TermFmt.init(tterm), TermFmt.init(@as(A, self.res)[0..self.n_bits]), self.exclude.contains(t) },
+                                    "value {}\nres   {}\nvalue {}\n",
+                                    .{ TermFmt.init(self.value, self.bitcount), std.fmt.fmtSliceHexLower(&self.res), std.fmt.fmtSliceHexLower(self.value) },
                                 );
-                            }
-                            if (!self.exclude.contains(t)) {
-                                return self.res[0..self.n_bits];
-                            }
+                            if (self.exclude.count() > 0) {
+                                const t = parseTFromTerm(self.res[0..self.value.len], self.bitcount) catch unreachable;
+                                if (trace_this)
+                                    trace(
+                                        "t {: <5}\n      {b:0>9}\n",
+                                        .{ t, t },
+                                    );
+
+                                if (!self.exclude.contains(t)) {
+                                    return self.res[0 .. (self.bitcount + 1) / 2];
+                                }
+                            } else return self.res[0 .. (self.bitcount + 1) / 2];
                         }
                     }
                 }
@@ -587,10 +595,19 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
         };
 
-        fn collectPerms(arena: Allocator, term: Term, result: *TermSet, excludes: TSet) !void {
-            var permsiter = Permutations.init(term, excludes);
+        pub fn parseTFromTerm(term: Term, bitcount: TLen) !T {
+            // TODO: don't rely on buf print, just do regular parsing now that first nibble is always ok
+            var buf: [TBitSize]u8 = undefined;
+            const buff = try std.fmt.bufPrint(&buf, "{}", .{TermFmt.init(term, bitcount)});
+            // trace("buff  {s}:{any} buff.len {} bitcount {}\n", .{ buff, buff, buff.len, bitcount });
+            return try std.fmt.parseUnsigned(T, buff[0..bitcount], 2);
+        }
+
+        pub fn collectPerms(arena: Allocator, term: Term, result: *TermSet, excludes: TSet, bitcount: TLen) !void {
+            var permsiter = Permutations.init(term, excludes, bitcount);
             while (true) {
                 const p = permsiter.next();
+                // trace("p {} {} {}\n", .{ TermFmt.init(p, bitcount), std.fmt.fmtSliceHexLower(p), bitcount });
                 if (p.len == 0) break;
                 try result.putNoClobber(arena, try arena.dupe(u8, p), {});
             }
@@ -605,28 +622,46 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     const gop = try perms.getOrPut(arena, term);
                     if (!gop.found_existing) gop.value_ptr.* = .{};
                     // trace("t {}\n", .{TermFmt.init(term)});
-                    try collectPerms(arena, term, gop.value_ptr, dcset);
+                    try collectPerms(arena, term, gop.value_ptr, dcset, self.bitcount);
+
+                    if (is_debug_build) {
+                        const permcount = gop.value_ptr.count();
+                        const dashcount = termCount(term, .dash);
+                        const expected_permcount = std.math.pow(usize, 2, dashcount);
+                        // trace("t {} {} {}:{}\n", .{ TermFmt.init(term, self.bitcount), std.fmt.fmtSliceHexLower(term), permcount, TermSetFmt.init(gop.value_ptr.*, comma_delim, self.bitcount) });
+                        // trace("expected_permcount {} permcount {} dashcount {} \n", .{ expected_permcount, permcount, permcount });
+                        assert(dcset.count() != 0 or expected_permcount == permcount);
+                    }
                     // trace("term {} perms {}\n", .{ TermFmt.init(term, self.bitcount), gop.value_ptr.count() });
                 }
             }
-            trace("perms.len {}\n", .{perms.count()});
+            trace("perms.len {} dcset.len {}\n", .{ perms.count(), dcset.count() });
             // Now group the remaining terms and see if any term can be covered
             // by a combination of terms.
             var ei: TermSet = .{};
             var ei_range: TermSet = .{};
             var groups: TermMapOrdered = .{};
 
-            for (terms.keys()) |t| {
+            var totaln: usize = 0;
+            var totalperms: usize = 0;
+            for (terms.keys()) |t, i| {
                 const permset = perms.get(t).?;
                 const permcount = permset.count();
-                trace("t {} permcount {} perms[t] {}\n", .{ TermFmt.init(t, self.bitcount), permcount, TermSetFmt.init(permset, comma_delim, self.bitcount) });
-                const n = try getTermRank(t, @intCast(u16, permcount));
+                const dashcount = termCount(t, .dash);
+                trace("t{: >2} {} {} {}:{}\n", .{ i, TermFmt.init(t, self.bitcount), std.fmt.fmtSliceHexLower(t), permcount, TermSetFmt.init(permset, comma_delim, self.bitcount) });
+                const n = try getTermRank(t, @intCast(u16, permcount), self.bitcount);
+                if (is_debug_build) {
+                    totaln += n;
+                    totalperms += permcount;
+                    const expected_permcount = std.math.pow(usize, 2, dashcount);
+                    assert(dcset.count() != 0 or expected_permcount == permcount);
+                }
                 const gop = try groups.getOrPut(arena, n);
                 if (!gop.found_existing) gop.value_ptr.* = .{};
                 try gop.value_ptr.putNoClobber(arena, t, {});
             }
 
-            trace("groups.len {}\n", .{groups.count()});
+            trace("groups.len {} totaln {} totalperms {}\n", .{ groups.count(), totaln, totalperms });
             groups.sort(struct {
                 keys: []const u16,
                 pub fn lessThan(this: @This(), aidx: usize, bidx: usize) bool {
@@ -634,11 +669,11 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 }
             }{ .keys = groups.keys() });
 
-            // trace("groups.keys :", .{});
-            // for (groups.keys()) |k| {
-            //     trace("{}, ", .{k});
-            // }
-            // trace("\n", .{});
+            trace("groups.keys :", .{});
+            for (groups.keys()) |k| {
+                trace("{}, ", .{k});
+            }
+            trace("\n", .{});
             // for (groups.keys()) |t| {
             //     const gt = groups.get(t).?;
             //     trace("t {} {}\n", .{ t, TermSetFmt.init(gt, comma_delim, self.bitcount) });
@@ -653,7 +688,6 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 const term = git.key_ptr.*;
                 const group = git.value_ptr.*;
                 trace("t {} gs.len {} ei_range.len {}\n", .{ term, group.count(), ei_range.count() });
-                // const gs = groups.get(t).?;
                 for (group.keys()) |g| {
                     const gperms = perms.get(g).?;
                     const issubset = isSubSet(TermSet, gperms, ei_range);
@@ -680,15 +714,12 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
         fn elementCount(term: Term, e: u4, bitcount: TLen) TLen {
             var result: TLen = 0;
-            const skiplen = term.len * 2 - bitcount;
             var j: TLen = 0;
             for (term) |byte| {
                 const dual = toDual(byte);
-                if (j >= skiplen)
-                    result += @boolToInt(dual.a == e);
+                result += @boolToInt(j < bitcount) * @boolToInt(dual.a == e);
                 j += 1;
-                if (j >= skiplen)
-                    result += @boolToInt(dual.b == e);
+                result += @boolToInt(j < bitcount) * @boolToInt(dual.b == e);
                 j += 1;
             }
             return result;
@@ -709,9 +740,9 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
         fn combineImplicants(self: Self, arena: Allocator, a: Term, b: Term, dcset: TSet) !Term {
             var permutations_a: TermSet = .{};
-            try collectPerms(arena, a, &permutations_a, dcset);
+            try collectPerms(arena, a, &permutations_a, dcset, self.bitcount);
             var permutations_b: TermSet = .{};
-            try collectPerms(arena, b, &permutations_b, dcset);
+            try collectPerms(arena, b, &permutations_b, dcset, self.bitcount);
             var a_potential = try arena.dupe(u8, a);
             var b_potential = try arena.dupe(u8, b);
 
@@ -737,11 +768,11 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             for (permutations_b.keys()) |bp| try permutations_a.put(arena, bp, {});
             var valid: TermList = .{};
             var set: TermSet = .{};
-            try collectPerms(arena, a_potential, &set, dcset);
+            try collectPerms(arena, a_potential, &set, dcset, self.bitcount);
             if (setsEqual(TermSet, set, permutations_a))
                 try valid.append(arena, a_potential);
             set.clearRetainingCapacity();
-            try collectPerms(arena, b_potential, &set, dcset);
+            try collectPerms(arena, b_potential, &set, dcset, self.bitcount);
             if (setsEqual(TermSet, set, permutations_a))
                 try valid.append(arena, a_potential);
             // trace("valid {}\n", .{TermsFmt.init(valid.items, comma_delim, self.bitcount)});
@@ -777,7 +808,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     const gop = try coverage.getOrPut(arena, implicant);
                     if (!gop.found_existing) gop.value_ptr.* = .{};
                     // trace("implicant {}\n", .{TermFmt.init(implicant)});
-                    try collectPerms(arena, implicant, gop.value_ptr, dcset);
+                    try collectPerms(arena, implicant, gop.value_ptr, dcset, self.bitcount);
                     combined_len += gop.value_ptr.count();
                 }
             }
@@ -785,11 +816,14 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
             var others_coverage: TermSet = .{};
             var redundant: std.ArrayListUnmanaged(Term) = .{};
+            // TODO: audit why is there an extra redundant.
+            // i belive this is responsible for a failing skipped test
             while (true) {
                 redundant.clearRetainingCapacity();
                 var coviter = coverage.iterator();
                 while (coviter.next()) |it| {
-                    const this_implicant = it.key_ptr.*;
+                    // this bitCast is is necessary due to redundant.append(this_implicant) below
+                    const this_implicant = @bitCast([]u8, it.key_ptr.*);
                     const this_coverage = it.value_ptr.*;
                     others_coverage.clearRetainingCapacity();
                     var coviter2 = coverage.keyIterator();
@@ -803,7 +837,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     const issubset = isSubSet(TermSet, this_coverage, others_coverage);
                     if (issubset) trace("this_coverage.len {} others_coverage.len {}\n", .{ this_coverage.count(), others_coverage.count() });
                     if (issubset)
-                        try redundant.append(arena, this_implicant);
+                        try redundant.append(arena, this_implicant); // <--- here
                 }
                 trace("redundant {}\n", .{redundant.items.len});
                 if (redundant.items.len > 0) {
@@ -832,7 +866,7 @@ fn todo(msg: []const u8) noreturn {
     @panic(msg);
 }
 
-pub const show_trace = false;
+// pub const show_trace = true;
 pub fn trace(comptime fmt: []const u8, args: anytype) void {
     if (@hasDecl(@This(), "show_trace") and @field(@This(), "show_trace"))
         std.debug.print(fmt, args);

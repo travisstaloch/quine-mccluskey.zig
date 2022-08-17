@@ -43,6 +43,5 @@ see [src/tests.zig](src/tests.zig)
   - https://uweb.engr.arizona.edu/~ece474a/uploads/Main/lecture_logicopt.pdf
 
 # todo
-- add tests with dontcares
 - add support for xor/xnor reductions
 - improve memory usage
