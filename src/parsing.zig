@@ -44,41 +44,41 @@ pub fn parseTerms(comptime Qm: type, allocator: Allocator, input: []const u8, de
     return result.toOwnedSlice(allocator);
 }
 
-pub fn parseIntoSet(
-    comptime QM: type,
-    comptime Set: type,
-    allocator: Allocator,
-    input: []const u8,
-    delimiter: []const u8,
-    variables: []const []const u8,
-) !Set {
-    var result: Set = .{};
-    const terms = try parseTerms(QM, allocator, input, delimiter, variables, .reverse);
-    defer allocator.free(terms);
-    for (terms) |term| try result.put(allocator, term, {});
-    return result;
-}
+// pub fn parseIntoSet(
+//     comptime QM: type,
+//     comptime Set: type,
+//     allocator: Allocator,
+//     input: []const u8,
+//     delimiter: []const u8,
+//     variables: []const []const u8,
+// ) !Set {
+//     var result: Set = .{};
+//     const terms = try parseTerms(QM, allocator, input, delimiter, variables, .reverse);
+//     defer allocator.free(terms);
+//     for (terms) |term| try result.put(allocator, term, {});
+//     return result;
+// }
 
-/// use when each item in input is a dual
-pub fn parseOneTermDual(comptime QM: type, input_duals: []const u8, term: *std.ArrayList(u8)) !void {
+/// use when each item in input is a packed nibbles
+pub fn parseOneTermNibbles(comptime QM: type, input_nibbles: []const u8, term: *std.ArrayList(u8)) !void {
     var i: usize = 0;
     term.clearRetainingCapacity();
-    while (i < input_duals.len) {
-        var dual: QM.Dual = undefined;
-        dual.a = QM.byteToNibble(input_duals[i]);
+    while (i < input_nibbles.len) {
+        var nib: QM.Nibbles = undefined;
+        nib.a = QM.byteToNibble(input_nibbles[i]);
         i += 1;
-        if (i >= input_duals.len) {
-            dual.b = QM.invalid;
-            try term.append(QM.fromDual(dual));
+        if (i >= input_nibbles.len) {
+            nib.b = QM.invalid;
+            try term.append(QM.fromNibbles(nib));
             break;
         }
-        dual.b = QM.byteToNibble(input_duals[i]);
+        nib.b = QM.byteToNibble(input_nibbles[i]);
         i += 1;
-        try term.append(QM.fromDual(dual));
+        try term.append(QM.fromNibbles(nib));
     }
 }
 
-/// use when input is packed terms (duals)
+/// use when input is packed terms (nibs)
 pub fn parseIntoTermSet(
     comptime QM: type,
     allocator: Allocator,
@@ -90,7 +90,7 @@ pub fn parseIntoTermSet(
     var iter = std.mem.split(u8, input, delimiter);
     var term = std.ArrayList(u8).init(allocator);
     while (iter.next()) |termraw| {
-        try parseOneTermDual(QM, termraw, &term);
+        try parseOneTermNibbles(QM, termraw, &term);
         try result.put(allocator, try allocator.dupe(u8, term.items), {});
     }
     return result;
@@ -113,18 +113,18 @@ pub fn printEssentialTerms(comptime Qm: type, self: Qm, writer: anytype, delimit
         const skiplen = std.math.sub(usize, term.len * 2, self.bitcount) catch continue;
         var j: usize = 0;
         for (term) |c| {
-            const dual = Qm.toDual(c);
+            const nibs = Qm.toNibbles(c);
             if (j >= skiplen) {
-                if (dual.a == Qm.zero)
+                if (nibs.a == Qm.zero)
                     try writer.print("{s}'", .{variables[j - skiplen]})
-                else if (dual.a == Qm.one)
+                else if (nibs.a == Qm.one)
                     try writer.print("{s}", .{variables[j - skiplen]});
             }
             j += 1;
             if (j >= skiplen) {
-                if (dual.b == Qm.zero)
+                if (nibs.b == Qm.zero)
                     try writer.print("{s}'", .{variables[j - skiplen]})
-                else if (dual.b == Qm.one)
+                else if (nibs.b == Qm.one)
                     try writer.print("{s}", .{variables[j - skiplen]});
             }
             j += 1;
@@ -228,7 +228,7 @@ pub fn testEqualSets(comptime QM: type, allr: Allocator, expected: []const u8, a
             var term = std.ArrayList(u8).init(allr);
             var i: usize = 0;
             while (iter.next()) |t| : (i += 1) {
-                try parseOneTermDual(QM, t, &term);
+                try parseOneTermNibbles(QM, t, &term);
                 const missing = !actuals.contains(term.items);
                 if (debug and missing) {
                     std.debug.print("ERROR: missing item at index {}: {s}\n", .{ i, t });
@@ -241,7 +241,7 @@ pub fn testEqualSets(comptime QM: type, allr: Allocator, expected: []const u8, a
             var term = std.ArrayList(u8).init(allr);
             var i: usize = 0;
             while (iter.next()) |t| : (i += 1) {
-                try parseOneTermDual(QM, t, &term);
+                try parseOneTermNibbles(QM, t, &term);
                 const extra = !expecteds.contains(term.items);
                 if (debug and extra) {
                     std.debug.print("ERROR: extra item at index {}: {s}\n", .{ i, t });

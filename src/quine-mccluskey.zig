@@ -10,9 +10,9 @@ pub const parsing = @import("parsing.zig");
 const is_debug_build = @import("builtin").mode == .Debug;
 
 /// this imlementation packs 2 elements per byte.
-/// this packed representation is called a 'dual' here.
+/// this packed representation is called a 'nibbles' here.
 /// this means that each byte holds 2 'Element' where
-/// Element is an enum(u4){zero,one,xor,xnor,dash}.
+/// Element is an enum(u4){ zero, one, xor, xnor, dash }.
 pub fn QuineMcCluskey(comptime _T: type) type {
     return struct {
         allocator: Allocator,
@@ -24,17 +24,17 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
         comptime {
             assert(std.math.isPowerOfTwo(TBitSize));
-            assert(fromDual(toDual(0x10)) == fromDual(Dual.init(1, 0)));
+            assert(fromNibbles(toNibbles(0x10)) == fromNibbles(Nibbles.init(1, 0)));
         }
         pub const T = _T;
 
         /// b is intentionally before a so that the byte 0x10 is
-        /// equivalent to Dual{.a = 1, .b = 0}
-        pub const Dual = packed struct {
+        /// equivalent to Nibbles{.a = 1, .b = 0}
+        pub const Nibbles = packed struct {
             b: u4,
             a: u4,
 
-            pub fn init(a: u4, b: u4) Dual {
+            pub fn init(a: u4, b: u4) Nibbles {
                 return .{ .a = a, .b = b };
             }
         };
@@ -46,14 +46,14 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         pub const TLen = std.math.Log2IntCeil(T);
         pub const TLenSigned = std.meta.Int(.signed, std.math.log2_int(T, TBitSize) + 2);
 
-        pub inline fn toDual(c: u8) Dual {
-            return @bitCast(Dual, c);
+        pub inline fn toNibbles(c: u8) Nibbles {
+            return @bitCast(Nibbles, c);
         }
-        pub inline fn toDualPtr(c: *u8) *Dual {
-            return @ptrCast(*Dual, c);
+        pub inline fn toNibblesPtr(c: *u8) *Nibbles {
+            return @ptrCast(*Nibbles, c);
         }
-        pub inline fn fromDual(dual: Dual) u8 {
-            return @bitCast(u8, dual);
+        pub inline fn fromNibbles(nibs: Nibbles) u8 {
+            return @bitCast(u8, nibs);
         }
 
         pub const TSet = std.AutoHashMapUnmanaged(T, void);
@@ -128,15 +128,33 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 var mask = @as(T, 1) << @intCast(TLog2, bitcount - i - 1);
                 // trace("\ni {} idiv2 {} mask {b} @clz(T, mask) {} halfbitcount {}\n", .{ i, idiv2, mask, @clz(T, mask), halfbitcount });
                 const c = &buf[idiv2];
-                const dual = toDualPtr(c);
-                dual.a = if (i < bitcount) @truncate(u1, @boolToInt(mask & t != 0)) else ele_uninit;
+                const nibs = toNibblesPtr(c);
+                nibs.a = if (i < bitcount) @truncate(u1, @boolToInt(mask & t != 0)) else ele_uninit;
                 mask >>= 1;
                 i += 1;
-                dual.b = if (i < bitcount) @truncate(u1, @boolToInt(mask & t != 0)) else ele_uninit;
+                nibs.b = if (i < bitcount) @truncate(u1, @boolToInt(mask & t != 0)) else ele_uninit;
                 i += 1;
                 if (i >= bitcount) break;
             }
             return buf;
+        }
+
+        pub fn termToT(term: Term, bitcount: TLen) !T {
+            var t: T = 0;
+            var i: TLen = 0;
+            while (true) {
+                const nibs = toNibbles(term[i / 2]);
+                t <<= 1;
+                t |= @truncate(u1, nibs.a);
+                i += 1;
+                if (i >= bitcount) break;
+
+                t <<= 1;
+                t |= @truncate(u1, nibs.b);
+                i += 1;
+                if (i >= bitcount) break;
+            }
+            return t;
         }
 
         /// allocate a slice and pack human readable 'bytes' into it.
@@ -157,10 +175,10 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             var i: usize = 0;
 
             for (buf) |*c| {
-                const dual = toDualPtr(c);
-                dual.a = if (i < bitcount) byteToNibble(bytes[i]) else ele_uninit;
+                const nibs = toNibblesPtr(c);
+                nibs.a = if (i < bitcount) byteToNibble(bytes[i]) else ele_uninit;
                 i += 1;
-                dual.b = if (i < bitcount) byteToNibble(bytes[i]) else ele_uninit;
+                nibs.b = if (i < bitcount) byteToNibble(bytes[i]) else ele_uninit;
                 i += 1;
                 if (i >= bitcount) break;
             }
@@ -191,8 +209,8 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
         /// widen e's nibbles into a 2-byte wide human readable representation
         pub fn nibblesToBytes(e: u8) ![2]u8 {
-            const dual = toDual(e);
-            return [2]u8{ try nibbleToByte(dual.a), try nibbleToByte(dual.b) };
+            const nibs = toNibbles(e);
+            return [2]u8{ try nibbleToByte(nibs.a), try nibbleToByte(nibs.b) };
         }
         /// pack a human readable byte into nibble
         pub fn byteToNibble(b: u8) u4 {
@@ -208,7 +226,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
         /// pack a human readable bytes into single byte
         pub fn bytesToNibbles(bytes: [2]u8) u8 {
-            return fromDual(.{ .a = byteToNibble(bytes[0]), .b = byteToNibble(bytes[1]) });
+            return fromNibbles(.{ .a = byteToNibble(bytes[0]), .b = byteToNibble(bytes[1]) });
         }
 
         /// wrapper for printing Terms, can be passed to print functions like this:
@@ -224,14 +242,14 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             pub fn format(self: TermFmt, comptime _: []const u8, _: std.fmt.FormatOptions, writer: anytype) !void {
                 var i: usize = 0;
                 for (self.term) |e| {
-                    const dual = toDual(e);
+                    const nibs = toNibbles(e);
                     if (i >= self.bitcount) break;
-                    if (nibbleToByte(dual.a)) |a| {
+                    if (nibbleToByte(nibs.a)) |a| {
                         try writer.writeByte(a);
                         i += 1;
                     } else |_| {}
                     if (i >= self.bitcount) break;
-                    if (nibbleToByte(dual.b)) |b| {
+                    if (nibbleToByte(nibs.b)) |b| {
                         try writer.writeByte(b);
                         i += 1;
                     } else |_| {}
@@ -271,6 +289,61 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 for (self.termset.keys()) |k, i| {
                     if (i != 0) _ = try writer.write(self.delimiter);
                     try writer.print("{}", .{TermFmt.init(k, self.bitcount)});
+                }
+            }
+        };
+
+        /// wrapper for printing Terms as variable names, can be passed to print functions like this:
+        ///   std.debug.print("{}", .{TermFmtVars.init(term, bitcount)});
+        pub const TermFmtVars = struct {
+            term: Term,
+            bitcount: TLen,
+            variables: []const []const u8,
+            separator: []const u8,
+            not_symbol: []const u8,
+            not_style: NotStyle,
+            pub const NotStyle = enum { before, after };
+            pub fn init(
+                term: Term,
+                bitcount: TLen,
+                variables: []const []const u8,
+                separator: []const u8,
+                not_symbol: []const u8,
+                not_style: NotStyle,
+            ) TermFmtVars {
+                return .{
+                    .term = term,
+                    .bitcount = bitcount,
+                    .variables = variables,
+                    .separator = separator,
+                    .not_symbol = not_symbol,
+                    .not_style = not_style,
+                };
+            }
+
+            /// skip invalid nibbles and write at most bitcount names
+            pub fn format(self: TermFmtVars, comptime _: []const u8, _: std.fmt.FormatOptions, writer: anytype) !void {
+                for (self.term) |e, i| {
+                    const nibs = toNibbles(e);
+                    if (i >= self.bitcount) break;
+                    if (nibbleToByte(nibs.a)) |a| {
+                        if (i != 0)
+                            _ = try writer.write(self.separator);
+                        if (self.not_style == .before and a == 0)
+                            _ = try writer.write(self.not_symbol);
+                        _ = try writer.write(self.variables[i * 2]);
+                        if (self.not_style == .after and a == 0)
+                            _ = try writer.write(self.not_symbol);
+                    } else |_| {}
+                    if (i >= self.bitcount) break;
+                    if (nibbleToByte(nibs.b)) |b| {
+                        _ = try writer.write(self.separator);
+                        if (self.not_style == .before and b == 0)
+                            _ = try writer.write(self.not_symbol);
+                        _ = try writer.write(self.variables[i * 2 + 1]);
+                        if (self.not_style == .after and b == 0)
+                            _ = try writer.write(self.not_symbol);
+                    } else |_| {}
                 }
             }
         };
@@ -334,9 +407,9 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         fn termCount(t: Term, e: Element) u8 {
             var r: u8 = 0;
             for (t) |byte| {
-                const dual = toDual(byte);
-                r += @boolToInt(dual.a == @enumToInt(e));
-                r += @boolToInt(dual.b == @enumToInt(e));
+                const nibs = toNibbles(byte);
+                r += @boolToInt(nibs.a == @enumToInt(e));
+                r += @boolToInt(nibs.b == @enumToInt(e));
             }
             return r;
         }
@@ -397,21 +470,21 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     for (group.keys()) |t1| {
                         // trace("t1 {}\n", .{TermFmt.init(t1)});
                         for (t1) |cs1, i| {
-                            const dual = toDual(cs1);
+                            const nibs = toNibbles(cs1);
                             // check both nibbles
-                            inline for (comptime std.meta.fieldNames(Dual)) |f| {
-                                const c1 = @field(dual, f);
+                            inline for (comptime std.meta.fieldNames(Nibbles)) |f| {
+                                const c1 = @field(nibs, f);
                                 if (c1 == zero) {
                                     std.mem.copy(u8, t2, t1);
-                                    var dual2 = toDual(t2[i]);
-                                    @field(dual2, f) = one;
-                                    t2[i] = fromDual(dual2);
+                                    var nib2 = toNibbles(t2[i]);
+                                    @field(nib2, f) = one;
+                                    t2[i] = fromNibbles(nib2);
                                     // trace("t2 {}\n", .{TermFmt.init(t2)});
                                     if (group_next.contains(t2)) {
                                         const t12 = try arena.dupe(u8, t1);
-                                        var dual12 = toDual(t12[i]);
-                                        @field(dual12, f) = dash;
-                                        t12[i] = fromDual(dual12);
+                                        var nib12 = toNibbles(t12[i]);
+                                        @field(nib12, f) = dash;
+                                        t12[i] = fromNibbles(nib12);
                                         // trace("{} {} {}\n", .{ TermFmt.init(t1, self.bitcount), TermFmt.init(t2, self.bitcount), TermFmt.init(t12, self.bitcount) });
                                         try used.put(arena, t1, {});
                                         try used.put(arena, try arena.dupe(u8, t2), {});
@@ -480,10 +553,10 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
             var n: u16 = 0;
             for (term) |byte, i| {
-                const dual = toDual(byte);
+                const nibs = toNibbles(byte);
                 const ii = i * 2;
-                n += @boolToInt(ii < bitcount) * termRank(dual.a);
-                n += @boolToInt(ii + 1 < bitcount) * termRank(dual.b);
+                n += @boolToInt(ii < bitcount) * termRank(nibs.a);
+                n += @boolToInt(ii + 1 < bitcount) * termRank(nibs.b);
             }
             return 4 * term_range + n;
         }
@@ -511,111 +584,47 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         pub const ele_uninit = @as(u4, 0xf);
         pub const byte_uninit = @as(u8, 0xff);
 
-        pub const Permutations = struct {
-            value: Term,
-            bitcount: TLen,
-            n_xor: u8,
-            xor_value: u8 = 0,
-            seen_xors: u8 = 0,
-            res: A = [1]u8{byte_uninit} ** (TBitSize / 2),
-            i: TLenSigned = 0,
-            direction: i2 = 1,
-            exclude: TSet,
-
-            pub const A = [TBitSize / 2]u8;
-            pub const V = @Vector(TBitSize / 2, u8);
-
-            pub fn init(term: Term, exclude: TSet, bitcount: TLen) Permutations {
-                var result = Permutations{
-                    .bitcount = @intCast(TLog2, bitcount),
-                    .n_xor = termCount(term, .xor) + termCount(term, .xnor),
-                    .exclude = exclude,
-                    .value = term,
-                };
-                return result;
-            }
-
-            inline fn setDualFieldIf(is_a: bool, dest_byte: *u8, src_byte: u8) void {
-                const dest_dual = toDualPtr(dest_byte);
-                const src_dual = toDual(src_byte);
-                if (is_a)
-                    dest_dual.a = src_dual.a
-                else
-                    dest_dual.b = src_dual.b;
-            }
-
-            pub fn next(self: *Permutations) Term {
-                const trace_this = false;
-
-                while (self.i >= 0) {
-                    if (true) {
-                        const i = @intCast(TLen, @divTrunc(self.i, 2));
-                        // on even indices, use low nibble 'a' otherwise high nibble 'b'
-                        const is_a = @truncate(i1, self.i) == 0;
-                        const dual = toDual(self.value[i]);
-                        const ele = if (is_a) dual.a else dual.b;
-                        switch (ele) {
-                            zero, one => setDualFieldIf(is_a, &self.res[i], self.value[i]),
-                            dash => if (self.direction == 1) {
-                                setDualFieldIf(is_a, &self.res[i], fromDual(Dual.init(zero, zero)));
-                            } else {
-                                const dualres = toDual(self.res[i]);
-                                const nibble = if (is_a) dualres.a else dualres.b;
-                                if (nibble == zero) {
-                                    setDualFieldIf(is_a, &self.res[i], fromDual(Dual.init(one, one)));
-                                    self.direction = 1;
-                                }
-                            },
-                            xor => todo("xor"),
-                            xnor => todo("xnor"),
-                            else => std.debug.panic("invalid Element {}", .{ele}),
-                        }
-                    }
-
-                    self.i += self.direction;
-                    if (std.math.cast(TLen, self.i)) |i| {
-                        if (i == self.bitcount) {
-                            self.direction = -1;
-                            self.i = self.bitcount - 1;
-                            if (trace_this)
-                                trace(
-                                    "value {}\nres   {}\nvalue {}\n",
-                                    .{ TermFmt.init(self.value, self.bitcount), std.fmt.fmtSliceHexLower(&self.res), std.fmt.fmtSliceHexLower(self.value) },
-                                );
-                            if (self.exclude.count() > 0) {
-                                const t = parseTFromTerm(self.res[0..self.value.len], self.bitcount) catch unreachable;
-                                if (trace_this)
-                                    trace(
-                                        "t {: <5}\n      {b:0>9}\n",
-                                        .{ t, t },
-                                    );
-
-                                if (!self.exclude.contains(t)) {
-                                    return self.res[0 .. (self.bitcount + 1) / 2];
-                                }
-                            } else return self.res[0 .. (self.bitcount + 1) / 2];
-                        }
-                    }
-                }
-                return &[0]u8{};
-            }
-        };
-
-        pub fn parseTFromTerm(term: Term, bitcount: TLen) !T {
-            // TODO: don't rely on buf print, just do regular parsing now that first nibble is always ok
-            var buf: [TBitSize]u8 = undefined;
-            const buff = try std.fmt.bufPrint(&buf, "{}", .{TermFmt.init(term, bitcount)});
-            // trace("buff  {s}:{any} buff.len {} bitcount {}\n", .{ buff, buff, buff.len, bitcount });
-            return try std.fmt.parseUnsigned(T, buff[0..bitcount], 2);
-        }
-
         pub fn collectPerms(arena: Allocator, term: Term, result: *TermSet, excludes: TSet, bitcount: TLen) !void {
-            var permsiter = Permutations.init(term, excludes, bitcount);
-            while (true) {
-                const p = permsiter.next();
-                // trace("p {} {} {}\n", .{ TermFmt.init(p, bitcount), std.fmt.fmtSliceHexLower(p), bitcount });
-                if (p.len == 0) break;
-                try result.putNoClobber(arena, try arena.dupe(u8, p), {});
+            const dashcount = termCount(term, .dash);
+            const max = @as(T, 1) << @intCast(TLog2, dashcount);
+
+            const trace_this = false;
+            if (trace_this) trace("\nterm {} dashcount {} max {}:0b{b}\n", .{ TermFmt.init(term, bitcount), dashcount, max, max });
+
+            var dashi_arr: [TBitSize]TLog2 = undefined; // dash indices
+            var dashi_len: TLog2 = 0;
+            for (term) |c, i| {
+                const nibs = toNibbles(c);
+                if (nibs.a == dash) {
+                    dashi_arr[dashi_len] = @intCast(TLog2, i * 2);
+                    dashi_len += 1;
+                }
+                if (nibs.b == dash) {
+                    dashi_arr[dashi_len] = @intCast(TLog2, i * 2 + 1);
+                    dashi_len += 1;
+                }
+            }
+            const dashis = dashi_arr[0..dashi_len];
+            var termcopy = try arena.dupe(u8, term);
+            defer arena.free(termcopy);
+
+            if (trace_this) trace("dashi {any}\n", .{dashis});
+            var perm: T = 0;
+            while (perm < max) : (perm += 1) {
+                if (trace_this) trace("i {}:0b{b}\n", .{ perm, perm });
+
+                for (dashis) |dash_idx, i| {
+                    const bit = @boolToInt((@as(T, 1) << @intCast(TLog2, i)) & perm != 0);
+                    const byteidx = dash_idx / 2;
+                    const isa = @truncate(u1, dash_idx) == 0;
+                    if (trace_this) trace("dash_idx {} i {} bit {} byteidx {} isa {}\n", .{ dash_idx, i, bit, byteidx, isa });
+                    const nibs = toNibblesPtr(&termcopy[byteidx]);
+                    if (isa) nibs.a = bit else nibs.b = bit;
+                    if (trace_this) trace("termcopy {} ({})\n", .{ TermFmt.init(termcopy, bitcount), std.fmt.fmtSliceHexLower(termcopy) });
+                }
+                const t = try termToT(termcopy, bitcount);
+                if (!excludes.contains(t))
+                    try result.putNoClobber(arena, try arena.dupe(u8, termcopy), {});
             }
         }
 
@@ -711,7 +720,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
             if (ei.count() == 0) {
                 const x = try self.allocator.alloc(u8, try std.math.divCeil(TLen, self.bitcount, 2));
-                std.mem.set(u8, x, fromDual(.{ .a = dash, .b = dash }));
+                std.mem.set(u8, x, fromNibbles(.{ .a = dash, .b = dash }));
                 try ei.put(self.allocator, x, {});
             }
 
@@ -722,10 +731,10 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             var result: TLen = 0;
             var j: TLen = 0;
             for (term) |byte| {
-                const dual = toDual(byte);
-                result += @boolToInt(j < bitcount) * @boolToInt(dual.a == e);
+                const nibs = toNibbles(byte);
+                result += @boolToInt(j < bitcount) * @boolToInt(nibs.a == e);
                 j += 1;
-                result += @boolToInt(j < bitcount) * @boolToInt(dual.b == e);
+                result += @boolToInt(j < bitcount) * @boolToInt(nibs.b == e);
                 j += 1;
             }
             return result;
@@ -756,20 +765,20 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             // const a_term_dcs = try indices(arena, a, dash);
             // for (a_term_dcs) |index| a_potential[index] = b[index];
             for (a) |_, i| {
-                const adual = toDual(a[i]);
-                const bdual = toDual(b[i]);
-                const apotdual = toDualPtr(&a_potential[i]);
-                if (adual.a == dash) apotdual.a = bdual.a;
-                if (adual.b == dash) apotdual.b = bdual.b;
+                const anibs = toNibbles(a[i]);
+                const bnibs = toNibbles(b[i]);
+                const apotnibs = toNibblesPtr(&a_potential[i]);
+                if (anibs.a == dash) apotnibs.a = bnibs.a;
+                if (anibs.b == dash) apotnibs.b = bnibs.b;
             }
             // const b_term_dcs = try indices(arena, b, dash);
             // for (b_term_dcs) |index| b_potential[index] = a[index];
             for (b) |_, i| {
-                const adual = toDual(a[i]);
-                const bdual = toDual(b[i]);
-                const bpotdual = toDualPtr(&b_potential[i]);
-                if (bdual.a == dash) bpotdual.a = adual.a;
-                if (bdual.b == dash) bpotdual.b = adual.b;
+                const anibs = toNibbles(a[i]);
+                const bnibs = toNibbles(b[i]);
+                const bpotnibs = toNibblesPtr(&b_potential[i]);
+                if (bnibs.a == dash) bpotnibs.a = anibs.a;
+                if (bnibs.b == dash) bpotnibs.b = anibs.b;
             }
             for (permutations_b.keys()) |bp| try permutations_a.put(arena, bp, {});
             var valid: TermList = .{};
@@ -868,7 +877,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 try result.put(self.allocator, try self.allocator.dupe(u8, k.*), {});
             if (result.count() == 0) {
                 const x = try self.allocator.alloc(u8, try std.math.divCeil(TLen, self.bitcount, 2));
-                std.mem.set(u8, x, fromDual(.{ .a = dash, .b = dash }));
+                std.mem.set(u8, x, fromNibbles(.{ .a = dash, .b = dash }));
                 try result.put(self.allocator, x, {});
             }
             return result;

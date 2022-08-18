@@ -392,7 +392,7 @@ test "round trip parsing" {
         // });
         try std.testing.expectEqualStrings(term, term2);
         // convert from packed term to t and compare
-        const t = try Qm32.parseTFromTerm(term2, bitcount);
+        const t = try Qm32.termToT(term2, bitcount);
         try std.testing.expectEqual(expected_t, t);
     }
 }
