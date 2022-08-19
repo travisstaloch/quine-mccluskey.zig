@@ -294,7 +294,8 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         };
 
         /// wrapper for printing Terms as variable names, can be passed to print functions like this:
-        ///   std.debug.print("{}", .{TermFmtVars.init(term, bitcount)});
+        ///   std.debug.print("{}", .{TermFmtVars.init(term, bitcount, &.{"A", "B", "C"}, " && ", "!", .before)});
+        ///   ^ given term "1-0" prints "A && !C"
         pub const TermFmtVars = struct {
             term: Term,
             bitcount: TLen,
@@ -321,29 +322,38 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 };
             }
 
-            /// skip invalid nibbles and write at most bitcount names
+            /// write at most bitcount variables
             pub fn format(self: TermFmtVars, comptime _: []const u8, _: std.fmt.FormatOptions, writer: anytype) !void {
+                // TODO: figure out how to gracefully handle this error as returning error.VariablesTooShort produces this error:
+                //   error: expected type 'std.os.WriteError', found '@typeInfo(@typeInfo(@TypeOf(.quine-mccluskey.QuineMcCluskey(u32).TermFmtVars.format)).Fn.return_type.?).ErrorUnion.error_set'
+                if (self.variables.len < self.bitcount)
+                    std.debug.panic("variables.len {} too small. must be atleast bitcount {}\n", .{ self.variables.len, self.bitcount });
+                var written_count: usize = 0;
                 for (self.term) |e, i| {
                     const nibs = toNibbles(e);
-                    if (i >= self.bitcount) break;
-                    if (nibbleToByte(nibs.a)) |a| {
-                        if (i != 0)
+                    if (i * 2 >= self.bitcount) break;
+                    if (nibs.a == zero or nibs.a == one) {
+                        if (written_count != 0)
                             _ = try writer.write(self.separator);
-                        if (self.not_style == .before and a == 0)
+                        if (self.not_style == .before and nibs.a == zero)
                             _ = try writer.write(self.not_symbol);
                         _ = try writer.write(self.variables[i * 2]);
-                        if (self.not_style == .after and a == 0)
+                        if (self.not_style == .after and nibs.a == zero)
                             _ = try writer.write(self.not_symbol);
-                    } else |_| {}
-                    if (i >= self.bitcount) break;
-                    if (nibbleToByte(nibs.b)) |b| {
-                        _ = try writer.write(self.separator);
-                        if (self.not_style == .before and b == 0)
+                        written_count += 1;
+                    }
+
+                    if (i * 2 + 1 >= self.bitcount) break;
+                    if (nibs.b == zero or nibs.b == one) {
+                        if (written_count != 0)
+                            _ = try writer.write(self.separator);
+                        if (self.not_style == .before and nibs.b == zero)
                             _ = try writer.write(self.not_symbol);
                         _ = try writer.write(self.variables[i * 2 + 1]);
-                        if (self.not_style == .after and b == 0)
+                        if (self.not_style == .after and nibs.b == zero)
                             _ = try writer.write(self.not_symbol);
-                    } else |_| {}
+                        written_count += 1;
+                    }
                 }
             }
         };
