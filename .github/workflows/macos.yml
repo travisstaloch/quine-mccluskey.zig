@@ -27,3 +27,5 @@ jobs:
     - run: zig build test -Drelease-fast
     - run: zig build test -Drelease-small
     - run: zig build test -Drelease-safe
+    - run: zig build
+    - run: zig build test-simplify

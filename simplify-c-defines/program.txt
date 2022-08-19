@@ -1,0 +1,1584 @@
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_EVOLVING
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && defined(__APPLE_API_STRICT_CONFORMANCE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_OBSOLETE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_PRIVATE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_STANDARD
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __APPLE_API_UNSTABLE
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 11 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && !defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && !defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && !defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && !defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && !defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && !defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
+#if defined(__APPLE__) && __ZIG_OS_VERSION_MIN_MAJOR__ == 12 && !defined(__SYS_APPLEAPIOPTS_H__) && defined(__APPLE_API_STANDARD) && defined(__APPLE_API_STABLE) && !defined(__APPLE_API_STRICT_CONFORMANCE) && defined(__APPLE_API_EVOLVING) && defined(__APPLE_API_UNSTABLE) && defined(__APPLE_API_PRIVATE) && defined(__APPLE_API_OBSOLETE)
+#define __SYS_APPLEAPIOPTS_H__
+#endif
