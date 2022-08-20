@@ -12,7 +12,8 @@ fn load_defines(allocator: Allocator, filepath: []const u8) !StringLineList {
     var res = StringLineList.init(allocator);
     const f = try std.fs.cwd().openFile(filepath, .{});
     defer f.close();
-    const reader = std.io.bufferedReader(f.reader()).reader();
+    var bufreader = std.io.bufferedReader(f.reader());
+    const reader = bufreader.reader();
     var buf: [1024]u8 = undefined;
     var i: usize = 0;
     while (try reader.readUntilDelimiterOrEof(&buf, '\n')) |line| : (i += 1) {
@@ -55,7 +56,8 @@ fn find_lines(allocator: Allocator, run: Run, filepath: []const u8) !LineList {
 
     const f = try std.fs.cwd().openFile(filepath, .{});
     defer f.close();
-    const reader = std.io.bufferedReader(f.reader()).reader();
+    var bufreader = std.io.bufferedReader(f.reader());
+    const reader = bufreader.reader();
     var buf: [1024]u8 = undefined;
     var i: usize = 0;
     while (try reader.readUntilDelimiterOrEof(&buf, '\n')) |line| : (i += 1) {
@@ -74,7 +76,8 @@ fn get_defs(allocator: Allocator, linelist: LineList, filepath: []const u8) !Str
     for (linelist.items) |l| try slist.put(l, {});
     const f = try std.fs.cwd().openFile(filepath, .{});
     defer f.close();
-    const reader = std.io.bufferedReader(f.reader()).reader();
+    var bufreader = std.io.bufferedReader(f.reader());
+    const reader = bufreader.reader();
     var buf: [1024]u8 = undefined;
     var i: usize = 0;
     while (try reader.readUntilDelimiterOrEof(&buf, '\n')) |line| : (i += 1) {
