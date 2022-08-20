@@ -112,7 +112,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
         /// allocate a slice and write bits of t into nibbles of it
         pub fn tToTerm(allocator: Allocator, t: T, bitcount: TLen) !Term {
-            const halfbitcount = try std.math.divCeil(TLen, bitcount, 2);
+            const halfbitcount = (bitcount + 1) / 2;
             var term = try allocator.alloc(u8, halfbitcount);
             return try tToTermBuf(term, t, bitcount);
         }
@@ -295,7 +295,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
         /// wrapper for printing Terms as variable names, can be passed to print functions like this:
         ///   std.debug.print("{}", .{TermFmtVars.init(term, bitcount, &.{"A", "B", "C"}, " && ", "!", .before)});
-        ///   ^ given term "1-0" prints "A && !C"
+        ///                                            ^ given term "1-0" prints "A && !C"
         pub const TermFmtVars = struct {
             term: Term,
             bitcount: TLen,
@@ -387,29 +387,35 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 try dontcares.append(arenaallr, term);
             }
 
-            self.reduced_implicants = try self.simplifyLos(ones.items, dontcares.items, arenaallr);
+            self.reduced_implicants = try self.simplifyLos(ones.items, dontcares.items, &arena);
         }
 
-        pub fn simplifyLos(self: *Self, ones: []Term, dontcares: []Term, arena: Allocator) !TermSet {
+        pub fn simplifyLos(self: *Self, ones: []Term, dontcares: []Term, arena: *std.heap.ArenaAllocator) !TermSet {
             var terms: TermSet = .{};
-            for (ones) |x| try terms.put(arena, try arena.dupe(u8, x), {});
-            for (dontcares) |x| try terms.put(arena, try arena.dupe(u8, x), {});
+
+            const arenaallr = arena.allocator();
+            for (ones) |x| try terms.put(arenaallr, try arenaallr.dupe(u8, x), {});
+            for (dontcares) |x| try terms.put(arenaallr, try arenaallr.dupe(u8, x), {});
 
             if (terms.count() == 0) return TermSet{};
 
-            // FIXME: optimize - deinit the arena after each of these 3 function calls
-            var prime_implicants = try self.getPrimeImplicants(arena, &terms);
+            var prime_implicants = try self.getPrimeImplicants(arenaallr, &terms);
             defer self.deinitTermSet(&prime_implicants);
             trace("\n\nprime_implicants {} {}\n", .{ prime_implicants.count(), TermSetFmt.init(prime_implicants, comma_delim, self.bitcount) });
 
+            arena.deinit();
+            arena.* = std.heap.ArenaAllocator.init(std.heap.page_allocator);
             var dcset: TSet = .{};
-            for (self.dontcares) |t| try dcset.put(arena, t, {});
+            defer dcset.deinit(self.allocator);
+            for (self.dontcares) |t| try dcset.put(self.allocator, t, {});
 
-            var essential_implicants = try self.getEssentialImplicants(arena, &prime_implicants, dcset);
+            var essential_implicants = try self.getEssentialImplicants(arenaallr, &prime_implicants, dcset);
             defer self.deinitTermSet(&essential_implicants);
             trace("\n\nessential_implicants {} {}\n", .{ essential_implicants.count(), TermSetFmt.init(essential_implicants, comma_delim, self.bitcount) });
 
-            var reduced_implicants = try self.reduceImplicants(arena, &essential_implicants, dcset);
+            arena.deinit();
+            arena.* = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+            var reduced_implicants = try self.reduceImplicants(arenaallr, &essential_implicants, dcset);
             trace("\n\nreduced_implicants {} {}\n", .{ reduced_implicants.count(), TermSetFmt.init(reduced_implicants, comma_delim, self.bitcount) });
             return reduced_implicants;
         }
@@ -445,7 +451,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             var groups: TermMap = .{};
             var used: TermSet = .{};
             var marked: TermSet = .{};
-            var t2 = try arena.alloc(u8, try std.math.divCeil(TLen, self.bitcount, 2));
+            var t2 = try arena.alloc(u8, (self.bitcount + 1) / 2);
 
             while (true) {
                 groups.clearRetainingCapacity();
@@ -672,12 +678,12 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             for (terms.keys()) |t| {
                 const permset = perms.get(t).?;
                 const permcount = permset.count();
-                const dashcount = termCount(t, .dash);
                 // trace("t{: >2} {} {} {}:{}\n", .{ i, TermFmt.init(t, self.bitcount), std.fmt.fmtSliceHexLower(t), permcount, TermSetFmt.init(permset, comma_delim, self.bitcount) });
                 const n = try getTermRank(t, @intCast(u16, permcount), self.bitcount);
                 if (is_debug_build) {
                     totaln += n;
                     totalperms += permcount;
+                    const dashcount = termCount(t, .dash);
                     const expected_permcount = std.math.pow(usize, 2, dashcount);
                     assert(dcset.count() != 0 or expected_permcount == permcount);
                 }
@@ -729,7 +735,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 }
             }
             if (ei.count() == 0) {
-                const x = try self.allocator.alloc(u8, try std.math.divCeil(TLen, self.bitcount, 2));
+                const x = try self.allocator.alloc(u8, (self.bitcount + 1) / 2);
                 std.mem.set(u8, x, fromNibbles(.{ .a = dash, .b = dash }));
                 try ei.put(self.allocator, x, {});
             }
@@ -833,7 +839,8 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     if (!gop.found_existing) gop.value_ptr.* = .{};
                     // trace("implicant {}\n", .{TermFmt.init(implicant)});
                     try collectPerms(arena, implicant, gop.value_ptr, dcset, self.bitcount);
-                    combined_len += gop.value_ptr.count();
+                    if (is_debug_build)
+                        combined_len += gop.value_ptr.count();
                 }
             }
             trace("coverage.len {} combined {}\n", .{ coverage.count(), combined_len });
@@ -869,7 +876,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                         trace("issubset {} this_coverage.len {} others_coverage.len {}\n", .{ issubset, this_coverage.count(), others_coverage.count() });
                         // trace("this {}:{} others {}\n", .{ TermFmt.init(this_implicant, self.bitcount), TermSetFmt.init(this_coverage, comma_delim, self.bitcount), TermSetFmt.init(others_coverage, comma_delim, self.bitcount) });
 
-                        try redundant.append(arena, this_implicant); // <--- here
+                        try redundant.append(arena, this_implicant);
                     }
                 }
                 trace("redundant {} others_total_count {}\n", .{ redundant.items.len, others_total_count });
@@ -886,7 +893,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             while (citer.next()) |k|
                 try result.put(self.allocator, try self.allocator.dupe(u8, k.*), {});
             if (result.count() == 0) {
-                const x = try self.allocator.alloc(u8, try std.math.divCeil(TLen, self.bitcount, 2));
+                const x = try self.allocator.alloc(u8, (self.bitcount + 1) / 2);
                 std.mem.set(u8, x, fromNibbles(.{ .a = dash, .b = dash }));
                 try result.put(self.allocator, x, {});
             }

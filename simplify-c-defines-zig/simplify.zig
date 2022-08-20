@@ -137,6 +137,7 @@ pub fn main() !void {
     var perms: Qm32.TermSet = .{};
     defer qm32.deinitTermSet(&perms);
     for (dcstrs) |dcstr| {
+        qm32.freeTermSetKeys(&perms);
         perms.clearRetainingCapacity();
         const termdc = try Qm32.bytesToTerm(allr, dcstr, bitcount);
         try Qm32.collectPerms(allr, termdc, &perms, .{}, bitcount);
@@ -177,6 +178,7 @@ pub fn main() !void {
             }
 
             if (found) {
+                qm32.freeTermSetKeys(&perms);
                 perms.clearRetainingCapacity();
                 try Qm32.collectPerms(allr, one, &perms, .{}, bitcount);
                 for (perms.keys()) |k| try ones.append(try Qm32.termToT(k, bitcount));
