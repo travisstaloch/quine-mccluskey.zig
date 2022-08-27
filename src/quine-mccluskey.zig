@@ -74,6 +74,28 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         pub const TSet = std.AutoHashMapUnmanaged(T, void);
         pub const TList = std.ArrayListUnmanaged(T);
         pub const TermSet = std.StringArrayHashMapUnmanaged(void);
+        //
+        // --- leaving this here temporarily incase i come back to using a custom ctx ---
+        //
+        // const TermSetCtx = struct {
+        //     const nelemnts = @intCast(u32, std.meta.fields(Element).len);
+        //     pub fn hash(_: TermSetCtx, key: []const u8) u32 {
+        //         var result: u32 = 0;
+        //         var i: u32 = 0;
+        //         for (key) |c| {
+        //             const nibs = toNibbles(c);
+        //             result += i * nelemnts + nibs.a;
+        //             i += 1;
+        //             result += i * nelemnts + nibs.b;
+        //             i += 1;
+        //         }
+        //         return result;
+        //     }
+        //     pub fn eql(_: TermSetCtx, a: []const u8, b: []const u8, _: usize) bool {
+        //         return std.mem.eql(u8, a, b);
+        //     }
+        // };
+        // pub const TermSet = std.ArrayHashMapUnmanaged([]const u8, void, TermSetCtx, false);
         pub const GroupKey = [3]u8;
         pub const TermList = std.ArrayListUnmanaged(Term);
         pub const TermMap = std.AutoHashMapUnmanaged(GroupKey, TermSet);
@@ -798,7 +820,6 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         fn combineImplicants(self: Self, arena: Allocator, a: Term, b: Term, dcset: TSet, perms: *TermSet, valid: *TermList, set: *TermSet) !Term {
             perms.clearRetainingCapacity();
             try collectPerms(arena, a, perms, dcset, self.bitcount);
-
             try collectPerms(arena, b, perms, dcset, self.bitcount);
             var a_potential = try arena.dupe(u8, a);
             var b_potential = try arena.dupe(u8, b);
@@ -875,8 +896,8 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             profile("{s: <25}", &timer, .{"reduceImplicants2"});
             trace("coverage.len {} combined {}\n", .{ coverage.count(), combined_len });
 
-            var others_coverage: TermSet = .{};
             var redundant: std.ArrayListUnmanaged(Term) = .{};
+            defer redundant.deinit(arena);
 
             while (true) {
                 // check if each implicant's coverage is a subset of all the other coverages combined.
@@ -888,24 +909,25 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 while (coviter.next()) |it| {
                     const this_implicant = it.key_ptr.*;
                     const this_coverage = it.value_ptr.*;
-                    others_coverage.clearRetainingCapacity();
 
-                    var coviter2 = coverage.iterator();
-                    while (coviter2.next()) |it2| {
-                        const other_implicant = it2.key_ptr.*;
-                        if (std.mem.eql(u8, other_implicant, this_implicant)) continue;
-                        const other_coverage = it2.value_ptr.*;
-                        for (other_coverage.keys()) |ok|
-                            try others_coverage.put(arena, ok, {});
-                    }
-                    if (is_debug_build)
-                        others_total_count += others_coverage.count();
+                    // this_coverage is a subset of all other coverages if every element is found.
+                    // so search for each element. if any one is not found in another coverage we
+                    // know its not a subset.
+                    const issubset = blk: for (this_coverage.keys()) |k| {
+                        var coviter2 = coverage.iterator();
+                        while (coviter2.next()) |it2| {
+                            const other_implicant = it2.key_ptr.*;
+                            if (std.mem.eql(u8, other_implicant, this_implicant)) continue;
+                            const other_coverage = it2.value_ptr.*;
+                            if (other_coverage.contains(k)) continue :blk;
+                        }
+                        // element not found
+                        break :blk false;
+                    } else true;
 
-                    const issubset = isSubSet(TermSet, this_coverage, others_coverage, .lenient);
                     if (issubset) {
-                        trace("issubset {} this_coverage.len {} others_coverage.len {}\n", .{ issubset, this_coverage.count(), others_coverage.count() });
+                        // trace("issubset {} this_coverage.len {} others_coverage.len {}\n", .{ issubset, this_coverage.count(), others_coverage.count() });
                         // trace("this {}:{} others {}\n", .{ TermFmt.init(this_implicant, self.bitcount), TermSetFmt.init(this_coverage, comma_delim, self.bitcount), TermSetFmt.init(others_coverage, comma_delim, self.bitcount) });
-
                         try redundant.append(arena, this_implicant);
                     }
                 }
