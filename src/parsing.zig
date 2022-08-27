@@ -177,8 +177,8 @@ pub fn lessThan(comptime U: type) fn (void, U, U) bool {
 pub fn ltByPopCount(comptime U: type) fn (void, U, U) bool {
     return struct {
         fn func(_: void, lhs: U, rhs: U) bool {
-            const lpc = @popCount(U, lhs);
-            const rpc = @popCount(U, rhs);
+            const lpc = @popCount(lhs);
+            const rpc = @popCount(rhs);
             if (lpc == rpc) return lhs < rhs;
             return lpc < rpc;
         }

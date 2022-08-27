@@ -9,6 +9,21 @@ pub const parsing = @import("parsing.zig");
 
 const is_debug_build = @import("builtin").mode == .Debug;
 
+// pub const show_trace = true;
+pub fn trace(comptime fmt: []const u8, args: anytype) void {
+    if (@hasDecl(@This(), "show_trace") and @field(@This(), "show_trace"))
+        std.debug.print(fmt, args);
+}
+
+// pub const show_profile = true;
+pub fn profile(comptime fmt: []const u8, timer: *std.time.Timer, args: anytype) void {
+    if (@hasDecl(@This(), "show_profile") and @field(@This(), "show_profile")) {
+        const lap = timer.lap();
+        const dur = std.fmt.fmtDuration(lap);
+        std.debug.print(fmt ++ " {}\n", args ++ .{dur});
+    }
+}
+
 /// this imlementation packs 2 elements per byte.
 /// this packed representation is called a 'nibbles' here.
 /// this means that each byte holds 2 'Element' where
@@ -372,9 +387,9 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             // find max bitcount if not provided
             if (self.bitcount == 0) {
                 for (self.ones) |x|
-                    self.bitcount = std.math.max(self.bitcount, TBitSize - @clz(T, x));
+                    self.bitcount = std.math.max(self.bitcount, TBitSize - @clz(x));
                 for (self.dontcares) |x|
-                    self.bitcount = std.math.max(self.bitcount, TBitSize - @clz(T, x));
+                    self.bitcount = std.math.max(self.bitcount, TBitSize - @clz(x));
             }
             trace("bitcount {} ones {b}:{any}\n", .{ self.bitcount, self.ones, self.ones });
 
@@ -399,24 +414,34 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
             if (terms.count() == 0) return TermSet{};
 
-            var prime_implicants = try self.getPrimeImplicants(arenaallr, &terms);
+            var timer = try std.time.Timer.start();
+            var prime_implicants = blk: {
+                var prime_implicants = try self.getPrimeImplicants(arenaallr, &terms);
+                trace("\n\nprime_implicants {} {}\n", .{ prime_implicants.count(), TermSetFmt.init(prime_implicants, comma_delim, self.bitcount) });
+                profile("{s: <25}", &timer, .{"getPrimeImplicants"});
+                arena.deinit();
+                arena.* = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+                break :blk prime_implicants;
+            };
             defer self.deinitTermSet(&prime_implicants);
-            trace("\n\nprime_implicants {} {}\n", .{ prime_implicants.count(), TermSetFmt.init(prime_implicants, comma_delim, self.bitcount) });
 
-            arena.deinit();
-            arena.* = std.heap.ArenaAllocator.init(std.heap.page_allocator);
             var dcset: TSet = .{};
             defer dcset.deinit(self.allocator);
             for (self.dontcares) |t| try dcset.put(self.allocator, t, {});
-
-            var essential_implicants = try self.getEssentialImplicants(arenaallr, &prime_implicants, dcset);
+            _ = timer.lap();
+            var essential_implicants = blk: {
+                var essential_implicants = try self.getEssentialImplicants(arenaallr, &prime_implicants, dcset);
+                profile("{s: <25}", &timer, .{"getEssentialImplicants"});
+                trace("\n\nessential_implicants {} {}\n", .{ essential_implicants.count(), TermSetFmt.init(essential_implicants, comma_delim, self.bitcount) });
+                arena.deinit();
+                arena.* = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+                break :blk essential_implicants;
+            };
             defer self.deinitTermSet(&essential_implicants);
-            trace("\n\nessential_implicants {} {}\n", .{ essential_implicants.count(), TermSetFmt.init(essential_implicants, comma_delim, self.bitcount) });
-
-            arena.deinit();
-            arena.* = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+            _ = timer.lap();
             var reduced_implicants = try self.reduceImplicants(arenaallr, &essential_implicants, dcset);
             trace("\n\nreduced_implicants {} {}\n", .{ reduced_implicants.count(), TermSetFmt.init(reduced_implicants, comma_delim, self.bitcount) });
+            profile("{s: <25}", &timer, .{"reduceImplicants"});
             return reduced_implicants;
         }
 
@@ -640,7 +665,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 }
                 const t = try termToT(termcopy, bitcount);
                 if (!excludes.contains(t))
-                    try result.putNoClobber(arena, try arena.dupe(u8, termcopy), {});
+                    try result.put(arena, try arena.dupe(u8, termcopy), {});
             }
         }
 
@@ -769,17 +794,16 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             return complexity(a, bitcount) < complexity(b, bitcount);
         }
 
-        fn combineImplicants(self: Self, arena: Allocator, a: Term, b: Term, dcset: TSet) !Term {
-            var permutations_a: TermSet = .{};
-            try collectPerms(arena, a, &permutations_a, dcset, self.bitcount);
-            var permutations_b: TermSet = .{};
-            try collectPerms(arena, b, &permutations_b, dcset, self.bitcount);
+        // unlike the python impl, a single perms set is used rather than permuatations_a/b
+        fn combineImplicants(self: Self, arena: Allocator, a: Term, b: Term, dcset: TSet, perms: *TermSet, valid: *TermList, set: *TermSet) !Term {
+            perms.clearRetainingCapacity();
+            try collectPerms(arena, a, perms, dcset, self.bitcount);
+
+            try collectPerms(arena, b, perms, dcset, self.bitcount);
             var a_potential = try arena.dupe(u8, a);
             var b_potential = try arena.dupe(u8, b);
 
             // FIXME: optimize - seems like these loops could be combined
-            // const a_term_dcs = try indices(arena, a, dash);
-            // for (a_term_dcs) |index| a_potential[index] = b[index];
             for (a) |_, i| {
                 const anibs = toNibbles(a[i]);
                 const bnibs = toNibbles(b[i]);
@@ -787,8 +811,6 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 if (anibs.a == dash) apotnibs.a = bnibs.a;
                 if (anibs.b == dash) apotnibs.b = bnibs.b;
             }
-            // const b_term_dcs = try indices(arena, b, dash);
-            // for (b_term_dcs) |index| b_potential[index] = a[index];
             for (b) |_, i| {
                 const anibs = toNibbles(a[i]);
                 const bnibs = toNibbles(b[i]);
@@ -796,15 +818,17 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 if (bnibs.a == dash) bpotnibs.a = anibs.a;
                 if (bnibs.b == dash) bpotnibs.b = anibs.b;
             }
-            for (permutations_b.keys()) |bp| try permutations_a.put(arena, bp, {});
-            var valid: TermList = .{};
-            var set: TermSet = .{};
-            try collectPerms(arena, a_potential, &set, dcset, self.bitcount);
-            if (setsEqual(TermSet, set, permutations_a))
+
+            set.clearRetainingCapacity();
+            valid.clearRetainingCapacity();
+
+            try collectPerms(arena, a_potential, set, dcset, self.bitcount);
+            if (setsEqual(TermSet, set.*, perms.*))
                 try valid.append(arena, a_potential);
             set.clearRetainingCapacity();
-            try collectPerms(arena, b_potential, &set, dcset, self.bitcount);
-            if (setsEqual(TermSet, set, permutations_a))
+
+            try collectPerms(arena, b_potential, set, dcset, self.bitcount);
+            if (setsEqual(TermSet, set.*, perms.*))
                 try valid.append(arena, a_potential);
             // trace("valid {}\n", .{TermsFmt.init(valid.items, comma_delim, self.bitcount)});
             std.sort.sort(Term, valid.items, self.bitcount, ltByComplexity);
@@ -816,10 +840,14 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
         pub fn reduceImplicants(self: *Self, arena: Allocator, implicants: *TermSet, dcset: TSet) !TermSet {
             trace("implicants.len {}\n", .{implicants.count()});
+            var valid: TermList = .{};
+            var set: TermSet = .{};
+            var perms_a: TermSet = .{};
+            var timer = try std.time.Timer.start();
             while (true) {
                 outer: for (implicants.keys()) |a, i| {
                     for (implicants.keys()[i + 1 ..]) |b| {
-                        const replacement = try self.combineImplicants(arena, a, b, dcset);
+                        const replacement = try self.combineImplicants(arena, a, b, dcset, &perms_a, &valid, &set);
                         if (replacement.len > 0) {
                             trace("a {} b {} replacement {}\n", .{ TermFmt.init(a, self.bitcount), TermFmt.init(b, self.bitcount), TermFmt.init(replacement, self.bitcount) });
                             _ = implicants.swapRemove(a);
@@ -830,6 +858,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     }
                 } else break;
             }
+            profile("{s: <25}", &timer, .{"reduceImplicants1"});
 
             var coverage: PermMap = .{};
             var combined_len: usize = 0;
@@ -843,6 +872,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                         combined_len += gop.value_ptr.count();
                 }
             }
+            profile("{s: <25}", &timer, .{"reduceImplicants2"});
             trace("coverage.len {} combined {}\n", .{ coverage.count(), combined_len });
 
             var others_coverage: TermSet = .{};
@@ -887,6 +917,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     _ = coverage.remove(worst);
                 } else break;
             }
+            profile("{s: <25}", &timer, .{"reduceImplicants3"});
 
             var result: TermSet = .{};
             var citer = coverage.keyIterator();
@@ -904,10 +935,4 @@ pub fn QuineMcCluskey(comptime _T: type) type {
 
 fn todo(msg: []const u8) noreturn {
     @panic(msg);
-}
-
-// pub const show_trace = true;
-pub fn trace(comptime fmt: []const u8, args: anytype) void {
-    if (@hasDecl(@This(), "show_trace") and @field(@This(), "show_trace"))
-        std.debug.print(fmt, args);
 }
