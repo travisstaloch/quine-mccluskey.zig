@@ -381,7 +381,7 @@ test "round trip parsing" {
         const expected_t = rand.int(u32);
         const expected_bytes = try std.fmt.allocPrint(allr, "{b}", .{expected_t});
         defer allr.free(expected_bytes);
-        const bitcount = 32 - @clz(u32, expected_t);
+        const bitcount = 32 - @clz(expected_t);
         // convert t to packed term
         const term = try Qm32.tToTerm(allr, expected_t, bitcount);
         defer allr.free(term);

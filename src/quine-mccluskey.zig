@@ -372,9 +372,9 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             // find max bitcount if not provided
             if (self.bitcount == 0) {
                 for (self.ones) |x|
-                    self.bitcount = std.math.max(self.bitcount, TBitSize - @clz(T, x));
+                    self.bitcount = std.math.max(self.bitcount, TBitSize - @clz(x));
                 for (self.dontcares) |x|
-                    self.bitcount = std.math.max(self.bitcount, TBitSize - @clz(T, x));
+                    self.bitcount = std.math.max(self.bitcount, TBitSize - @clz(x));
             }
             trace("bitcount {} ones {b}:{any}\n", .{ self.bitcount, self.ones, self.ones });
 
