@@ -22,8 +22,8 @@ pub fn build(b: *std.build.Builder) void {
 
     const simplify_tests = b.addTest("simplify-c-defines-zig/test_simplify.zig");
     simplify_tests.setBuildMode(mode);
+    simplify_tests.step.dependOn(b.getInstallStep());
 
     const test_simplify_step = b.step("test-simplify", "Run simplify-c-defines-zig/test_simplify.zig tests\n                               NOTE: you must run `zig build` first otherwise zig-out/bin/simplify is missing");
     test_simplify_step.dependOn(&simplify_tests.step);
-    test_simplify_step.dependOn(&simplify_exe.step);
 }
