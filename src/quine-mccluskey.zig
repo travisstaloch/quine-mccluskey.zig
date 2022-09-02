@@ -467,8 +467,8 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             return reduced_implicants;
         }
 
-        fn termCount(t: Term, e: Element) u8 {
-            var r: u8 = 0;
+        fn termCount(t: Term, e: Element) TLog2 {
+            var r: TLog2 = 0;
             for (t) |byte| {
                 const nibs = toNibbles(byte);
                 r += @boolToInt(nibs.a == @enumToInt(e));
@@ -504,7 +504,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 groups.clearRetainingCapacity();
                 {
                     for (terms.keys()) |t| {
-                        const key = GroupKey{ termCount(t, .one), termCount(t, .xor), termCount(t, .xnor) };
+                        const key = GroupKey{ @intCast(u8, termCount(t, .one)), @intCast(u8, termCount(t, .xor)), @intCast(u8, termCount(t, .xnor)) };
                         // trace("t {} key {any}\n", .{ TermFmt.init(t), key });
                         assert(key[1] == 0 or key[2] == 0);
                         const gop = try groups.getOrPut(arena, key);
@@ -647,47 +647,73 @@ pub fn QuineMcCluskey(comptime _T: type) type {
         pub const ele_uninit = @as(u4, 0xf);
         pub const byte_uninit = @as(u8, 0xff);
 
-        pub fn collectPerms(arena: Allocator, term: Term, result: *TermSet, excludes: TSet, bitcount: TLen) !void {
-            const dashcount = termCount(term, .dash);
-            const max = @as(T, 1) << @intCast(TLog2, dashcount);
+        pub const PermutationsIter = struct {
+            term: Term,
+            excludes: TSet,
+            bitcount: TLen,
+            dashcount: TLog2,
+            max: T,
+            dashi_arr: [TBitSize]TLog2 = undefined, // dash indices
+            dashi_len: TLog2 = 0,
+            termbuf: [TBitSize + 1 / 2]u8 = undefined,
+            perm: T = 0,
 
-            const trace_this = false;
-            if (trace_this) trace("\nterm {} dashcount {} max {}:0b{b}\n", .{ TermFmt.init(term, bitcount), dashcount, max, max });
-
-            var dashi_arr: [TBitSize]TLog2 = undefined; // dash indices
-            var dashi_len: TLog2 = 0;
-            for (term) |c, i| {
-                const nibs = toNibbles(c);
-                if (nibs.a == dash) {
-                    dashi_arr[dashi_len] = @intCast(TLog2, i * 2);
-                    dashi_len += 1;
+            pub fn init(term: Term, excludes: TSet, bitcount: TLen) PermutationsIter {
+                const dashcount = termCount(term, .dash);
+                var iter = PermutationsIter{
+                    .term = term,
+                    .excludes = excludes,
+                    .bitcount = bitcount,
+                    .dashcount = dashcount,
+                    .max = @as(T, 1) << @intCast(TLog2, dashcount),
+                };
+                for (term) |c, i| {
+                    const nibs = toNibbles(c);
+                    if (nibs.a == dash) {
+                        iter.dashi_arr[iter.dashi_len] = @intCast(TLog2, i * 2);
+                        iter.dashi_len += 1;
+                    }
+                    if (nibs.b == dash) {
+                        iter.dashi_arr[iter.dashi_len] = @intCast(TLog2, i * 2 + 1);
+                        iter.dashi_len += 1;
+                    }
                 }
-                if (nibs.b == dash) {
-                    dashi_arr[dashi_len] = @intCast(TLog2, i * 2 + 1);
-                    dashi_len += 1;
-                }
+                std.mem.copy(u8, &iter.termbuf, term);
+                return iter;
             }
-            const dashis = dashi_arr[0..dashi_len];
-            var termcopy = try arena.dupe(u8, term);
-            defer arena.free(termcopy);
 
-            if (trace_this) trace("dashi {any}\n", .{dashis});
-            var perm: T = 0;
-            while (perm < max) : (perm += 1) {
-                if (trace_this) trace("i {}:0b{b}\n", .{ perm, perm });
-
-                for (dashis) |dash_idx, i| {
-                    const bit = @boolToInt((@as(T, 1) << @intCast(TLog2, i)) & perm != 0);
-                    const byteidx = dash_idx / 2;
-                    const isa = @truncate(u1, dash_idx) == 0;
-                    if (trace_this) trace("dash_idx {} i {} bit {} byteidx {} isa {}\n", .{ dash_idx, i, bit, byteidx, isa });
-                    const nibs = toNibblesPtr(&termcopy[byteidx]);
-                    if (isa) nibs.a = bit else nibs.b = bit;
-                    if (trace_this) trace("termcopy {} ({})\n", .{ TermFmt.init(termcopy, bitcount), std.fmt.fmtSliceHexLower(termcopy) });
+            pub fn next(self: *PermutationsIter) ?Term {
+                const trace_this = false;
+                while (self.perm < self.max) {
+                    defer self.perm += 1;
+                    if (trace_this) trace("perm {}:0b{b}\n", .{ self.perm, self.perm });
+                    const dashis = self.dashi_arr[0..self.dashi_len];
+                    for (dashis) |dash_idx, i| {
+                        const bit = @boolToInt((@as(T, 1) << @intCast(TLog2, i)) & self.perm != 0);
+                        const byteidx = dash_idx / 2;
+                        const isa = @truncate(u1, dash_idx) == 0;
+                        if (trace_this) trace("dash_idx {} i {} bit {} byteidx {} isa {}\n", .{ dash_idx, i, bit, byteidx, isa });
+                        const nibs = toNibblesPtr(&self.termbuf[byteidx]);
+                        if (isa) nibs.a = bit else nibs.b = bit;
+                        if (trace_this) trace("termbuf {} ({})\n", .{ TermFmt.init(self.termbuf[0..self.term.len], self.bitcount), std.fmt.fmtSliceHexLower(self.termbuf[0..self.term.len]) });
+                    }
+                    const t = try termToT(self.termbuf[0..self.term.len], self.bitcount);
+                    if (!self.excludes.contains(t))
+                        return self.termbuf[0..self.term.len];
                 }
-                const t = try termToT(termcopy, bitcount);
-                if (!excludes.contains(t))
-                    try result.put(arena, try arena.dupe(u8, termcopy), {});
+
+                return null;
+            }
+
+            pub fn eql(self: PermutationsIter, other: PermutationsIter) bool {
+                return std.mem.eql(u8, self.term, other.term);
+            }
+        };
+
+        pub fn collectPerms(arena: Allocator, term: Term, result: *TermSet, excludes: TSet, bitcount: TLen) !void {
+            var perms = PermutationsIter.init(term, excludes, bitcount);
+            while (perms.next()) |perm| {
+                try result.put(arena, try arena.dupe(u8, perm), {});
             }
         }
 
@@ -816,59 +842,58 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             return complexity(a, bitcount) < complexity(b, bitcount);
         }
 
-        // unlike the python impl, a single perms set is used rather than permuatations_a/b
-        fn combineImplicants(self: Self, arena: Allocator, a: Term, b: Term, dcset: TSet, perms: *TermSet, valid: *TermList, set: *TermSet) !Term {
+        fn combineImplicants(self: Self, arena: Allocator, a: Term, b: Term, abuf: []u8, bbuf: []u8, dcset: TSet, perms: *TermSet, valid: *TermList) !Term {
             perms.clearRetainingCapacity();
             try collectPerms(arena, a, perms, dcset, self.bitcount);
             try collectPerms(arena, b, perms, dcset, self.bitcount);
-            var a_potential = try arena.dupe(u8, a);
-            var b_potential = try arena.dupe(u8, b);
+            std.mem.copy(u8, abuf, a);
+            std.mem.copy(u8, bbuf, b);
+            var a_potential = abuf[0..a.len];
+            var b_potential = bbuf[0..b.len];
 
-            // FIXME: optimize - seems like these loops could be combined
             for (a) |_, i| {
                 const anibs = toNibbles(a[i]);
                 const bnibs = toNibbles(b[i]);
+
                 const apotnibs = toNibblesPtr(&a_potential[i]);
                 if (anibs.a == dash) apotnibs.a = bnibs.a;
                 if (anibs.b == dash) apotnibs.b = bnibs.b;
-            }
-            for (b) |_, i| {
-                const anibs = toNibbles(a[i]);
-                const bnibs = toNibbles(b[i]);
                 const bpotnibs = toNibblesPtr(&b_potential[i]);
                 if (bnibs.a == dash) bpotnibs.a = anibs.a;
                 if (bnibs.b == dash) bpotnibs.b = anibs.b;
             }
-
-            set.clearRetainingCapacity();
             valid.clearRetainingCapacity();
 
-            try collectPerms(arena, a_potential, set, dcset, self.bitcount);
-            if (setsEqual(TermSet, set.*, perms.*))
-                try valid.append(arena, a_potential);
-            set.clearRetainingCapacity();
-
-            try collectPerms(arena, b_potential, set, dcset, self.bitcount);
-            if (setsEqual(TermSet, set.*, perms.*))
-                try valid.append(arena, a_potential);
-            // trace("valid {}\n", .{TermsFmt.init(valid.items, comma_delim, self.bitcount)});
-            std.sort.sort(Term, valid.items, self.bitcount, ltByComplexity);
-            return if (valid.items.len > 0)
-                valid.items[0]
-            else
-                &[0]u8{};
+            // append to valid if a/b_potential perms == (permutations_a | permutations_b)
+            // the following checks if the sets are equal iteratively rather than allocating a
+            // new set.
+            // TODO: can calculate permslens ahead of time as nchoosek i think?
+            inline for (.{ a_potential, b_potential }) |potential| {
+                var potperms = PermutationsIter.init(potential, dcset, self.bitcount);
+                var potpermslen: usize = 0;
+                const isvalid = while (potperms.next()) |perm| : (potpermslen += 1) {
+                    if (!perms.contains(perm)) break false;
+                } else potpermslen == perms.count();
+                if (isvalid) try valid.append(arena, potential);
+            }
+            return if (valid.items.len > 0) blk: {
+                std.sort.sort(Term, valid.items, self.bitcount, ltByComplexity);
+                break :blk valid.items[0];
+            } else &[0]u8{};
         }
 
         pub fn reduceImplicants(self: *Self, arena: Allocator, implicants: *TermSet, dcset: TSet) !TermSet {
             trace("implicants.len {}\n", .{implicants.count()});
             var valid: TermList = .{};
-            var set: TermSet = .{};
             var perms_a: TermSet = .{};
             var timer = try std.time.Timer.start();
+            var abuf: [TBitSize + 1 / 2]u8 = undefined;
+            var bbuf: [TBitSize + 1 / 2]u8 = undefined;
             while (true) {
                 outer: for (implicants.keys()) |a, i| {
                     for (implicants.keys()[i + 1 ..]) |b| {
-                        const replacement = try self.combineImplicants(arena, a, b, dcset, &perms_a, &valid, &set);
+                        const replacement = try self.combineImplicants(arena, a, b, &abuf, &bbuf, dcset, &perms_a, &valid);
+                        // trace("a {} b {} replacement {}\n", .{ TermFmt.init(a, self.bitcount), TermFmt.init(b, self.bitcount), TermFmt.init(replacement, self.bitcount) });
                         if (replacement.len > 0) {
                             trace("a {} b {} replacement {}\n", .{ TermFmt.init(a, self.bitcount), TermFmt.init(b, self.bitcount), TermFmt.init(replacement, self.bitcount) });
                             _ = implicants.swapRemove(a);

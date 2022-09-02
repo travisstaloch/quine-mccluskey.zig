@@ -343,6 +343,19 @@ fn parseIntoTermSet(comptime QM: type, input: []const u8, delimiter: []const u8,
     return result;
 }
 
+fn permTestIter(bytes: []const u8, expecteds: []const u8, delimiter: []const u8, debug: bool) !void {
+    const bitcount = @intCast(Qm32.TLen, bytes.len);
+    const term = try Qm32.bytesToTerm(allr, bytes, bitcount);
+    defer allr.free(term);
+    var q = Qm32.init(allr, &.{}, &.{}, .{});
+    var termset_expected = try parseIntoTermSet(Qm32, expecteds, delimiter, bitcount);
+    defer q.deinitTermSet(&termset_expected);
+    var iter = Qm32.PermutationsIter.init(term, .{}, bitcount);
+    _ = debug;
+    while (iter.next()) |perm| {
+        try std.testing.expect(termset_expected.contains(perm));
+    }
+}
 fn permTest(bytes: []const u8, expecteds: []const u8, delimiter: []const u8, debug: bool) !void {
     const bitcount = @intCast(Qm32.TLen, bytes.len);
     const term = try Qm32.bytesToTerm(allr, bytes, bitcount);
@@ -360,6 +373,8 @@ fn permTest(bytes: []const u8, expecteds: []const u8, delimiter: []const u8, deb
     // for (termset.keys()) |k|
     //     std.debug.print("actual   {}\n", .{std.fmt.fmtSliceHexLower(k)});
     try testTermSetsEqual(Qm32, termset_expected, termset, expecteds, delimiter, bitcount, debug);
+
+    try permTestIter(bytes, expecteds, delimiter, debug);
 }
 
 test "permutations" {
