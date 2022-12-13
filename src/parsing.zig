@@ -13,7 +13,7 @@ pub fn parseTerms(comptime Qm: type, allocator: Allocator, input: []const u8, de
     var terms: Qm.TSet = .{};
     defer terms.deinit(allocator);
     while (iter.next()) |_term| {
-        const term = std.mem.trim(u8, _term, &std.ascii.spaces);
+        const term = std.mem.trim(u8, _term, &std.ascii.whitespace);
         var termval: Qm.T = 0;
         var i: usize = 0;
         while (i < term.len) {

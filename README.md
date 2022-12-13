@@ -47,9 +47,7 @@ see [src/tests.zig](src/tests.zig)
 # todo
 - [ ] add support for xor/xnor reductions
 - [ ] improve memory usage
-  - Fri Aug 19 [7cb4c](https://github.com/travisstaloch/quine-mccluskey.zig/commits/7cb4c99fa5da85149c7a4e0193b6815c88ab44bd) <br>
-    count 15 fill_factor 1.0e-01 k 3.2768e+04 n 3277 <br>
-    t1 11.111s reduced terms from 3229   to 2716 
-  - Thu Sep 1 [eb541](https://github.com/travisstaloch/quine-mccluskey.zig/commits/eb5415d9ed3055096f24050ec3cfa6b71619e5b1) <br>
-    count 15 fill_factor 1.0e-01 k 3.2768e+04 n 3277 <br>
-    t1 6.408s reduced terms from 3247   to 2739  
+  - Fri Aug 19 [7cb4c](https://github.com/travisstaloch/quine-mccluskey.zig/commit/7cb4c99fa5da85149c7a4e0193b6815c88ab44bd) <br>
+    11.111s reduced terms from 3229   to 2716 
+  - Thu Sep 1 [eb541](https://github.com/travisstaloch/quine-mccluskey.zig/commit/eb5415d9ed3055096f24050ec3cfa6b71619e5b1) <br>
+    6.408s reduced terms from 3247   to 2739  

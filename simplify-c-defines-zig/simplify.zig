@@ -17,7 +17,7 @@ fn load_defines(allocator: Allocator, filepath: []const u8) !StringLineList {
     var buf: [1024]u8 = undefined;
     var i: usize = 0;
     while (try reader.readUntilDelimiterOrEof(&buf, '\n')) |line| : (i += 1) {
-        const trimmed = std.mem.trim(u8, line, &std.ascii.spaces);
+        const trimmed = std.mem.trim(u8, line, &std.ascii.whitespace);
         if (std.mem.indexOf(u8, trimmed, "#define") != null)
             try res.append(.{ .str = try allocator.dupe(u8, trimmed), .line = i });
     }
@@ -61,7 +61,7 @@ fn find_lines(allocator: Allocator, run: Run, filepath: []const u8) !LineList {
     var buf: [1024]u8 = undefined;
     var i: usize = 0;
     while (try reader.readUntilDelimiterOrEof(&buf, '\n')) |line| : (i += 1) {
-        const trimmed = std.mem.trim(u8, line, &std.ascii.spaces);
+        const trimmed = std.mem.trim(u8, line, &std.ascii.whitespace);
         if (std.mem.indexOf(u8, trimmed, run.df) != null and run.start <= i and i <= run.end)
             try res.append(i);
     }
@@ -82,7 +82,7 @@ fn get_defs(allocator: Allocator, linelist: LineList, filepath: []const u8) !Str
     var i: usize = 0;
     while (try reader.readUntilDelimiterOrEof(&buf, '\n')) |line| : (i += 1) {
         if (slist.contains(i + 1)) {
-            const trimmed = std.mem.trim(u8, line, &std.ascii.spaces);
+            const trimmed = std.mem.trim(u8, line, &std.ascii.whitespace);
             const item = std.mem.trimLeft(u8, trimmed, "#if ");
             try res.append(try allocator.dupe(u8, item));
         }
@@ -157,7 +157,7 @@ pub fn main() !void {
         defer dfs.deinit();
         var ones = std.ArrayList(u32).init(allr);
         for (dfs.items) |itemp| {
-            const trimmed = std.mem.trim(u8, itemp, &std.ascii.spaces);
+            const trimmed = std.mem.trim(u8, itemp, &std.ascii.whitespace);
             var spiter = std.mem.split(u8, trimmed, " && ");
             var one = try allr.dupe(u8, alldashesterm);
             defer allr.free(one);

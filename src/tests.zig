@@ -335,7 +335,7 @@ fn parseIntoTermSet(comptime QM: type, input: []const u8, delimiter: []const u8,
     while (spliter.next()) |termbytes| {
         // std.debug.print("termbytes {}:{s} bitcount {}\n", .{ termbytes.len, termbytes, bitcount });
         var buf: [QM.TBitSize]u8 = undefined;
-        var term = try QM.bytesToTermBuf(&buf, std.mem.trim(u8, termbytes, &std.ascii.spaces), bitcount);
+        var term = try QM.bytesToTermBuf(&buf, std.mem.trim(u8, termbytes, &std.ascii.whitespace), bitcount);
         // std.debug.print("term {} bitcount {}\n", .{ Qm32.TermFmt.init(term, bitcount), bitcount });
         if (!result.contains(term))
             try result.putNoClobber(allr, try allr.dupe(u8, term), {});

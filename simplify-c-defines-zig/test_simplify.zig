@@ -18,5 +18,5 @@ test "simplify compare" {
     // run python simplify-c-defines/simplify.py simplify-c-defines/program.txt
     const py_simplify_result = try std.ChildProcess.exec(.{ .allocator = allr, .argv = &.{ "python", "simplify-c-defines/simplify.py", programtxt_path } });
     // compare output
-    try std.testing.expectEqualStrings(std.mem.trim(u8, py_simplify_result.stdout, &std.ascii.spaces), std.mem.trim(u8, zig_simplify_result.stdout, &std.ascii.spaces));
+    try std.testing.expectEqualStrings(std.mem.trim(u8, py_simplify_result.stdout, &std.ascii.whitespace), std.mem.trim(u8, zig_simplify_result.stdout, &std.ascii.whitespace));
 }
