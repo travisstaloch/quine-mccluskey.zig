@@ -31,7 +31,7 @@ jobs:
         version: master
 
     - run: zig build test
-    - run: zig build test -Drelease-fast
-    - run: zig build test -Drelease-small
-    - run: zig build test -Drelease-safe
+    - run: zig build test -Doptimize=ReleaseFast
+    - run: zig build test -Doptimize=ReleaseSmall
+    - run: zig build test -Doptimize=ReleaseSafe
     - run: zig build test-simplify
