@@ -83,7 +83,7 @@ fn testReduce(comptime QM: type) !void {
         },
     };
     const delimiter = " + ";
-    for (tests) |tst, tsti| {
+    for (tests, 0..) |tst, tsti| {
         var qm = try QM.initAndReduce(allr, tst.ones, &.{}, .{});
         defer qm.deinit();
         var output = std.ArrayList(u8).init(allr);
@@ -154,7 +154,7 @@ test "reduce binary" {
         .{ .res = "010- + 111- + 0-11 + 1-01", .ons = &.{ 3, 4, 5, 7, 9, 13, 14, 15 } },
     };
 
-    inline for (common_tests ++ noxor_tests) |t, tsti| {
+    inline for (common_tests ++ noxor_tests, 0..) |t, tsti| {
         var qm = try Qm32.initAndReduce(allr, t.ons, t.dnc, .{});
         defer qm.deinit();
         var list = std.ArrayList(u8).init(allr);
@@ -318,7 +318,7 @@ fn testTermSetsEqual(comptime QM: type, expecteds: QM.TermSet, actuals: QM.TermS
             }
         }
 
-        for (actuals.keys()) |actual, i| {
+        for (actuals.keys(), 0..) |actual, i| {
             const extra = !expecteds.contains(actual);
             if (extra) {
                 std.debug.print("ERROR: unexpected item at index    {: >3}: {s} ({})\n", .{ i, QM.TermFmt.init(actual, bitcount), std.fmt.fmtSliceHexLower(actual) });

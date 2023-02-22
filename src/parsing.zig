@@ -17,7 +17,7 @@ pub fn parseTerms(comptime Qm: type, allocator: Allocator, input: []const u8, de
         var termval: Qm.T = 0;
         var i: usize = 0;
         while (i < term.len) {
-            const idx = for (variables) |v, j| {
+            const idx = for (variables, 0..) |v, j| {
                 if (std.mem.startsWith(u8, term[i..], v))
                     break @intCast(Qm.TLen, j);
             } else return error.ParseError;
@@ -108,7 +108,7 @@ pub fn parseIntoStringSet(
 }
 
 pub fn printEssentialTerms(comptime Qm: type, self: Qm, writer: anytype, delimiter: []const u8, variables: []const []const u8) !void {
-    for (self.reduced_implicants.keys()) |term, i| {
+    for (self.reduced_implicants.keys(), 0..) |term, i| {
         if (i != 0) _ = try writer.write(delimiter);
         const skiplen = std.math.sub(usize, term.len * 2, self.bitcount) catch continue;
         var j: usize = 0;
@@ -135,7 +135,7 @@ pub fn printEssentialTerms(comptime Qm: type, self: Qm, writer: anytype, delimit
 }
 
 pub fn printEssentialTermsBin(comptime Qm: type, self: Qm, writer: anytype, delimiter: []const u8) !void {
-    for (self.reduced_implicants.keys()) |term, i| {
+    for (self.reduced_implicants.keys(), 0..) |term, i| {
         if (i != 0) _ = try writer.write(delimiter);
         try writer.print("{}", .{Qm.TermFmt.init(term, self.bitcount)});
     }

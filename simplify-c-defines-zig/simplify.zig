@@ -164,7 +164,7 @@ pub fn main() !void {
             var found = false;
             var termscount: usize = 0;
             while (spiter.next()) |x| : (termscount += 1) {
-                for (variables) |v, vidx| {
+                for (variables, 0..) |v, vidx| {
                     if (std.mem.indexOf(u8, x, v) != null) {
                         found = true;
                         const not = std.mem.indexOfScalar(u8, x, '!') != null;
@@ -195,7 +195,7 @@ pub fn main() !void {
 
         const stdout = std.io.getStdOut().writer();
         _ = try stdout.write("#if ");
-        for (qm32.reduced_implicants.keys()) |imp, i| {
+        for (qm32.reduced_implicants.keys(), 0..) |imp, i| {
             if (i != 0) _ = try stdout.write(" || ");
             try stdout.print("{}", .{Qm32.TermFmtVars.init(imp, qm32.bitcount, def_variables, " && ", "!", .before)});
         }

@@ -305,7 +305,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
 
             pub fn format(self: TermsFmt, comptime _: []const u8, _: std.fmt.FormatOptions, writer: anytype) !void {
-                for (self.terms) |term, i| {
+                for (self.terms, 0..) |term, i| {
                     if (i != 0) _ = try writer.write(self.delimiter);
                     try writer.print("{}", .{TermFmt.init(term, self.bitcount)});
                 }
@@ -323,7 +323,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             }
 
             pub fn format(self: TermSetFmt, comptime _: []const u8, _: std.fmt.FormatOptions, writer: anytype) !void {
-                for (self.termset.keys()) |k, i| {
+                for (self.termset.keys(), 0..) |k, i| {
                     if (i != 0) _ = try writer.write(self.delimiter);
                     try writer.print("{}", .{TermFmt.init(k, self.bitcount)});
                 }
@@ -366,7 +366,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 if (self.variables.len < self.bitcount)
                     std.debug.panic("variables.len {} too small. must be atleast bitcount {}\n", .{ self.variables.len, self.bitcount });
                 var written_count: usize = 0;
-                for (self.term) |e, i| {
+                for (self.term, 0..) |e, i| {
                     const nibs = toNibbles(e);
                     if (i * 2 >= self.bitcount) break;
                     if (nibs.a == zero or nibs.a == one) {
@@ -441,6 +441,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 var prime_implicants = try self.getPrimeImplicants(arenaallr, &terms);
                 trace("\n\nprime_implicants {} {}\n", .{ prime_implicants.count(), TermSetFmt.init(prime_implicants, comma_delim, self.bitcount) });
                 profile("{s: <25}", &timer, .{"getPrimeImplicants"});
+                // TODO: arena.reset();
                 arena.deinit();
                 arena.* = std.heap.ArenaAllocator.init(std.heap.page_allocator);
                 break :blk prime_implicants;
@@ -455,6 +456,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 var essential_implicants = try self.getEssentialImplicants(arenaallr, &prime_implicants, dcset);
                 profile("{s: <25}", &timer, .{"getEssentialImplicants"});
                 trace("\n\nessential_implicants {} {}\n", .{ essential_implicants.count(), TermSetFmt.init(essential_implicants, comma_delim, self.bitcount) });
+                // TODO: arena.reset();
                 arena.deinit();
                 arena.* = std.heap.ArenaAllocator.init(std.heap.page_allocator);
                 break :blk essential_implicants;
@@ -532,7 +534,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     const group = it.value_ptr.*;
                     for (group.keys()) |t1| {
                         // trace("t1 {}\n", .{TermFmt.init(t1)});
-                        for (t1) |cs1, i| {
+                        for (t1, 0..) |cs1, i| {
                             const nibs = toNibbles(cs1);
                             // check both nibbles
                             inline for (comptime std.meta.fieldNames(Nibbles)) |f| {
@@ -615,7 +617,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                 assert(0 == termRank(invalid));
             }
             var n: u16 = 0;
-            for (term) |byte, i| {
+            for (term, 0..) |byte, i| {
                 const nibs = toNibbles(byte);
                 const ii = i * 2;
                 n += @boolToInt(ii < bitcount) * termRank(nibs.a);
@@ -667,7 +669,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     .dashcount = dashcount,
                     .max = @as(T, 1) << @intCast(TLog2, dashcount),
                 };
-                for (term) |c, i| {
+                for (term, 0..) |c, i| {
                     const nibs = toNibbles(c);
                     if (nibs.a == dash) {
                         iter.dashi_arr[iter.dashi_len] = @intCast(TLog2, i * 2);
@@ -688,7 +690,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
                     defer self.perm += 1;
                     if (trace_this) trace("perm {}:0b{b}\n", .{ self.perm, self.perm });
                     const dashis = self.dashi_arr[0..self.dashi_len];
-                    for (dashis) |dash_idx, i| {
+                    for (dashis, 0..) |dash_idx, i| {
                         const bit = @boolToInt((@as(T, 1) << @intCast(TLog2, i)) & self.perm != 0);
                         const byteidx = dash_idx / 2;
                         const isa = @truncate(u1, dash_idx) == 0;
@@ -851,7 +853,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             var a_potential = abuf[0..a.len];
             var b_potential = bbuf[0..b.len];
 
-            for (a) |_, i| {
+            for (a, 0..) |_, i| {
                 const anibs = toNibbles(a[i]);
                 const bnibs = toNibbles(b[i]);
 
@@ -890,7 +892,7 @@ pub fn QuineMcCluskey(comptime _T: type) type {
             var abuf: [TBitSize + 1 / 2]u8 = undefined;
             var bbuf: [TBitSize + 1 / 2]u8 = undefined;
             while (true) {
-                outer: for (implicants.keys()) |a, i| {
+                outer: for (implicants.keys(), 0..) |a, i| {
                     for (implicants.keys()[i + 1 ..]) |b| {
                         const replacement = try self.combineImplicants(arena, a, b, &abuf, &bbuf, dcset, &perms_a, &valid);
                         // trace("a {} b {} replacement {}\n", .{ TermFmt.init(a, self.bitcount), TermFmt.init(b, self.bitcount), TermFmt.init(replacement, self.bitcount) });
